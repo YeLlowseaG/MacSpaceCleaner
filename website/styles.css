@@ -20,6 +20,7 @@
 
 html {
   scroll-behavior: smooth;
+  background: var(--paper);
 }
 
 body {
@@ -116,6 +117,15 @@ a {
   height: 18px;
 }
 
+/* Reserve icon space before Lucide hydrates the <i> placeholders so page
+   navigation does not cause the header to jump during the first paint. */
+i[data-lucide] {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  flex: 0 0 18px;
+}
+
 .nav-toggle {
   display: none;
   width: 40px;
@@ -131,6 +141,12 @@ a {
 .nav-toggle svg {
   width: 24px;
   height: 24px;
+}
+
+.nav-toggle i[data-lucide] {
+  width: 24px;
+  height: 24px;
+  flex-basis: 24px;
 }
 
 .hero {
