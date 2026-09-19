@@ -1,16 +1,16 @@
 :root {
   color-scheme: light;
-  --ink: #141817;
-  --muted: #5f6966;
-  --line: #dfe6e3;
+  --ink: #182033;
+  --muted: #626b7c;
+  --line: #dce3ef;
   --paper: #ffffff;
-  --soft: #f4f7f6;
-  --soft-2: #edf2f0;
-  --brand: #148f87;
-  --brand-dark: #0b6963;
+  --soft: #f4f7fc;
+  --soft-2: #eaf0fa;
+  --brand: #3478f6;
+  --brand-dark: #255fc7;
   --green: #1f9d55;
   --orange: #d86f1e;
-  --blue: #2678d8;
+  --blue: #3478f6;
   --max: 1180px;
 }
 
@@ -90,7 +90,7 @@ a {
   display: flex;
   align-items: center;
   gap: 28px;
-  color: #39413f;
+  color: #3d4656;
   font-size: 14px;
 }
 
@@ -192,7 +192,7 @@ i[data-lucide] {
 .hero-lead {
   max-width: 570px;
   margin: 26px 0 0;
-  color: #46504d;
+  color: #4f596c;
   font-size: 20px;
   line-height: 1.7;
 }
@@ -228,13 +228,13 @@ i[data-lucide] {
 }
 
 .button-primary:hover {
-  background: #084f4b;
+  background: #1f53b2;
 }
 
 .button-secondary {
   color: var(--ink);
   background: rgba(255, 255, 255, 0.75);
-  border-color: #cbd5d1;
+  border-color: #cbd5e4;
 }
 
 .hero-meta {
@@ -242,7 +242,7 @@ i[data-lucide] {
   flex-wrap: wrap;
   gap: 12px 22px;
   margin-top: 30px;
-  color: #59635f;
+  color: #606b7e;
   font-size: 13px;
 }
 
@@ -280,7 +280,7 @@ i[data-lucide] {
   min-height: 104px;
   padding: 20px 24px;
   background: var(--paper);
-  border: 1px solid #d4e1dd;
+  border: 1px solid #d5dfef;
   border-radius: 14px;
   box-shadow: 0 5px 16px rgba(20, 55, 49, 0.06);
 }
@@ -295,7 +295,7 @@ i[data-lucide] {
   margin: 0;
   padding: 10px;
   color: var(--brand);
-  background: #e6f4f1;
+  background: #e8f0ff;
   border-radius: 12px;
 }
 
@@ -355,14 +355,14 @@ i[data-lucide] {
   max-height: 760px;
   object-fit: cover;
   object-position: top center;
-  border: 1px solid #cdd6d2;
+  border: 1px solid #cdd8e8;
   border-radius: 8px;
   box-shadow: 0 26px 70px rgba(22, 35, 31, 0.12);
 }
 
 .app-preview figcaption {
   margin-top: 14px;
-  color: #737d79;
+  color: #737d8e;
   font-size: 13px;
   text-align: center;
 }
@@ -374,7 +374,7 @@ i[data-lucide] {
 }
 
 .coverage-list {
-  border-top: 1px solid #cfd8d4;
+  border-top: 1px solid #cfd9e8;
 }
 
 .coverage-list article {
@@ -382,7 +382,7 @@ i[data-lucide] {
   grid-template-columns: 56px 1fr;
   gap: 22px;
   padding: 30px 0;
-  border-bottom: 1px solid #cfd8d4;
+  border-bottom: 1px solid #cfd9e8;
 }
 
 .coverage-list h3 {
@@ -431,7 +431,7 @@ i[data-lucide] {
 }
 
 .safety-section {
-  background: #e8f5ef;
+  background: #edf4ff;
 }
 
 .safety-layout {
@@ -445,7 +445,7 @@ i[data-lucide] {
   margin: 0;
   padding: 0;
   list-style: none;
-  border-top: 1px solid #b9d8c9;
+  border-top: 1px solid #c9daf4;
 }
 
 .check-list li {
@@ -453,20 +453,20 @@ i[data-lucide] {
   align-items: center;
   gap: 12px;
   padding: 16px 0;
-  border-bottom: 1px solid #b9d8c9;
+  border-bottom: 1px solid #c9daf4;
   font-weight: 650;
 }
 
 .check-list svg {
   width: 20px;
   height: 20px;
-  color: var(--green);
+  color: var(--brand);
 }
 
 .download-section {
   padding: 82px 0;
   color: #fff;
-  background: #161b1a;
+  background: #111a2b;
 }
 
 .download-layout {
@@ -478,11 +478,11 @@ i[data-lucide] {
 
 .download-layout p:not(.eyebrow) {
   margin: 14px 0 0;
-  color: #bbc4c1;
+  color: #bdc8da;
 }
 
 .eyebrow.light {
-  color: #77d4c7;
+  color: #8eb6ff;
 }
 
 .download-actions {
@@ -499,11 +499,11 @@ i[data-lucide] {
 }
 
 .button-light:hover {
-  background: #eaf0ed;
+  background: #eef3fb;
 }
 
 .checksum-link {
-  color: #c8d1ce;
+  color: #c8d2e2;
   font-size: 13px;
   text-align: center;
   text-decoration: underline;
@@ -512,9 +512,9 @@ i[data-lucide] {
 
 .site-footer {
   padding: 30px 0;
-  background: #0d1110;
-  border-top: 1px solid #2f3735;
-  color: #9da8a4;
+  background: #0b1220;
+  border-top: 1px solid #29344a;
+  color: #9da9bc;
   font-size: 13px;
 }
 
@@ -526,7 +526,7 @@ i[data-lucide] {
 }
 
 .footer-brand {
-  color: #f2f5f4;
+  color: #f2f5fb;
 }
 
 .footer-links {
@@ -604,7 +604,7 @@ i[data-lucide] {
 
 .document-content p,
 .document-content li {
-  color: #4e5855;
+  color: #505a6c;
 }
 
 .document-content ul,
@@ -614,7 +614,7 @@ i[data-lucide] {
 
 .document-content code {
   padding: 2px 5px;
-  background: #e7ecea;
+  background: #e9eef7;
   border-radius: 4px;
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 0.92em;
@@ -623,7 +623,7 @@ i[data-lucide] {
 .hash-block {
   overflow-wrap: anywhere;
   padding: 16px;
-  background: #e7ecea;
+  background: #e9eef7;
   border-left: 3px solid var(--brand);
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 13px;
@@ -806,7 +806,7 @@ i[data-lucide] {
   .trust-grid > div,
   .trust-grid > div:last-child {
     min-height: 88px;
-    border: 1px solid #d4e1dd;
+    border: 1px solid #d5dfef;
   }
 
   .product-section,
