@@ -242,116 +242,6 @@ a {
   color: var(--brand-dark);
 }
 
-.hero-visual {
-  position: absolute;
-  top: 50%;
-  right: 0;
-  width: min(420px, 38vw);
-  padding: 25px;
-  color: var(--ink);
-  background: rgba(255, 255, 255, 0.82);
-  border: 1px solid #d2ddd8;
-  border-radius: 14px;
-  box-shadow: 0 24px 60px rgba(29, 55, 47, 0.12);
-  transform: translateY(-50%);
-  backdrop-filter: blur(10px);
-}
-
-.hero-visual-top {
-  display: grid;
-  grid-template-columns: 42px 1fr 22px;
-  gap: 12px;
-  align-items: center;
-}
-
-.hero-app-mark,
-.hero-app-mark img {
-  width: 42px;
-  height: 42px;
-  border-radius: 10px;
-}
-
-.hero-visual-top strong,
-.hero-visual-top span {
-  display: block;
-}
-
-.hero-visual-top strong {
-  font-size: 15px;
-}
-
-.hero-visual-top span {
-  margin-top: 3px;
-  color: var(--muted);
-  font-size: 12px;
-}
-
-.hero-visual-top > svg {
-  width: 20px;
-  height: 20px;
-  color: var(--green);
-}
-
-.hero-meter {
-  height: 7px;
-  margin: 24px 0 18px;
-  overflow: hidden;
-  background: #e4ebe8;
-  border-radius: 99px;
-}
-
-.hero-meter span {
-  display: block;
-  width: 68%;
-  height: 100%;
-  background: var(--brand);
-  border-radius: inherit;
-}
-
-.hero-visual-row,
-.hero-visual-foot {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.hero-visual-row {
-  padding: 13px 0;
-  border-bottom: 1px solid #e5ece9;
-  font-size: 14px;
-}
-
-.hero-visual-row span {
-  display: inline-flex;
-  align-items: center;
-  gap: 9px;
-}
-
-.hero-visual-row svg {
-  width: 17px;
-  height: 17px;
-  color: var(--brand);
-}
-
-.hero-visual-row b {
-  color: var(--muted);
-  font-size: 12px;
-  font-weight: 600;
-}
-
-.hero-visual-foot {
-  padding-top: 18px;
-  color: var(--muted);
-  font-size: 12px;
-}
-
-.hero-visual-foot svg {
-  width: 16px;
-  height: 16px;
-  color: var(--brand-dark);
-}
-
 .trust-strip {
   border-bottom: 1px solid var(--line);
   background: var(--paper);
@@ -719,10 +609,6 @@ a {
 }
 
 @media (max-width: 900px) {
-  .hero-visual {
-    display: none;
-  }
-
   .nav-toggle {
     display: inline-flex;
   }
