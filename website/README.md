@@ -1,10 +1,20 @@
 # Mac 空间清理官网
 
-这是一个无需后端的静态网站，包含主页、Mac 空间问题 SEO 入口页、隐私政策、使用帮助、FAQ 和可下载的 DMG。
+这是一个无需后端的静态网站，包含中文和英文两套独立 URL：主页、Mac 空间问题 SEO 入口页、隐私政策、使用帮助、FAQ 和可下载的 DMG。
+
+英文页面位于 `/en/`，中文页面位于根目录。页面之间使用 `hreflang` 互相标注，顶部语言按钮可切换对应页面。官网的多语言只负责产品介绍和帮助内容；App 的界面语言跟随 macOS 首选语言。
 
 主页已加入 canonical、Open Graph、SoftwareApplication JSON-LD；FAQ 和 Mac 空间问题入口页已加入 FAQPage JSON-LD；`sitemap.xml`、`robots.txt` 和 `llms.txt` 用于搜索引擎与生成式搜索理解网站内容。
 
 关键词、页面架构与变现方向见项目根目录 `docs/SEO工具站关键词与变现规划.md`。
+
+## English pages
+
+- Home: `/en/`
+- Storage guide: `/en/mac-storage-cleaner.html`
+- Help: `/en/support.html`
+- FAQ: `/en/faq.html`
+- Privacy: `/en/privacy.html`
 
 ## 更换正式域名
 

@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Mac Space Cleaner is a native macOS cache cleaner that shows what will be removed and keeps personal data out of one-click cleanup.">
+  <meta name="theme-color" content="#f4f7fc">
+  <link rel="canonical" href="https://mac-space-cleaner.vercel.app/en/">
+  <link rel="alternate" hreflang="zh-Hans" href="https://mac-space-cleaner.vercel.app/">
+  <link rel="alternate" hreflang="en" href="https://mac-space-cleaner.vercel.app/en/">
+  <link rel="alternate" hreflang="x-default" href="https://mac-space-cleaner.vercel.app/en/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Mac Space Cleaner">
+  <meta property="og:title" content="Mac Space Cleaner | See the cache before you clean">
+  <meta property="og:description" content="A native macOS cache cleaner that separates recommended, optional and personal data so you stay in control.">
+  <meta property="og:url" content="https://mac-space-cleaner.vercel.app/en/">
+  <meta property="og:image" content="https://mac-space-cleaner.vercel.app/assets/app-icon.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Mac Space Cleaner | See the cache before you clean">
+  <meta name="twitter:description" content="A native macOS cache cleaner that shows what will be removed and keeps personal data out of one-click cleanup.">
+  <title>Mac Space Cleaner - See the cache before you clean</title>
+  <link rel="icon" href="../assets/app-icon.png">
+  <link rel="stylesheet" href="../styles.css">
+  <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js" defer></script>
+  <script src="../script.js" defer></script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Mac Space Cleaner",
+    "alternateName": "MacSpaceCleaner",
+    "description": "A native macOS cache cleaner that shows what will be removed and keeps personal data out of one-click cleanup.",
+    "applicationCategory": "UtilitiesApplication",
+    "operatingSystem": "macOS 14 or later",
+    "softwareVersion": "1.2",
+    "url": "https://mac-space-cleaner.vercel.app/en/",
+    "downloadUrl": "https://mac-space-cleaner.vercel.app/downloads/MacSpaceCleaner-1.2.dmg",
+    "image": "https://mac-space-cleaner.vercel.app/assets/app-icon.png",
+    "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD", "url": "https://mac-space-cleaner.vercel.app/downloads/MacSpaceCleaner-1.2.dmg"},
+    "featureList": ["Local cache scanning", "Old Xcode simulator detection", "Optional cache categories", "Read-only personal data view", "Apple notarization"]
+  }
+  </script>
+</head>
+<body>
+  <header class="site-header">
+    <nav class="nav-wrap" aria-label="Main navigation">
+      <a class="brand" href="#top" aria-label="Mac Space Cleaner home"><img src="../assets/app-icon.png" alt="" width="36" height="36"><span>Mac Space Cleaner</span></a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="Open navigation"><i data-lucide="menu" aria-hidden="true"></i></button>
+      <div class="nav-links" id="nav-links">
+        <a href="#top" aria-current="page">Home</a>
+        <a href="mac-storage-cleaner.html">Storage guide</a>
+        <a href="#product">Interface</a>
+        <a href="#coverage">Coverage</a>
+        <a href="#safety">Safety</a>
+        <a href="support.html">Help</a>
+        <a href="faq.html">FAQ</a>
+        <a class="language-switch" href="../" lang="zh-Hans" hreflang="zh-Hans">中文</a>
+        <a class="nav-download" href="../downloads/MacSpaceCleaner-1.2.dmg" download><i data-lucide="download" aria-hidden="true"></i>Download</a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="top">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-inner">
+        <p class="eyebrow">See the cache before you clean</p>
+        <h1 id="hero-title">Mac Space Cleaner</h1>
+        <p class="hero-lead">Find common app caches, developer-tool caches and old Xcode simulators. Personal data always stays under your control.</p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="../downloads/MacSpaceCleaner-1.2.dmg" download><i data-lucide="download" aria-hidden="true"></i>Download v1.2</a>
+          <a class="button button-secondary" href="mac-storage-cleaner.html">Mac running out of space?<i data-lucide="arrow-right" aria-hidden="true"></i></a>
+        </div>
+        <div class="hero-meta" aria-label="Version details">
+          <span><i data-lucide="badge-check" aria-hidden="true"></i>Apple notarized</span>
+          <span><i data-lucide="monitor" aria-hidden="true"></i>macOS 14+</span>
+          <span><i data-lucide="cpu" aria-hidden="true"></i>Apple Silicon and Intel</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="trust-strip" aria-label="Product principles">
+      <div class="section-inner trust-grid">
+        <div><i data-lucide="eye" aria-hidden="true"></i><strong>See the details</strong><span>Review paths and sizes before cleaning</span></div>
+        <div><i data-lucide="shield-check" aria-hidden="true"></i><strong>Clear categories</strong><span>Recommended and optional items stay separate</span></div>
+        <div><i data-lucide="hard-drive" aria-hidden="true"></i><strong>Local by design</strong><span>Scan results are never uploaded</span></div>
+      </div>
+    </section>
+
+    <section class="product-section" id="product" aria-labelledby="product-title">
+      <div class="section-inner">
+        <div class="section-heading">
+          <p class="eyebrow">The interface</p>
+          <h2 id="product-title">Every storage category has a clear safety boundary</h2>
+          <p>Recommended caches, optional caches, old simulators and personal data are shown separately. You decide what happens after the scan.</p>
+        </div>
+        <figure class="app-preview">
+          <img src="../assets/app-window.png" alt="Mac Space Cleaner interface showing recommended cleanup, optional cleanup, old simulators and personal data sections" width="1560" height="1464">
+          <figcaption>The app follows your preferred macOS language. This screenshot is shown in Simplified Chinese; results vary by installed software and cache contents.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="coverage-section" id="coverage" aria-labelledby="coverage-title">
+      <div class="section-inner">
+        <div class="section-heading compact"><p class="eyebrow">What it finds</p><h2 id="coverage-title">Everyday apps and developer tools</h2></div>
+        <div class="coverage-list">
+          <article><div class="feature-icon green"><i data-lucide="package-check" aria-hidden="true"></i></div><div><h3>Recommended cleanup</h3><p>Browser component caches, update caches, logs and regenerable content from tools such as npm, pnpm, bun, Homebrew and Playwright.</p></div></article>
+          <article><div class="feature-icon orange"><i data-lucide="sliders-horizontal" aria-hidden="true"></i></div><div><h3>Optional cleanup</h3><p>Other app caches, offline webpages, speech models, dynamic wallpapers and temporary resources from apps such as WeChat and WPS.</p></div></article>
+          <article><div class="feature-icon blue"><i data-lucide="smartphone" aria-hidden="true"></i></div><div><h3>Xcode simulators</h3><p>Finds old runtimes while keeping the newest version for each platform. Regenerable dyld shared caches can also be removed.</p></div></article>
+          <article><div class="feature-icon gray"><i data-lucide="folder-search" aria-hidden="true"></i></div><div><h3>Personal data is view-only</h3><p>Downloads, iCloud Drive, WeChat chat data and WPS backups are shown for reference and never included in one-click cleanup.</p></div></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="safety-section" id="safety" aria-labelledby="safety-title">
+      <div class="section-inner safety-layout">
+        <div><p class="eyebrow">Safety boundaries</p><h2 id="safety-title">Only known cache paths are eligible</h2><p class="section-copy">Before deleting anything, the app checks its allowlist, the directory type and symbolic links again. Paths that do not pass these checks are skipped.</p></div>
+        <ul class="check-list">
+          <li><i data-lucide="check" aria-hidden="true"></i><span>Confirmation before cleanup</span></li>
+          <li><i data-lucide="check" aria-hidden="true"></i><span>Optional items off by default</span></li>
+          <li><i data-lucide="check" aria-hidden="true"></i><span>No file contents read or uploaded</span></li>
+          <li><i data-lucide="check" aria-hidden="true"></i><span>Developer ID signed and Apple notarized</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="download-section" id="download" aria-labelledby="download-title">
+      <div class="section-inner download-layout">
+        <div><p class="eyebrow light">Current version 1.2</p><h2 id="download-title">Give your Mac room to breathe</h2><p>Download the DMG and drag the app into Applications. File size is approximately 1.2 MB.</p></div>
+        <div class="download-actions"><a class="button button-light" href="../downloads/MacSpaceCleaner-1.2.dmg" download><i data-lucide="download" aria-hidden="true"></i>Download for Mac</a><a class="checksum-link" href="../downloads/MacSpaceCleaner-1.2.dmg.sha256" download>SHA-256 checksum</a></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer"><div class="section-inner footer-layout"><div class="footer-brand"><img src="../assets/app-icon.png" alt="" width="30" height="30"><span>Mac Space Cleaner</span></div><div class="footer-links"><a href="privacy.html">Privacy</a><a href="support.html">Help</a><a href="faq.html">FAQ</a><a href="../downloads/MacSpaceCleaner-1.2.dmg.sha256">Checksum</a></div><p>© <span data-year></span> Mac Space Cleaner</p></div></footer>
+</body>
+</html>

@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Mac running out of storage? Learn how to safely review System Data, app caches, old Xcode simulators and personal files before deleting anything.">
+  <meta name="theme-color" content="#f4f7fc">
+  <link rel="canonical" href="https://mac-space-cleaner.vercel.app/en/mac-storage-cleaner.html">
+  <link rel="alternate" hreflang="zh-Hans" href="https://mac-space-cleaner.vercel.app/mac-storage-cleaner.html">
+  <link rel="alternate" hreflang="en" href="https://mac-space-cleaner.vercel.app/en/mac-storage-cleaner.html">
+  <link rel="alternate" hreflang="x-default" href="https://mac-space-cleaner.vercel.app/en/mac-storage-cleaner.html">
+  <meta property="og:title" content="Mac running out of storage? A safe cleanup guide">
+  <meta property="og:description" content="Find out what is using your disk before you delete it. Review System Data, caches and old Xcode simulators safely.">
+  <meta property="og:url" content="https://mac-space-cleaner.vercel.app/en/mac-storage-cleaner.html">
+  <meta property="og:image" content="https://mac-space-cleaner.vercel.app/assets/app-icon.png">
+  <title>Mac Running Out of Storage? A Safe Cleanup Guide | Mac Space Cleaner</title>
+  <link rel="icon" href="../assets/app-icon.png">
+  <link rel="stylesheet" href="../styles.css">
+  <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js" defer></script>
+  <script src="../script.js" defer></script>
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"FAQPage",
+    "mainEntity":[
+      {"@type":"Question","name":"What should I delete first when my Mac is running out of storage?","acceptedAnswer":{"@type":"Answer","text":"Check what is using the space first. Start with regenerable app caches, logs, old Xcode simulators and developer caches. Review and back up personal files such as Downloads, iCloud Drive and chat data before deleting them."}},
+      {"@type":"Question","name":"Can I delete Mac System Data directly?","acceptedAnswer":{"@type":"Answer","text":"No. System Data is a storage category, not one folder. Identify the actual source, such as caches, logs, iPhone backups, virtual machines or local snapshots, and review each item separately."}},
+      {"@type":"Question","name":"Can a website scan my Mac?","acceptedAnswer":{"@type":"Answer","text":"No. A webpage cannot directly inspect your local disk. A native app running on your Mac is required for a local scan."}}
+    ]
+  }
+  </script>
+</head>
+<body>
+  <header class="site-header">
+    <nav class="nav-wrap" aria-label="Main navigation">
+      <a class="brand" href="index.html" aria-label="Mac Space Cleaner home"><img src="../assets/app-icon.png" alt="" width="36" height="36"><span>Mac Space Cleaner</span></a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="Open navigation"><i data-lucide="menu" aria-hidden="true"></i></button>
+      <div class="nav-links" id="nav-links">
+        <a href="index.html">Home</a><a href="mac-storage-cleaner.html" aria-current="page">Storage guide</a><a href="index.html#product">Interface</a><a href="index.html#coverage">Coverage</a><a href="index.html#safety">Safety</a><a href="support.html">Help</a><a href="faq.html">FAQ</a>
+        <a class="language-switch" href="../mac-storage-cleaner.html" lang="zh-Hans" hreflang="zh-Hans">中文</a>
+        <a class="nav-download" href="../downloads/MacSpaceCleaner-1.2.dmg" download><i data-lucide="download" aria-hidden="true"></i>Download</a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="page-main">
+    <section class="page-hero seo-hero"><div class="section-inner"><p class="eyebrow">Mac storage</p><h1>Mac running out of storage? Find out what is taking the space first</h1><p>Do not start by deleting “System Data.” Separate caches, logs, old Xcode simulators, developer caches and personal files before deciding what is safe to remove.</p><div class="hero-actions"><a class="button button-primary" href="../downloads/MacSpaceCleaner-1.2.dmg" download><i data-lucide="download" aria-hidden="true"></i>Download Mac Space Cleaner</a><a class="button button-secondary" href="#diagnose">Start the checklist</a></div></div></section>
+
+    <section class="seo-section" id="diagnose" aria-labelledby="diagnose-title">
+      <div class="section-inner seo-narrow">
+        <div class="section-heading"><p class="eyebrow">Quick checklist</p><h2 id="diagnose-title">What kind of storage problem do you have?</h2><p>Choose the closest match for practical next steps. This webpage cannot read files on your Mac.</p></div>
+        <form class="diagnostic-card" data-diagnostic>
+          <fieldset><legend>Choose a problem</legend>
+            <label><input type="radio" name="storage-problem" value="full" checked><span>My disk is almost full</span></label>
+            <label><input type="radio" name="storage-problem" value="system"><span>System Data is very large</span></label>
+            <label><input type="radio" name="storage-problem" value="xcode"><span>Xcode simulators use too much space</span></label>
+            <label><input type="radio" name="storage-problem" value="cache"><span>I want to clear app caches</span></label>
+          </fieldset>
+          <button class="button button-primary" type="submit">Show recommendations</button>
+          <div class="diagnostic-result" data-diagnostic-result role="status" aria-live="polite"></div>
+        </form>
+      </div>
+    </section>
+
+    <section class="seo-section seo-section-alt" aria-labelledby="sources-title"><div class="section-inner seo-narrow"><div class="section-heading"><p class="eyebrow">Common sources</p><h2 id="sources-title">What usually takes up Mac storage?</h2></div><div class="seo-card-grid">
+      <article class="seo-card"><i data-lucide="database" aria-hidden="true"></i><h3>App caches and logs</h3><p>Browsers, chat apps and developer tools create temporary data that can be regenerated. Check its path and size first.</p></article>
+      <article class="seo-card"><i data-lucide="layers-3" aria-hidden="true"></i><h3>System Data</h3><p>System Data is a category, not a removable folder. It may include caches, backups, virtual machines and local snapshots.</p></article>
+      <article class="seo-card"><i data-lucide="smartphone" aria-hidden="true"></i><h3>Old Xcode simulators</h3><p>Developer Macs often have several old runtimes. Keep the newest version you need for each platform, then review older versions and shared caches.</p></article>
+      <article class="seo-card"><i data-lucide="folder-open" aria-hidden="true"></i><h3>Personal files</h3><p>Downloads, iCloud files, photos and chat data are not caches. Back them up and confirm their purpose before moving or deleting them.</p></article>
+    </div></div></section>
+
+    <section class="seo-section" aria-labelledby="app-title"><div class="section-inner seo-narrow seo-callout"><div><p class="eyebrow">Need a local scan?</p><h2 id="app-title">See what Mac Space Cleaner finds first</h2><p>A website cannot inspect your Mac. The native app scans locally, then lets you review each item, path and size before cleaning. Optional items are off by default.</p></div><a class="button button-primary" href="../downloads/MacSpaceCleaner-1.2.dmg" download>Download for free</a></div></section>
+
+    <section class="seo-section seo-section-alt" aria-labelledby="faq-title"><div class="section-inner seo-narrow seo-faq"><div class="section-heading"><p class="eyebrow">Common questions</p><h2 id="faq-title">What should I know before cleaning a Mac?</h2></div>
+      <details><summary>What should I delete first when my Mac is running out of storage?</summary><p>Check the source first, then start with regenerable caches, logs, old Xcode simulators and developer caches. Review personal files separately.</p></details>
+      <details><summary>Can I delete System Data directly?</summary><p>No. System Data is a category rather than one folder. Find the actual source and review each item individually.</p></details>
+      <details><summary>Can a website scan my Mac?</summary><p>No. A browser page cannot directly access your local disk. Use a native app running on your Mac for a local scan.</p></details>
+    </div></section>
+  </main>
+
+  <footer class="site-footer"><div class="section-inner footer-layout"><div class="footer-brand"><img src="../assets/app-icon.png" alt="" width="30" height="30"><span>Mac Space Cleaner</span></div><div class="footer-links"><a href="index.html">Home</a><a href="support.html">Help</a><a href="faq.html">FAQ</a><a href="privacy.html">Privacy</a></div><p>© <span data-year></span> Mac Space Cleaner</p></div></footer>
+</body>
+</html>

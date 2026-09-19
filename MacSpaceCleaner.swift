@@ -2,6 +2,16 @@ import SwiftUI
 import Foundation
 import AppKit
 
+enum AppLanguage {
+    static var isChinese: Bool {
+        Locale.preferredLanguages.first?.lowercased().hasPrefix("zh") == true
+    }
+
+    static func text(_ chinese: String, _ english: String) -> String {
+        isChinese ? chinese : english
+    }
+}
+
 struct CacheItem: Identifiable, Hashable {
     let id: String
     let name: String
@@ -191,7 +201,7 @@ final class CleanerModel: ObservableObject {
     @Published var totalBytes: Int64 = 1
     @Published var isScanning = false
     @Published var isCleaning = false
-    @Published var status = "准备扫描"
+    @Published var status = AppLanguage.text("准备扫描", "Ready to scan")
     @Published var runtimeError: String?
     @Published var scanRevision = 0
 
@@ -226,7 +236,7 @@ final class CleanerModel: ObservableObject {
     func scan() {
         guard !isScanning && !isCleaning else { return }
         isScanning = true
-        status = "正在扫描安全缓存和模拟器…"
+        status = AppLanguage.text("正在扫描安全缓存和模拟器…", "Scanning safe caches and simulators…")
 
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             guard let self else { return }
@@ -241,7 +251,7 @@ final class CleanerModel: ObservableObject {
                 self.freeBytes = result.freeBytes
                 self.totalBytes = max(result.totalBytes, 1)
                 self.runtimeError = result.runtimeError
-                self.status = "扫描完成"
+                self.status = AppLanguage.text("扫描完成", "Scan complete")
                 self.isScanning = false
                 self.scanRevision += 1
             }
@@ -255,7 +265,7 @@ final class CleanerModel: ObservableObject {
         let shouldCleanSharedCache = cleanSharedCache && sharedCacheBytes > 0
 
         isCleaning = true
-        status = "正在清理，请不要退出应用…"
+        status = AppLanguage.text("正在清理，请不要退出应用…", "Cleaning. Please keep the app open…")
 
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             guard let self else { return }
@@ -267,13 +277,13 @@ final class CleanerModel: ObservableObject {
                 do {
                     if fileManager.fileExists(atPath: item.path) {
                         guard self.isSafeCacheDeletion(item.path, approvedPaths: approvedCachePaths) else {
-                            messages.append("已跳过不安全的清理路径：\(item.name)")
+                            messages.append(AppLanguage.text("已跳过不安全的清理路径：\(item.name)", "Skipped an unsafe cleanup path: \(item.name)"))
                             continue
                         }
                         try fileManager.removeItem(atPath: item.path)
                     }
                 } catch {
-                    messages.append("无法清理 \(item.name)：\(error.localizedDescription)")
+                    messages.append(AppLanguage.text("无法清理 \(item.name)：\(error.localizedDescription)", "Could not clean \(item.name): \(error.localizedDescription)"))
                 }
             }
 
@@ -284,7 +294,7 @@ final class CleanerModel: ObservableObject {
                     xcodeEnvironment: true
                 )
                 if result.status != 0 {
-                    messages.append("无法删除 \(runtime.name)：\(result.output)")
+                    messages.append(AppLanguage.text("无法删除 \(runtime.name)：\(result.output)", "Could not remove \(runtime.name): \(result.output)"))
                 }
             }
 
@@ -295,13 +305,13 @@ final class CleanerModel: ObservableObject {
                     xcodeEnvironment: true
                 )
                 if result.status != 0 {
-                    messages.append("无法清理 Xcode 共享缓存：\(result.output)")
+                    messages.append(AppLanguage.text("无法清理 Xcode 共享缓存：\(result.output)", "Could not clean the Xcode shared cache: \(result.output)"))
                 }
             }
 
             DispatchQueue.main.async {
                 self.isCleaning = false
-                self.status = messages.isEmpty ? "清理完成，正在重新扫描…" : messages.joined(separator: "\n")
+                self.status = messages.isEmpty ? AppLanguage.text("清理完成，正在重新扫描…", "Cleanup complete. Scanning again…") : messages.joined(separator: "\n")
                 self.scan()
             }
         }
@@ -385,48 +395,48 @@ final class CleanerModel: ObservableObject {
         let always: Int64 = 1
         let fiveMB: Int64 = 5 * 1024 * 1024
         var targets: [CacheTarget] = [
-            CacheTarget(name: "Codex 运行时", detail: "可按需重新下载", path: "\(home)/.cache/codex-runtimes", recommended: true, minimumBytes: always),
-            CacheTarget(name: "npm 软件包缓存", detail: "不影响已安装项目", path: "\(home)/.npm/_cacache", recommended: true, minimumBytes: always),
-            CacheTarget(name: "npm 临时执行缓存", detail: "不影响项目源码", path: "\(home)/.npm/_npx", recommended: true, minimumBytes: always),
-            CacheTarget(name: "bun 软件包缓存", detail: "可按需重新下载", path: "\(home)/.bun/install/cache", recommended: true, minimumBytes: always),
-            CacheTarget(name: "旧 pnpm 软件包仓库", detail: "旧版本软件包可重新下载", path: "\(home)/Library/pnpm/store/v11", recommended: true, minimumBytes: always),
-            CacheTarget(name: "Homebrew 下载缓存", detail: "不影响已安装软件", path: "\(home)/Library/Caches/Homebrew", recommended: true, minimumBytes: always),
-            CacheTarget(name: "Google 应用缓存", detail: "不含书签和密码", path: "\(home)/Library/Caches/Google", recommended: true, minimumBytes: always),
-            CacheTarget(name: "Codex 应用缓存", detail: "不含任务和项目文件", path: "\(home)/Library/Caches/Codex", recommended: true, minimumBytes: always),
-            CacheTarget(name: "pnpm 下载缓存", detail: "可按需重新下载", path: "\(home)/Library/Caches/pnpm", recommended: true, minimumBytes: always),
-            CacheTarget(name: "微信开发者工具缓存", detail: "不含小程序项目源码", path: "\(home)/Library/Caches/微信开发者工具", recommended: true, minimumBytes: always),
-            CacheTarget(name: "Node.js 编译缓存", detail: "可按需重新生成", path: "\(home)/Library/Caches/node-gyp", recommended: true, minimumBytes: always),
-            CacheTarget(name: "Playwright 浏览器缓存", detail: "后续使用时可重新下载", path: "\(home)/Library/Caches/ms-playwright", recommended: true, minimumBytes: always),
-            CacheTarget(name: "GitHub Desktop 更新缓存", detail: "不影响本地仓库", path: "\(home)/Library/Caches/com.github.GitHubClient.ShipIt", recommended: true, minimumBytes: always),
-            CacheTarget(name: "Cursor 更新缓存", detail: "不影响项目和设置", path: "\(home)/Library/Caches/com.todesktop.230313mzl4w4u92.ShipIt", recommended: true, minimumBytes: always),
-            CacheTarget(name: "Chrome 更新缓存", detail: "不含浏览数据", path: "\(home)/Library/Application Support/Google/GoogleUpdater/crx_cache", recommended: true, minimumBytes: always),
-            CacheTarget(name: "Chrome 组件缓存", detail: "不含书签和登录信息", path: "\(home)/Library/Application Support/Google/Chrome/component_crx_cache", recommended: true, minimumBytes: always),
-            CacheTarget(name: "Chrome 扩展安装缓存", detail: "不会删除已安装扩展", path: "\(home)/Library/Application Support/Google/Chrome/extensions_crx_cache", recommended: true, minimumBytes: always),
-            CacheTarget(name: "Chrome 本地 AI 模型", detail: "需要时会自动重新下载", path: "\(home)/Library/Application Support/Google/Chrome/OptGuideOnDeviceModel", recommended: true, minimumBytes: always),
-            CacheTarget(name: "Cursor 页面缓存", detail: "不影响设置和项目", path: "\(home)/Library/Application Support/Cursor/Cache", recommended: true, minimumBytes: always),
-            CacheTarget(name: "Cursor 版本缓存", detail: "不影响设置和项目", path: "\(home)/Library/Application Support/Cursor/CachedData", recommended: true, minimumBytes: always),
-            CacheTarget(name: "Cursor 日志", detail: "仅诊断日志", path: "\(home)/Library/Application Support/Cursor/logs", recommended: true, minimumBytes: always),
-            CacheTarget(name: "飞书日志", detail: "仅诊断日志", path: "\(home)/Library/Application Support/LarkShell/sdk_storage/log", recommended: true, minimumBytes: always),
-            CacheTarget(name: "飞书代码缓存", detail: "清理后会自动重建", path: "\(home)/Library/Application Support/LarkShell/CodeCache", recommended: true, minimumBytes: always),
-            CacheTarget(name: "飞书图形缓存", detail: "清理后会自动重建", path: "\(home)/Library/Application Support/LarkShell/GrShaderCache", recommended: true, minimumBytes: always),
-            CacheTarget(name: "Obsidian 页面缓存", detail: "不含笔记库", path: "\(home)/Library/Application Support/obsidian/Cache", recommended: true, minimumBytes: always),
-            CacheTarget(name: "Obsidian 代码缓存", detail: "不含笔记库", path: "\(home)/Library/Application Support/obsidian/Code Cache", recommended: true, minimumBytes: always),
-            CacheTarget(name: "CodeBuddy 缓存", detail: "不含项目源码", path: "\(home)/Library/Application Support/CodeBuddy/CachedData", recommended: true, minimumBytes: always),
-            CacheTarget(name: "CodeBuddy CN 缓存", detail: "不含项目源码", path: "\(home)/Library/Application Support/CodeBuddy CN/CachedData", recommended: true, minimumBytes: always),
-            CacheTarget(name: "CodeBuddy CN 页面缓存", detail: "不含项目源码", path: "\(home)/Library/Application Support/CodeBuddy CN/Cache", recommended: true, minimumBytes: always),
-            CacheTarget(name: "CodeBuddy CN 日志", detail: "仅诊断日志", path: "\(home)/Library/Application Support/CodeBuddy CN/logs", recommended: true, minimumBytes: always),
-            CacheTarget(name: "CodeBuddy Extension 日志", detail: "仅诊断日志", path: "\(home)/Library/Application Support/CodeBuddyExtension/Logs", recommended: true, minimumBytes: always),
+            CacheTarget(name: AppLanguage.text("Codex 运行时", "Codex runtimes"), detail: AppLanguage.text("可按需重新下载", "Downloaded again when needed"), path: "\(home)/.cache/codex-runtimes", recommended: true, minimumBytes: always),
+            CacheTarget(name: AppLanguage.text("npm 软件包缓存", "npm package cache"), detail: AppLanguage.text("不影响已安装项目", "Does not affect installed projects"), path: "\(home)/.npm/_cacache", recommended: true, minimumBytes: always),
+            CacheTarget(name: AppLanguage.text("npm 临时执行缓存", "npm temporary execution cache"), detail: AppLanguage.text("不影响项目源码", "Does not affect project source"), path: "\(home)/.npm/_npx", recommended: true, minimumBytes: always),
+            CacheTarget(name: AppLanguage.text("bun 软件包缓存", "bun package cache"), detail: AppLanguage.text("可按需重新下载", "Downloaded again when needed"), path: "\(home)/.bun/install/cache", recommended: true, minimumBytes: always),
+            CacheTarget(name: AppLanguage.text("旧 pnpm 软件包仓库", "Old pnpm package store"), detail: AppLanguage.text("旧版本软件包可重新下载", "Old packages can be downloaded again"), path: "\(home)/Library/pnpm/store/v11", recommended: true, minimumBytes: always),
+            CacheTarget(name: AppLanguage.text("Homebrew 下载缓存", "Homebrew download cache"), detail: AppLanguage.text("不影响已安装软件", "Does not affect installed software"), path: "\(home)/Library/Caches/Homebrew", recommended: true, minimumBytes: always),
+            CacheTarget(name: AppLanguage.text("Google 应用缓存", "Google app cache"), detail: AppLanguage.text("不含书签和密码", "Does not include bookmarks or passwords"), path: "\(home)/Library/Caches/Google", recommended: true, minimumBytes: always),
+            CacheTarget(name: AppLanguage.text("Codex 应用缓存", "Codex app cache"), detail: AppLanguage.text("不含任务和项目文件", "Does not include tasks or project files"), path: "\(home)/Library/Caches/Codex", recommended: true, minimumBytes: always),
+            CacheTarget(name: AppLanguage.text("pnpm 下载缓存", "pnpm download cache"), detail: AppLanguage.text("可按需重新下载", "Downloaded again when needed"), path: "\(home)/Library/Caches/pnpm", recommended: true, minimumBytes: always),
+            CacheTarget(name: AppLanguage.text("微信开发者工具缓存", "WeChat DevTools cache"), detail: AppLanguage.text("不含小程序项目源码", "Does not include Mini Program source"), path: "\(home)/Library/Caches/微信开发者工具", recommended: true, minimumBytes: always),
+            CacheTarget(name: AppLanguage.text("Node.js 编译缓存", "Node.js build cache"), detail: AppLanguage.text("可按需重新生成", "Recreated when needed"), path: "\(home)/Library/Caches/node-gyp", recommended: true, minimumBytes: always),
+            CacheTarget(name: AppLanguage.text("Playwright 浏览器缓存", "Playwright browser cache"), detail: AppLanguage.text("后续使用时可重新下载", "Downloaded again on future use"), path: "\(home)/Library/Caches/ms-playwright", recommended: true, minimumBytes: always),
+            CacheTarget(name: AppLanguage.text("GitHub Desktop 更新缓存", "GitHub Desktop update cache"), detail: AppLanguage.text("不影响本地仓库", "Does not affect local repositories"), path: "\(home)/Library/Caches/com.github.GitHubClient.ShipIt", recommended: true, minimumBytes: always),
+            CacheTarget(name: AppLanguage.text("Cursor 更新缓存", "Cursor update cache"), detail: AppLanguage.text("不影响项目和设置", "Does not affect projects or settings"), path: "\(home)/Library/Caches/com.todesktop.230313mzl4w4u92.ShipIt", recommended: true, minimumBytes: always),
+            CacheTarget(name: AppLanguage.text("Chrome 更新缓存", "Chrome update cache"), detail: AppLanguage.text("不含浏览数据", "Does not include browsing data"), path: "\(home)/Library/Application Support/Google/GoogleUpdater/crx_cache", recommended: true, minimumBytes: always),
+            CacheTarget(name: AppLanguage.text("Chrome 组件缓存", "Chrome component cache"), detail: AppLanguage.text("不含书签和登录信息", "Does not include bookmarks or sign-in data"), path: "\(home)/Library/Application Support/Google/Chrome/component_crx_cache", recommended: true, minimumBytes: always),
+            CacheTarget(name: AppLanguage.text("Chrome 扩展安装缓存", "Chrome extension install cache"), detail: AppLanguage.text("不会删除已安装扩展", "Does not remove installed extensions"), path: "\(home)/Library/Application Support/Google/Chrome/extensions_crx_cache", recommended: true, minimumBytes: always),
+            CacheTarget(name: AppLanguage.text("Chrome 本地 AI 模型", "Chrome on-device AI model"), detail: AppLanguage.text("需要时会自动重新下载", "Downloaded automatically when needed"), path: "\(home)/Library/Application Support/Google/Chrome/OptGuideOnDeviceModel", recommended: true, minimumBytes: always),
+            CacheTarget(name: AppLanguage.text("Cursor 页面缓存", "Cursor page cache"), detail: AppLanguage.text("不影响设置和项目", "Does not affect settings or projects"), path: "\(home)/Library/Application Support/Cursor/Cache", recommended: true, minimumBytes: always),
+            CacheTarget(name: AppLanguage.text("Cursor 版本缓存", "Cursor version cache"), detail: AppLanguage.text("不影响设置和项目", "Does not affect settings or projects"), path: "\(home)/Library/Application Support/Cursor/CachedData", recommended: true, minimumBytes: always),
+            CacheTarget(name: AppLanguage.text("Cursor 日志", "Cursor logs"), detail: AppLanguage.text("仅诊断日志", "Diagnostic logs only"), path: "\(home)/Library/Application Support/Cursor/logs", recommended: true, minimumBytes: always),
+            CacheTarget(name: AppLanguage.text("飞书日志", "Lark logs"), detail: AppLanguage.text("仅诊断日志", "Diagnostic logs only"), path: "\(home)/Library/Application Support/LarkShell/sdk_storage/log", recommended: true, minimumBytes: always),
+            CacheTarget(name: AppLanguage.text("飞书代码缓存", "Lark code cache"), detail: AppLanguage.text("清理后会自动重建", "Rebuilt automatically after cleanup"), path: "\(home)/Library/Application Support/LarkShell/CodeCache", recommended: true, minimumBytes: always),
+            CacheTarget(name: AppLanguage.text("飞书图形缓存", "Lark graphics cache"), detail: AppLanguage.text("清理后会自动重建", "Rebuilt automatically after cleanup"), path: "\(home)/Library/Application Support/LarkShell/GrShaderCache", recommended: true, minimumBytes: always),
+            CacheTarget(name: AppLanguage.text("Obsidian 页面缓存", "Obsidian page cache"), detail: AppLanguage.text("不含笔记库", "Does not include vaults"), path: "\(home)/Library/Application Support/obsidian/Cache", recommended: true, minimumBytes: always),
+            CacheTarget(name: AppLanguage.text("Obsidian 代码缓存", "Obsidian code cache"), detail: AppLanguage.text("不含笔记库", "Does not include vaults"), path: "\(home)/Library/Application Support/obsidian/Code Cache", recommended: true, minimumBytes: always),
+            CacheTarget(name: AppLanguage.text("CodeBuddy 缓存", "CodeBuddy cache"), detail: AppLanguage.text("不含项目源码", "Does not include project source"), path: "\(home)/Library/Application Support/CodeBuddy/CachedData", recommended: true, minimumBytes: always),
+            CacheTarget(name: AppLanguage.text("CodeBuddy CN 缓存", "CodeBuddy CN cache"), detail: AppLanguage.text("不含项目源码", "Does not include project source"), path: "\(home)/Library/Application Support/CodeBuddy CN/CachedData", recommended: true, minimumBytes: always),
+            CacheTarget(name: AppLanguage.text("CodeBuddy CN 页面缓存", "CodeBuddy CN page cache"), detail: AppLanguage.text("不含项目源码", "Does not include project source"), path: "\(home)/Library/Application Support/CodeBuddy CN/Cache", recommended: true, minimumBytes: always),
+            CacheTarget(name: AppLanguage.text("CodeBuddy CN 日志", "CodeBuddy CN logs"), detail: AppLanguage.text("仅诊断日志", "Diagnostic logs only"), path: "\(home)/Library/Application Support/CodeBuddy CN/logs", recommended: true, minimumBytes: always),
+            CacheTarget(name: AppLanguage.text("CodeBuddy Extension 日志", "CodeBuddy Extension logs"), detail: AppLanguage.text("仅诊断日志", "Diagnostic logs only"), path: "\(home)/Library/Application Support/CodeBuddyExtension/Logs", recommended: true, minimumBytes: always),
 
-            CacheTarget(name: "Chrome 网站离线缓存", detail: "可选；网站离线内容需要重新下载", path: "\(home)/Library/Application Support/Google/Chrome/Default/Service Worker/CacheStorage", recommended: false, minimumBytes: always),
-            CacheTarget(name: "Chrome 语音识别模型", detail: "可选；语音功能会重新下载模型", path: "\(home)/Library/Application Support/Google/Chrome/SODA", recommended: false, minimumBytes: always),
-            CacheTarget(name: "Chrome 语音语言包", detail: "可选；语音功能会重新下载语言包", path: "\(home)/Library/Application Support/Google/Chrome/SODALanguagePacks", recommended: false, minimumBytes: always),
-            CacheTarget(name: "动态壁纸资源", detail: "可选；使用时可能重新下载", path: "\(home)/Library/Application Support/com.apple.wallpaper/aerials", recommended: false, minimumBytes: always),
-            CacheTarget(name: "WPS PDF 预览缓存", detail: "可选；PDF 首次打开会重新生成", path: "\(home)/Library/Containers/com.kingsoft.wpsoffice.mac/Data/.kingsoft/PDF/Cache", recommended: false, minimumBytes: always),
-            CacheTarget(name: "WPS 插件资源", detail: "可选；使用相关功能时会重新下载", path: "\(home)/Library/Containers/com.kingsoft.wpsoffice.mac/Data/.kingsoft/wps/addons/pool", recommended: false, minimumBytes: always),
-            CacheTarget(name: "WPS 在线字体缓存", detail: "可选；使用字体时会重新下载", path: "\(home)/Library/Containers/com.kingsoft.wpsoffice.mac/Data/.kingsoft/office6/data/fonts/online_ext_font_cache", recommended: false, minimumBytes: always),
-            CacheTarget(name: "微信日志", detail: "可选；不含聊天消息和附件", path: "\(home)/Library/Containers/com.tencent.xinWeChat/Data/Documents/app_data/log", recommended: false, minimumBytes: always),
-            CacheTarget(name: "微信文件临时缓存", detail: "可选；不含聊天消息数据库", path: "\(home)/Library/Containers/com.tencent.xinWeChat/Data/Documents/app_data/radium/xfile/cache", recommended: false, minimumBytes: always),
-            CacheTarget(name: "微信页面缓存", detail: "可选；页面内容会重新加载", path: "\(home)/Library/Containers/com.tencent.xinWeChat/Data/Documents/app_data/radium/cache", recommended: false, minimumBytes: always)
+            CacheTarget(name: AppLanguage.text("Chrome 网站离线缓存", "Chrome offline website cache"), detail: AppLanguage.text("可选；网站离线内容需要重新下载", "Optional; offline website content must be downloaded again"), path: "\(home)/Library/Application Support/Google/Chrome/Default/Service Worker/CacheStorage", recommended: false, minimumBytes: always),
+            CacheTarget(name: AppLanguage.text("Chrome 语音识别模型", "Chrome speech recognition model"), detail: AppLanguage.text("可选；语音功能会重新下载模型", "Optional; speech features will download the model again"), path: "\(home)/Library/Application Support/Google/Chrome/SODA", recommended: false, minimumBytes: always),
+            CacheTarget(name: AppLanguage.text("Chrome 语音语言包", "Chrome speech language packs"), detail: AppLanguage.text("可选；语音功能会重新下载语言包", "Optional; speech features will download language packs again"), path: "\(home)/Library/Application Support/Google/Chrome/SODALanguagePacks", recommended: false, minimumBytes: always),
+            CacheTarget(name: AppLanguage.text("动态壁纸资源", "Dynamic wallpaper resources"), detail: AppLanguage.text("可选；使用时可能重新下载", "Optional; may be downloaded again when used"), path: "\(home)/Library/Application Support/com.apple.wallpaper/aerials", recommended: false, minimumBytes: always),
+            CacheTarget(name: AppLanguage.text("WPS PDF 预览缓存", "WPS PDF preview cache"), detail: AppLanguage.text("可选；PDF 首次打开会重新生成", "Optional; regenerated when a PDF is first opened"), path: "\(home)/Library/Containers/com.kingsoft.wpsoffice.mac/Data/.kingsoft/PDF/Cache", recommended: false, minimumBytes: always),
+            CacheTarget(name: AppLanguage.text("WPS 插件资源", "WPS add-on resources"), detail: AppLanguage.text("可选；使用相关功能时会重新下载", "Optional; downloaded again when the feature is used"), path: "\(home)/Library/Containers/com.kingsoft.wpsoffice.mac/Data/.kingsoft/wps/addons/pool", recommended: false, minimumBytes: always),
+            CacheTarget(name: AppLanguage.text("WPS 在线字体缓存", "WPS online font cache"), detail: AppLanguage.text("可选；使用字体时会重新下载", "Optional; fonts will be downloaded again when used"), path: "\(home)/Library/Containers/com.kingsoft.wpsoffice.mac/Data/.kingsoft/office6/data/fonts/online_ext_font_cache", recommended: false, minimumBytes: always),
+            CacheTarget(name: AppLanguage.text("微信日志", "WeChat logs"), detail: AppLanguage.text("可选；不含聊天消息和附件", "Optional; does not include messages or attachments"), path: "\(home)/Library/Containers/com.tencent.xinWeChat/Data/Documents/app_data/log", recommended: false, minimumBytes: always),
+            CacheTarget(name: AppLanguage.text("微信文件临时缓存", "WeChat temporary file cache"), detail: AppLanguage.text("可选；不含聊天消息数据库", "Optional; does not include the message database"), path: "\(home)/Library/Containers/com.tencent.xinWeChat/Data/Documents/app_data/radium/xfile/cache", recommended: false, minimumBytes: always),
+            CacheTarget(name: AppLanguage.text("微信页面缓存", "WeChat page cache"), detail: AppLanguage.text("可选；页面内容会重新加载", "Optional; page content will be loaded again"), path: "\(home)/Library/Containers/com.tencent.xinWeChat/Data/Documents/app_data/radium/cache", recommended: false, minimumBytes: always)
         ]
 
         let wechatDevTools = "\(home)/Library/Application Support/微信开发者工具"
@@ -435,7 +445,7 @@ final class CleanerModel: ObservableObject {
                 let cachePath = "\(wechatDevTools)/\(entry)/WeappCache"
                 var isDirectory: ObjCBool = false
                 if FileManager.default.fileExists(atPath: cachePath, isDirectory: &isDirectory), isDirectory.boolValue {
-                    targets.append(CacheTarget(name: "微信开发者工具编译缓存", detail: "不含小程序项目源码", path: cachePath, recommended: true, minimumBytes: always))
+                    targets.append(CacheTarget(name: AppLanguage.text("微信开发者工具编译缓存", "WeChat DevTools build cache"), detail: AppLanguage.text("不含小程序项目源码", "Does not include Mini Program source"), path: cachePath, recommended: true, minimumBytes: always))
                 }
             }
         }
@@ -446,7 +456,7 @@ final class CleanerModel: ObservableObject {
                 let cachePath = "\(wechatFiles)/\(account)/cache"
                 var isDirectory: ObjCBool = false
                 if FileManager.default.fileExists(atPath: cachePath, isDirectory: &isDirectory), isDirectory.boolValue {
-                    targets.append(CacheTarget(name: "微信账号临时缓存", detail: "可选；不含消息、图片和附件原文件", path: cachePath, recommended: false, minimumBytes: always))
+                    targets.append(CacheTarget(name: AppLanguage.text("微信账号临时缓存", "WeChat account temporary cache"), detail: AppLanguage.text("可选；不含消息、图片和附件原文件", "Optional; does not include original messages, images or attachments"), path: cachePath, recommended: false, minimumBytes: always))
                 }
             }
         }
@@ -463,8 +473,8 @@ final class CleanerModel: ObservableObject {
                 let path = "\(libraryCaches)/\(entry)"
                 guard !seen.contains(path) else { continue }
                 targets.append(CacheTarget(
-                    name: "其他应用缓存 · \(entry)",
-                    detail: "可选；应用可能在下次启动时重新生成",
+                    name: AppLanguage.text("其他应用缓存 · \(entry)", "Other app cache · \(entry)"),
+                    detail: AppLanguage.text("可选；应用可能在下次启动时重新生成", "Optional; the app may recreate it on next launch"),
                     path: path,
                     recommended: false,
                     minimumBytes: fiveMB
@@ -478,16 +488,16 @@ final class CleanerModel: ObservableObject {
     private func discoverReviewTargets() -> [(name: String, detail: String, path: String)] {
         let home = FileManager.default.homeDirectoryForCurrentUser.path
         return [
-            ("下载文件", "个人文件；请确认用途后在访达中处理", "\(home)/Downloads"),
-            ("iCloud 云盘", "云端个人文件；删除会同步到其他设备", "\(home)/Library/Mobile Documents/com~apple~CloudDocs"),
-            ("微信聊天数据", "请优先在微信的存储管理中清理", "\(home)/Library/Containers/com.tencent.xinWeChat/Data/Documents/xwechat_files"),
-            ("WPS 自动备份", "可能用于恢复未保存文档，不支持一键删除", "\(home)/Library/Containers/com.kingsoft.wpsoffice.mac/Data/.kingsoft/office6/data/backup")
+            (AppLanguage.text("下载文件", "Downloads"), AppLanguage.text("个人文件；请确认用途后在访达中处理", "Personal files; review them in Finder before removing"), "\(home)/Downloads"),
+            (AppLanguage.text("iCloud 云盘", "iCloud Drive"), AppLanguage.text("云端个人文件；删除会同步到其他设备", "Cloud files; deletions sync to your other devices"), "\(home)/Library/Mobile Documents/com~apple~CloudDocs"),
+            (AppLanguage.text("微信聊天数据", "WeChat chat data"), AppLanguage.text("请优先在微信的存储管理中清理", "Use WeChat Storage Management first"), "\(home)/Library/Containers/com.tencent.xinWeChat/Data/Documents/xwechat_files"),
+            (AppLanguage.text("WPS 自动备份", "WPS automatic backups"), AppLanguage.text("可能用于恢复未保存文档，不支持一键删除", "May recover unsaved documents; not included in one-click cleanup"), "\(home)/Library/Containers/com.kingsoft.wpsoffice.mac/Data/.kingsoft/office6/data/backup")
         ]
     }
 
     private func scanRuntimes() -> (items: [RuntimeItem], kept: [String], error: String?) {
         guard FileManager.default.fileExists(atPath: developerDirectory) else {
-            return ([], [], "未找到 Xcode，已跳过模拟器扫描。")
+            return ([], [], AppLanguage.text("未找到 Xcode，已跳过模拟器扫描。", "Xcode was not found, so simulator scanning was skipped."))
         }
 
         let result = runProcess(
@@ -496,7 +506,7 @@ final class CleanerModel: ObservableObject {
             xcodeEnvironment: true
         )
         guard result.status == 0, let data = result.output.data(using: .utf8) else {
-            return ([], [], "无法读取 Xcode 模拟器：\(result.output)")
+            return ([], [], AppLanguage.text("无法读取 Xcode 模拟器：\(result.output)", "Could not read Xcode simulators: \(result.output)"))
         }
 
         do {
@@ -523,7 +533,7 @@ final class CleanerModel: ObservableObject {
                     oldItems.append(RuntimeItem(
                         id: runtime.identifier,
                         name: "\(platformName(runtime.platformIdentifier)) \(runtime.version)",
-                        detail: "旧版运行时 · Build \(runtime.build)",
+                        detail: AppLanguage.text("旧版运行时 · Build \(runtime.build)", "Old runtime · Build \(runtime.build)"),
                         bytes: runtime.sizeBytes ?? 0,
                         selected: true
                     ))
@@ -537,7 +547,7 @@ final class CleanerModel: ObservableObject {
             kept.sort()
             return (oldItems, kept, nil)
         } catch {
-            return ([], [], "模拟器数据解析失败：\(error.localizedDescription)")
+            return ([], [], AppLanguage.text("模拟器数据解析失败：\(error.localizedDescription)", "Could not parse simulator data: \(error.localizedDescription)"))
         }
     }
 
@@ -658,12 +668,12 @@ struct CacheDetailView: View {
                     .frame(width: 36, height: 36)
                 VStack(alignment: .leading, spacing: 3) {
                     Text(item.name).font(.title3.weight(.semibold))
-                    Text("总大小 \(format(item.bytes))")
+                    Text(AppLanguage.text("总大小 \(format(item.bytes))", "Total size \(format(item.bytes))"))
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }
                 Spacer()
-                Button("完成") { dismiss() }
+                Button(AppLanguage.text("完成", "Done")) { dismiss() }
                     .keyboardShortcut(.defaultAction)
             }
             .padding(18)
@@ -677,7 +687,7 @@ struct CacheDetailView: View {
                     Image(systemName: "chevron.left")
                 }
                 .buttonStyle(.borderless)
-                .help("返回上级")
+                .help(AppLanguage.text("返回上级", "Go back"))
                 .disabled(!model.canGoBack || model.isLoading)
 
                 Image(systemName: "folder")
@@ -694,7 +704,7 @@ struct CacheDetailView: View {
                     Image(systemName: "arrow.forward.circle")
                 }
                 .buttonStyle(.borderless)
-                .help("在访达中显示")
+                .help(AppLanguage.text("在访达中显示", "Show in Finder"))
             }
             .padding(.horizontal, 18)
             .padding(.vertical, 12)
@@ -703,7 +713,7 @@ struct CacheDetailView: View {
 
             if model.isLoading {
                 Spacer()
-                ProgressView("正在读取内容…")
+                ProgressView(AppLanguage.text("正在读取内容…", "Loading contents…"))
                 Spacer()
             } else if let error = model.error {
                 Spacer()
@@ -720,7 +730,7 @@ struct CacheDetailView: View {
                     Image(systemName: "tray")
                         .font(.title)
                         .foregroundStyle(.secondary)
-                    Text("目录为空").foregroundStyle(.secondary)
+                    Text(AppLanguage.text("目录为空", "This folder is empty")).foregroundStyle(.secondary)
                 }
                 Spacer()
             } else {
@@ -759,11 +769,11 @@ struct CacheDetailView: View {
             Divider()
             HStack {
                 Image(systemName: "eye.fill").foregroundStyle(.secondary)
-                Text(model.isTruncated ? "只读预览 · 显示最大的 200 个项目" : "只读预览")
+                Text(model.isTruncated ? AppLanguage.text("只读预览 · 显示最大的 200 个项目", "Read-only preview · Showing the 200 largest items") : AppLanguage.text("只读预览", "Read-only preview"))
                     .font(.caption)
                     .foregroundStyle(.secondary)
                 Spacer()
-                Text("清理时将移除整个所选缓存目录")
+                Text(AppLanguage.text("清理时将移除整个所选缓存目录", "Cleanup removes the entire selected cache folder"))
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
@@ -821,9 +831,9 @@ struct CleanerView: View {
         .frame(width: 780, height: 700)
         .background(Color(nsColor: .windowBackgroundColor))
         .onAppear { model.scan() }
-        .alert("确认一键清理", isPresented: $showConfirmation) {
-            Button("取消", role: .cancel) {}
-            Button("清理", role: .destructive) { model.cleanSelected() }
+        .alert(AppLanguage.text("确认一键清理", "Confirm one-click cleanup"), isPresented: $showConfirmation) {
+            Button(AppLanguage.text("取消", "Cancel"), role: .cancel) {}
+            Button(AppLanguage.text("清理", "Clean"), role: .destructive) { model.cleanSelected() }
         } message: {
             Text(confirmationMessage)
         }
@@ -844,9 +854,9 @@ struct CleanerView: View {
             }
 
             VStack(alignment: .leading, spacing: 3) {
-                Text("Mac 空间清理")
+                Text(AppLanguage.text("Mac 空间清理", "Mac Space Cleaner"))
                     .font(.title2.weight(.semibold))
-                Text("仅清理可重新生成的缓存和旧版模拟器")
+                Text(AppLanguage.text("仅清理可重新生成的缓存和旧版模拟器", "Clean regenerable caches and old simulators only"))
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
             }
@@ -854,12 +864,12 @@ struct CleanerView: View {
             Spacer()
 
             VStack(alignment: .trailing, spacing: 6) {
-                Text("可用 \(format(model.freeBytes))")
+                Text(AppLanguage.text("可用 \(format(model.freeBytes))", "Available \(format(model.freeBytes))"))
                     .font(.headline)
                 ProgressView(value: model.usageFraction)
                     .frame(width: 180)
                     .tint(model.usageFraction > 0.9 ? .red : (model.usageFraction > 0.8 ? .orange : .green))
-                Text("总计 \(format(model.totalBytes))")
+                Text(AppLanguage.text("总计 \(format(model.totalBytes))", "Total \(format(model.totalBytes))"))
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
@@ -871,7 +881,7 @@ struct CleanerView: View {
                     .frame(width: 28, height: 28)
             }
             .buttonStyle(.borderless)
-            .help("重新扫描")
+            .help(AppLanguage.text("重新扫描", "Scan again"))
             .disabled(model.isScanning || model.isCleaning)
         }
         .padding(20)
@@ -880,12 +890,12 @@ struct CleanerView: View {
     private var recommendedCacheSection: some View {
         let indices = model.cacheItems.indices.filter { model.cacheItems[$0].recommended }
         return VStack(alignment: .leading, spacing: 10) {
-            selectionSectionTitle("建议清理", icon: "checkmark.shield.fill", recommended: true)
-            Text("经过核实的缓存和日志，默认勾选；不会删除个人内容。")
+            selectionSectionTitle(AppLanguage.text("建议清理", "Recommended cleanup"), icon: "checkmark.shield.fill", recommended: true)
+            Text(AppLanguage.text("经过核实的缓存和日志，默认勾选；不会删除个人内容。", "Verified caches and logs are selected by default. Personal content is not removed."))
                 .font(.caption)
                 .foregroundStyle(.secondary)
             if indices.isEmpty {
-                emptyRow("未发现建议清理的缓存")
+                emptyRow(AppLanguage.text("未发现建议清理的缓存", "No recommended caches found"))
             } else {
                 VStack(spacing: 0) {
                     ForEach(indices, id: \.self) { index in
@@ -907,12 +917,12 @@ struct CleanerView: View {
     private var optionalCacheSection: some View {
         let indices = model.cacheItems.indices.filter { !model.cacheItems[$0].recommended }
         return VStack(alignment: .leading, spacing: 10) {
-            selectionSectionTitle("可选清理", icon: "slider.horizontal.3", recommended: false)
-            Text("默认不勾选。清理后可能重新下载资源、重新生成预览或丢失离线网页。")
+            selectionSectionTitle(AppLanguage.text("可选清理", "Optional cleanup"), icon: "slider.horizontal.3", recommended: false)
+            Text(AppLanguage.text("默认不勾选。清理后可能重新下载资源、重新生成预览或丢失离线网页。", "Not selected by default. Resources may be downloaded again, previews rebuilt, or offline pages removed."))
                 .font(.caption)
                 .foregroundStyle(.secondary)
             if indices.isEmpty {
-                emptyRow("未发现较大的可选缓存")
+                emptyRow(AppLanguage.text("未发现较大的可选缓存", "No large optional caches found"))
             } else {
                 VStack(spacing: 0) {
                     ForEach(indices, id: \.self) { index in
@@ -933,11 +943,11 @@ struct CleanerView: View {
 
     private var runtimeSection: some View {
         VStack(alignment: .leading, spacing: 10) {
-            sectionTitle("旧版 Xcode 模拟器", icon: "iphone.gen3")
+            sectionTitle(AppLanguage.text("旧版 Xcode 模拟器", "Old Xcode simulators"), icon: "iphone.gen3")
             if let error = model.runtimeError {
                 messageRow(error, icon: "exclamationmark.triangle.fill", color: .orange)
             } else if model.runtimeItems.isEmpty {
-                emptyRow("没有旧版运行时；已保留 \(model.keptRuntimes.joined(separator: "、"))")
+                emptyRow(AppLanguage.text("没有旧版运行时；已保留 \(model.keptRuntimes.joined(separator: "、"))", "No old runtimes found; kept \(model.keptRuntimes.joined(separator: ", "))"))
             } else {
                 VStack(spacing: 0) {
                     ForEach(model.runtimeItems.indices, id: \.self) { index in
@@ -951,7 +961,7 @@ struct CleanerView: View {
                         if index < model.runtimeItems.indices.last! { Divider().padding(.leading, 44) }
                     }
                 }
-                Text("自动保留每个平台的最新版本：\(model.keptRuntimes.joined(separator: "、"))")
+                Text(AppLanguage.text("自动保留每个平台的最新版本：\(model.keptRuntimes.joined(separator: "、"))", "The newest version for each platform is kept automatically: \(model.keptRuntimes.joined(separator: ", "))"))
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
@@ -960,29 +970,29 @@ struct CleanerView: View {
 
     private var sharedCacheSection: some View {
         VStack(alignment: .leading, spacing: 10) {
-            sectionTitle("Xcode 共享缓存", icon: "hammer.fill")
+            sectionTitle(AppLanguage.text("Xcode 共享缓存", "Xcode shared cache"), icon: "hammer.fill")
             if model.sharedCacheBytes > 0 {
                 targetRow(
-                    title: "模拟器 dyld 共享缓存",
-                    detail: "删除后按需重建；首次启动模拟器会稍慢",
+                    title: AppLanguage.text("模拟器 dyld 共享缓存", "Simulator dyld shared cache"),
+                    detail: AppLanguage.text("删除后按需重建；首次启动模拟器会稍慢", "Rebuilt when needed; the first simulator launch may be slower"),
                     bytes: model.sharedCacheBytes,
                     selected: $model.cleanSharedCache,
                     icon: "hammer"
                 )
             } else {
-                emptyRow("当前没有 Xcode 共享缓存")
+                emptyRow(AppLanguage.text("当前没有 Xcode 共享缓存", "No Xcode shared cache found"))
             }
         }
     }
 
     private var reviewSection: some View {
         VStack(alignment: .leading, spacing: 10) {
-            sectionTitle("仅查看的个人数据", icon: "folder.badge.questionmark")
-            Text("这些内容不会参与一键清理。需要处理时，请先在对应应用或访达中确认。")
+            sectionTitle(AppLanguage.text("仅查看的个人数据", "Personal data — view only"), icon: "folder.badge.questionmark")
+            Text(AppLanguage.text("这些内容不会参与一键清理。需要处理时，请先在对应应用或访达中确认。", "These items are never included in one-click cleanup. Review them in the relevant app or Finder first."))
                 .font(.caption)
                 .foregroundStyle(.secondary)
             if model.reviewItems.isEmpty {
-                emptyRow("未发现需要人工检查的目录")
+                emptyRow(AppLanguage.text("未发现需要人工检查的目录", "No folders require manual review"))
             } else {
                 VStack(spacing: 0) {
                     ForEach(Array(model.reviewItems.enumerated()), id: \.element.id) { offset, item in
@@ -1011,7 +1021,7 @@ struct CleanerView: View {
             Spacer()
 
             VStack(alignment: .trailing, spacing: 2) {
-                Text("预计最多释放")
+                Text(AppLanguage.text("预计最多释放", "Up to"))
                     .font(.caption)
                     .foregroundStyle(.secondary)
                 Text(format(model.selectedBytes))
@@ -1021,7 +1031,7 @@ struct CleanerView: View {
             Button {
                 showConfirmation = true
             } label: {
-                Label("一键清理", systemImage: "sparkles")
+                Label(AppLanguage.text("一键清理", "Clean selected"), systemImage: "sparkles")
                     .frame(minWidth: 104)
             }
             .buttonStyle(.borderedProminent)
@@ -1049,10 +1059,10 @@ struct CleanerView: View {
             Text(title)
                 .font(.headline)
             Spacer()
-            Button("全选") { model.setCacheSelection(recommended: recommended, selected: true) }
+            Button(AppLanguage.text("全选", "Select all")) { model.setCacheSelection(recommended: recommended, selected: true) }
                 .buttonStyle(.borderless)
                 .disabled(model.isScanning || model.isCleaning)
-            Button("取消") { model.setCacheSelection(recommended: recommended, selected: false) }
+            Button(AppLanguage.text("取消", "Clear")) { model.setCacheSelection(recommended: recommended, selected: false) }
                 .buttonStyle(.borderless)
                 .disabled(model.isScanning || model.isCleaning)
         }
@@ -1086,7 +1096,7 @@ struct CleanerView: View {
                     Image(systemName: "info.circle")
                 }
                 .buttonStyle(.borderless)
-                .help("查看具体内容")
+                .help(AppLanguage.text("查看具体内容", "View contents"))
             }
         }
         .frame(minHeight: 50)
@@ -1111,7 +1121,7 @@ struct CleanerView: View {
                 Image(systemName: "arrow.forward.circle")
             }
             .buttonStyle(.borderless)
-            .help("在访达中显示")
+            .help(AppLanguage.text("在访达中显示", "Show in Finder"))
         }
         .frame(minHeight: 50)
     }
@@ -1134,11 +1144,11 @@ struct CleanerView: View {
     }
 
     private var confirmationMessage: String {
-        var text = "预计最多释放 \(format(model.selectedBytes))。"
+        var text = AppLanguage.text("预计最多释放 \(format(model.selectedBytes))。", "Up to \(format(model.selectedBytes)) will be released. ")
         if model.selectedOptionalCount > 0 {
-            text += "你选择了 \(model.selectedOptionalCount) 个可选项目，相关资源之后可能重新下载。"
+            text += AppLanguage.text("你选择了 \(model.selectedOptionalCount) 个可选项目，相关资源之后可能重新下载。", "You selected \(model.selectedOptionalCount) optional item(s); related resources may be downloaded again. ")
         }
-        text += "不会删除文稿、下载、iCloud、微信聊天附件或项目文件。"
+        text += AppLanguage.text("不会删除文稿、下载、iCloud、微信聊天附件或项目文件。", "Documents, Downloads, iCloud files, WeChat attachments and project files will not be removed.")
         return text
     }
 }

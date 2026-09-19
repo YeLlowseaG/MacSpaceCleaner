@@ -67,6 +67,8 @@ done
 
 iconutil -c icns "$ICONSET" -o "$RESOURCES_DIR/AppIcon.icns"
 cp "$SOURCE_DIR/Info.plist" "$CONTENTS/Info.plist"
+cp -R "$SOURCE_DIR/AppResources/en.lproj" "$RESOURCES_DIR/"
+cp -R "$SOURCE_DIR/AppResources/zh-Hans.lproj" "$RESOURCES_DIR/"
 /usr/libexec/PlistBuddy -c "Add :CFBundleIconFile string AppIcon" "$CONTENTS/Info.plist" 2>/dev/null || \
   /usr/libexec/PlistBuddy -c "Set :CFBundleIconFile AppIcon" "$CONTENTS/Info.plist"
 

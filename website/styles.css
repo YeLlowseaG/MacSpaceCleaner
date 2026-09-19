@@ -99,6 +99,16 @@ a {
   color: var(--brand-dark);
 }
 
+.language-switch {
+  min-width: 34px;
+  padding: 3px 8px;
+  text-align: center;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
 .nav-download {
   display: inline-flex;
   align-items: center;

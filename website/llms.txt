@@ -22,3 +22,13 @@ Mac 空间清理（MacSpaceCleaner）是一款原生 macOS 缓存清理工具。
 - Mac 磁盘空间问题指南：https://mac-space-cleaner.vercel.app/mac-storage-cleaner.html
 - 隐私政策：https://mac-space-cleaner.vercel.app/privacy.html
 - 下载：https://mac-space-cleaner.vercel.app/downloads/MacSpaceCleaner-1.2.dmg
+
+## English pages
+
+- Home: https://mac-space-cleaner.vercel.app/en/
+- Help: https://mac-space-cleaner.vercel.app/en/support.html
+- FAQ: https://mac-space-cleaner.vercel.app/en/faq.html
+- Mac storage guide: https://mac-space-cleaner.vercel.app/en/mac-storage-cleaner.html
+- Privacy policy: https://mac-space-cleaner.vercel.app/en/privacy.html
+
+The website provides Simplified Chinese and English pages. The native app follows the Mac's preferred language and performs scans locally.

@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Frequently asked questions about what Mac Space Cleaner can clean, personal data boundaries, privacy, safety and Xcode simulators.">
+  <meta name="theme-color" content="#f4f7fc">
+  <link rel="canonical" href="https://mac-space-cleaner.vercel.app/en/faq.html">
+  <link rel="alternate" hreflang="zh-Hans" href="https://mac-space-cleaner.vercel.app/faq.html"><link rel="alternate" hreflang="en" href="https://mac-space-cleaner.vercel.app/en/faq.html"><link rel="alternate" hreflang="x-default" href="https://mac-space-cleaner.vercel.app/en/faq.html">
+  <meta property="og:title" content="Frequently Asked Questions - Mac Space Cleaner"><meta property="og:description" content="What Mac Space Cleaner cleans, what it leaves alone, and how local scanning and Xcode cleanup work."><meta property="og:url" content="https://mac-space-cleaner.vercel.app/en/faq.html"><meta property="og:image" content="https://mac-space-cleaner.vercel.app/assets/app-icon.png">
+  <title>Frequently Asked Questions - Mac Space Cleaner</title>
+  <link rel="icon" href="../assets/app-icon.png"><link rel="stylesheet" href="../styles.css"><script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js" defer></script><script src="../script.js" defer></script>
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+    {"@type":"Question","name":"Does Mac Space Cleaner delete personal files?","acceptedAnswer":{"@type":"Answer","text":"No. Downloads, iCloud Drive, WeChat chat data and WPS backups are view-only and never included in one-click cleanup. Optional items are off by default."}},
+    {"@type":"Question","name":"Can Mac Space Cleaner clean Xcode simulators?","acceptedAnswer":{"@type":"Answer","text":"When Xcode is installed, the app identifies old simulator runtimes and keeps the newest version for each platform. Regenerable shared caches can also be reviewed."}},
+    {"@type":"Question","name":"Does Mac Space Cleaner upload scan data?","acceptedAnswer":{"@type":"Answer","text":"No. Scanning happens locally. The app does not upload file paths, scan results or cleanup history to the developer's servers."}},
+    {"@type":"Question","name":"Why do caches come back after cleaning?","acceptedAnswer":{"@type":"Answer","text":"Caches are temporary data created to make apps faster. Some of them are naturally rebuilt when you continue using the related app."}},
+    {"@type":"Question","name":"Why is an app not shown?","acceptedAnswer":{"@type":"Answer","text":"The app only shows discovered caches that match its rules. An app may not appear when it has no cache, a small cache, a protected location or a path not yet covered by the rules."}}
+  ]}
+  </script>
+</head>
+<body>
+  <header class="site-header"><nav class="nav-wrap" aria-label="Main navigation"><a class="brand" href="index.html" aria-label="Mac Space Cleaner home"><img src="../assets/app-icon.png" alt="" width="36" height="36"><span>Mac Space Cleaner</span></a><button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="Open navigation"><i data-lucide="menu" aria-hidden="true"></i></button><div class="nav-links" id="nav-links"><a href="index.html">Home</a><a href="mac-storage-cleaner.html">Storage guide</a><a href="index.html#product">Interface</a><a href="index.html#coverage">Coverage</a><a href="index.html#safety">Safety</a><a href="support.html">Help</a><a href="faq.html" aria-current="page">FAQ</a><a class="language-switch" href="../faq.html" lang="zh-Hans" hreflang="zh-Hans">中文</a><a class="nav-download" href="../downloads/MacSpaceCleaner-1.2.dmg" download><i data-lucide="download" aria-hidden="true"></i>Download</a></div></nav></header>
+  <main class="page-main"><section class="page-hero"><div class="section-inner"><p class="eyebrow">FAQ</p><h1>Frequently asked questions</h1><p>Direct answers about cleanup boundaries, privacy, safety and cache behavior.</p></div></section>
+    <div class="section-inner document-layout"><aside class="document-nav" aria-label="On this page"><strong>On this page</strong><a href="#scope">Cleanup scope</a><a href="#privacy">Privacy and safety</a><a href="#xcode">Xcode</a><a href="#behavior">Cache behavior</a></aside>
+      <article class="document-content">
+        <section id="scope"><h2>Cleanup scope</h2><h3>What can it clean?</h3><p>It can identify common app caches and logs, developer caches from npm, pnpm, bun, Homebrew and Playwright, plus old Xcode simulator runtimes and shared caches.</p><h3>Does it delete personal files?</h3><p>No. Downloads, iCloud Drive, WeChat chat data and WPS backups are view-only and excluded from one-click cleanup. Optional items are off by default.</p></section>
+        <section id="privacy"><h2>Privacy and safety</h2><h3>Is scan data uploaded?</h3><p>No. Scanning happens locally. File paths, scan results and cleanup history are not sent to the developer's servers.</p><h3>Is the app notarized by Apple?</h3><p>The current version is Developer ID signed and has passed Apple notarization and Gatekeeper verification.</p></section>
+        <section id="xcode"><h2>Xcode simulators</h2><h3>Will it delete my newest simulator?</h3><p>No. The app identifies runtimes by platform and automatically keeps the newest version for each platform. Only older runtimes are offered as optional cleanup.</p></section>
+        <section id="behavior"><h2>Cache behavior</h2><h3>Why do caches come back after cleaning?</h3><p>Caches are temporary data created to make apps faster. Some are naturally rebuilt when you use the related app again.</p><h3>Why is an app not shown?</h3><p>The app only shows discovered caches that match its rules. An app may have no cache, a small cache, a protected location or a path not yet covered by the rules.</p><h3>Do I need an administrator password?</h3><p>Normal user caches usually do not need one. Protected system directories are not included in generic one-click cleanup.</p></section>
+      </article>
+    </div>
+  </main>
+  <footer class="site-footer"><div class="section-inner footer-layout"><div class="footer-brand"><img src="../assets/app-icon.png" alt="" width="30" height="30"><span>Mac Space Cleaner</span></div><div class="footer-links"><a href="index.html">Home</a><a href="privacy.html">Privacy</a><a href="support.html">Help</a></div><p>© <span data-year></span> Mac Space Cleaner</p></div></footer>
+</body>
+</html>

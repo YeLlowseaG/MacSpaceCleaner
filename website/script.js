@@ -30,6 +30,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const diagnostic = document.querySelector("[data-diagnostic]");
   const diagnosticResult = document.querySelector("[data-diagnostic-result]");
   if (diagnostic && diagnosticResult) {
+    const isEnglish = document.documentElement.lang.toLowerCase().startsWith("en");
+    const downloadHref = isEnglish ? "../downloads/MacSpaceCleaner-1.2.dmg" : "downloads/MacSpaceCleaner-1.2.dmg";
     const advice = {
       full: {
         title: "先确认空间被哪一类内容占用",
@@ -64,12 +66,48 @@ document.addEventListener("DOMContentLoaded", () => {
         ]
       }
     };
+    const englishAdvice = {
+      full: {
+        title: "First find out what kind of content is using the space",
+        steps: [
+          "Open System Settings → General → Storage and check whether Applications, Documents or System Data is largest.",
+          "Start with regenerable caches, logs and old developer-tool caches; these are usually safer to review before personal files.",
+          "Downloads, photos, iCloud files and chat data may not be recoverable. Open and confirm them first, and back up anything important."
+        ]
+      },
+      system: {
+        title: "Do not treat System Data as one folder to delete",
+        steps: [
+          "System Data is a macOS storage category. It may include app caches, logs, iPhone or iPad backups, virtual machines and local snapshots.",
+          "Find the actual source and path, then decide whether it can be regenerated. Do not manually remove system directories you do not recognize.",
+          "If caches are the main source, use the app to review known cache items. Backups and virtual machine files still require your own confirmation."
+        ]
+      },
+      xcode: {
+        title: "Keep the simulators you still use, then review older versions",
+        steps: [
+          "Check which iOS, watchOS or other platform runtimes your projects need. Keep at least one current runtime for each platform you use.",
+          "Old simulator runtimes and regenerable shared caches can be large. Review the version and platform before cleaning them.",
+          "Some caches will be rebuilt as you keep using Xcode. Required runtimes can also be downloaded again."
+        ]
+      },
+      cache: {
+        title: "Only clean content that is clearly regenerable cache",
+        steps: [
+          "Check the related app, path, size and modification date. Make sure the item is not a download, chat record or project file.",
+          "Clearing a cache normally does not remove accounts or personal documents, but the app may need to reload or download resources next time.",
+          "Leave anything uncertain unchecked. You can close the related app first and clean only items you have confirmed."
+        ]
+      }
+    };
+    const localizedAdvice = isEnglish ? englishAdvice : advice;
     diagnostic.addEventListener("submit", (event) => {
       event.preventDefault();
       const selected = diagnostic.querySelector("input[name='storage-problem']:checked");
       if (!selected) return;
-      const result = advice[selected.value];
-      diagnosticResult.innerHTML = `<strong>${result.title}</strong><ol>${result.steps.map((step) => `<li>${step}</li>`).join("")}</ol><p><a class="download-inline" href="downloads/MacSpaceCleaner-1.2.dmg" download>下载 App，在本机查看可清理项目</a></p>`;
+      const result = localizedAdvice[selected.value];
+      const downloadText = isEnglish ? "Download the app to review cleanable items on your Mac" : "下载 App，在本机查看可清理项目";
+      diagnosticResult.innerHTML = `<strong>${result.title}</strong><ol>${result.steps.map((step) => `<li>${step}</li>`).join("")}</ol><p><a class="download-inline" href="${downloadHref}" download>${downloadText}</a></p>`;
     });
   }
 });
