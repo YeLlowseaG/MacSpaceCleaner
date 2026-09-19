@@ -3,11 +3,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Mac 空间清理常见问题：支持的系统、可清理内容、隐私、安全、公证和卸载方法。">
+  <meta name="description" content="Mac 空间清理常见问题：可清理内容、个人数据边界、隐私、安全、Xcode 模拟器和缓存行为。">
   <meta name="theme-color" content="#f4f7f6">
   <link rel="canonical" href="https://mac-space-cleaner.vercel.app/faq.html">
   <meta property="og:title" content="常见问题 - Mac 空间清理">
-  <meta property="og:description" content="了解 Mac 空间清理能清理什么、不会清理什么，以及如何安装和卸载。">
+  <meta property="og:description" content="了解 Mac 空间清理能清理什么、不会清理什么，以及隐私、安全和 Xcode 模拟器处理方式。">
   <meta property="og:url" content="https://mac-space-cleaner.vercel.app/faq.html">
   <title>常见问题 - Mac 空间清理｜看清缓存，再决定清理</title>
   <link rel="icon" href="assets/app-icon.png">
@@ -19,12 +19,12 @@
     "@context": "https://schema.org",
     "@type": "FAQPage",
     "mainEntity": [
-      {"@type":"Question","name":"Mac 空间清理支持哪些系统？","acceptedAnswer":{"@type":"Answer","text":"Mac 空间清理支持 macOS 14 或更高版本，同时支持 Apple Silicon 和 Intel Mac。"}},
       {"@type":"Question","name":"Mac 空间清理会删除个人文件吗？","acceptedAnswer":{"@type":"Answer","text":"下载、iCloud 云盘、微信聊天数据和 WPS 备份只展示空间占用，不会进入一键清理。可选项目默认不勾选。"}},
       {"@type":"Question","name":"Mac 空间清理可以清理 Xcode 模拟器吗？","acceptedAnswer":{"@type":"Answer","text":"如果电脑安装了 Xcode，App 会识别旧版模拟器运行时并保留每个平台的最新版本，也可以清理按需重建的共享缓存。"}},
       {"@type":"Question","name":"Mac 空间清理会上传扫描数据吗？","acceptedAnswer":{"@type":"Answer","text":"不会。扫描在本机完成，App 不会把文件路径、扫描结果或清理记录上传到开发者服务器。"}},
       {"@type":"Question","name":"Mac 空间清理需要管理员密码吗？","acceptedAnswer":{"@type":"Answer","text":"普通用户缓存通常不需要管理员密码。系统保护目录不会被纳入通用一键清理。"}},
-      {"@type":"Question","name":"如何卸载 Mac 空间清理？","acceptedAnswer":{"@type":"Answer","text":"退出 App 后，把“应用程序”文件夹中的 Mac 空间清理移到废纸篓并清空即可。App 不安装后台服务或系统扩展。"}}
+      {"@type":"Question","name":"为什么清理后缓存又出现？","acceptedAnswer":{"@type":"Answer","text":"缓存是应用为加快运行而生成的临时数据。继续使用相关软件后，部分缓存会自然重建。"}},
+      {"@type":"Question","name":"为什么有些软件没有显示？","acceptedAnswer":{"@type":"Answer","text":"App 只显示已发现且符合规则的缓存。没有缓存、缓存较小、位于受保护目录或尚未加入识别规则的软件可能不会出现。"}}
     ]
   }
   </script>
@@ -53,14 +53,13 @@
     </nav>
   </header>
   <main class="page-main">
-    <section class="page-hero"><div class="section-inner"><p class="eyebrow">FAQ</p><h1>常见问题</h1><p>关于系统要求、清理边界、隐私和安装使用的直接回答。</p></div></section>
-    <div class="section-inner document-layout"><aside class="document-nav" aria-label="本页目录"><strong>本页目录</strong><a href="#requirements">系统要求</a><a href="#scope">清理范围</a><a href="#privacy">隐私</a><a href="#xcode">Xcode</a><a href="#install">安装卸载</a></aside>
+    <section class="page-hero"><div class="section-inner"><p class="eyebrow">FAQ</p><h1>常见问题</h1><p>关于清理边界、隐私、安全和缓存行为的直接回答。</p></div></section>
+    <div class="section-inner document-layout"><aside class="document-nav" aria-label="本页目录"><strong>本页目录</strong><a href="#scope">清理范围</a><a href="#privacy">隐私与安全</a><a href="#xcode">Xcode</a><a href="#behavior">缓存行为</a></aside>
       <article class="document-content">
-        <section id="requirements"><h2>系统要求</h2><h3>支持哪些 Mac？</h3><p>支持 macOS 14 或更高版本，同时支持 Apple Silicon 和 Intel Mac。Xcode 相关清理仅在安装了 Xcode 的电脑上显示。</p></section>
         <section id="scope"><h2>清理范围</h2><h3>它能清理什么？</h3><p>它可以识别常见应用缓存、日志、npm、pnpm、bun、Homebrew、Playwright 等开发缓存，以及旧版 Xcode 模拟器和共享缓存。</p><h3>它会删除个人文件吗？</h3><p>不会。下载、iCloud 云盘、微信聊天数据和 WPS 备份只展示空间占用，不进入一键清理；可选项目默认不勾选。</p></section>
         <section id="privacy"><h2>隐私与安全</h2><h3>扫描数据会上传吗？</h3><p>不会。扫描在本机完成，App 不会把文件路径、扫描结果或清理记录上传到开发者服务器。</p><h3>是否通过 Apple 公证？</h3><p>当前版本使用 Developer ID 签名，并已通过 Apple 公证和 Gatekeeper 验证。</p></section>
         <section id="xcode"><h2>Xcode 模拟器</h2><h3>会不会把最新模拟器删掉？</h3><p>不会。App 会按平台识别版本，自动保留每个平台的最新运行时，只把旧版运行时列为可选清理。</p></section>
-        <section id="install"><h2>安装与卸载</h2><h3>怎么安装？</h3><p>下载 DMG，将“Mac 空间清理”拖入“应用程序”文件夹，然后打开即可。</p><h3>怎么卸载？</h3><p>退出 App，把应用程序中的 App 移到废纸篓并清空即可。App 不安装后台服务或系统扩展。</p></section>
+        <section id="behavior"><h2>缓存行为</h2><h3>为什么清理后缓存又出现？</h3><p>缓存是应用为加快运行而生成的临时数据。继续使用相关软件后，部分缓存会自然重建。</p><h3>为什么有些软件没有显示？</h3><p>App 只显示已发现且符合规则的缓存。没有缓存、缓存较小、位于受保护目录或尚未加入识别规则的软件可能不会出现。</p><h3>需要管理员密码吗？</h3><p>普通用户缓存通常不需要管理员密码。系统保护目录不会被纳入通用一键清理。</p></section>
       </article>
     </div>
   </main>
