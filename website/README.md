@@ -1,8 +1,10 @@
 # Mac 空间清理官网
 
-这是一个无需后端的静态网站，包含主页、隐私政策、使用帮助、FAQ 和可下载的 DMG。
+这是一个无需后端的静态网站，包含主页、Mac 空间问题 SEO 入口页、隐私政策、使用帮助、FAQ 和可下载的 DMG。
 
-主页已加入 canonical、Open Graph、SoftwareApplication JSON-LD；FAQ 页已加入 FAQPage JSON-LD；`sitemap.xml`、`robots.txt` 和 `llms.txt` 用于搜索引擎与生成式搜索理解网站内容。
+主页已加入 canonical、Open Graph、SoftwareApplication JSON-LD；FAQ 和 Mac 空间问题入口页已加入 FAQPage JSON-LD；`sitemap.xml`、`robots.txt` 和 `llms.txt` 用于搜索引擎与生成式搜索理解网站内容。
+
+关键词、页面架构与变现方向见项目根目录 `docs/SEO工具站关键词与变现规划.md`。
 
 ## 更换正式域名
 

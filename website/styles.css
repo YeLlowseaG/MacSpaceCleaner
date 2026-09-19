@@ -556,6 +556,146 @@ i[data-lucide] {
   font-size: 18px;
 }
 
+.seo-hero h1 {
+  max-width: 760px;
+}
+
+.seo-narrow {
+  max-width: 900px;
+}
+
+.seo-section {
+  padding: 84px 0;
+  background: var(--paper);
+  border-bottom: 1px solid var(--line);
+}
+
+.seo-section-alt {
+  background: var(--soft);
+}
+
+.diagnostic-card {
+  padding: 28px;
+  background: var(--paper);
+  border: 1px solid #d5dfef;
+  border-radius: 16px;
+  box-shadow: 0 10px 28px rgba(39, 73, 133, 0.08);
+}
+
+.diagnostic-card fieldset {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin: 0 0 22px;
+  padding: 0;
+  border: 0;
+}
+
+.diagnostic-card legend {
+  margin-bottom: 12px;
+  font-weight: 750;
+}
+
+.diagnostic-card label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 52px;
+  padding: 12px 14px;
+  color: var(--ink);
+  background: var(--soft);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.diagnostic-card label:has(input:checked) {
+  color: var(--brand-dark);
+  background: #eaf1ff;
+  border-color: #9dbcf8;
+}
+
+.diagnostic-card input {
+  accent-color: var(--brand);
+}
+
+.diagnostic-result {
+  min-height: 24px;
+  margin-top: 18px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.diagnostic-result strong {
+  color: var(--ink);
+}
+
+.seo-card-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.seo-card {
+  padding: 24px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+}
+
+.seo-card svg {
+  width: 24px;
+  height: 24px;
+  color: var(--brand);
+}
+
+.seo-card h3 {
+  margin: 16px 0 8px;
+  font-size: 18px;
+}
+
+.seo-card p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.seo-callout {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px;
+  padding: 32px;
+  background: #edf4ff;
+  border: 1px solid #c9daf4;
+  border-radius: 16px;
+}
+
+.seo-callout h2 {
+  margin: 0;
+}
+
+.seo-callout p:last-child {
+  max-width: 660px;
+  margin-bottom: 0;
+  color: var(--muted);
+}
+
+.seo-faq details {
+  padding: 18px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.seo-faq summary {
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.seo-faq details p {
+  max-width: 760px;
+  margin: 12px 0 0;
+  color: var(--muted);
+}
+
 .document-layout {
   display: grid;
   grid-template-columns: 220px minmax(0, 760px);
@@ -757,6 +897,28 @@ i[data-lucide] {
     min-height: clamp(480px, calc(100svh - 116px), 590px);
     background-position: center 385px;
     background-size: 560px auto;
+  }
+
+  .diagnostic-card {
+    padding: 20px;
+  }
+
+  .diagnostic-card fieldset,
+  .seo-card-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .seo-section {
+    padding: 64px 0;
+  }
+
+  .seo-callout {
+    display: block;
+    padding: 24px;
+  }
+
+  .seo-callout .button {
+    margin-top: 22px;
   }
 
   .hero-inner {
