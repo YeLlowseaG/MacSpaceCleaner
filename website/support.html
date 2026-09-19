@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Mac 空间清理安装、校验、使用和卸载说明。">
+  <meta name="theme-color" content="#f4f7f6">
+  <title>使用帮助 - Mac 空间清理</title>
+  <link rel="icon" href="assets/app-icon.png">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js" defer></script>
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <header class="site-header">
+    <nav class="nav-wrap" aria-label="主导航">
+      <a class="brand" href="index.html"><img src="assets/app-icon.png" alt="" width="36" height="36"><span>Mac 空间清理</span></a>
+      <div class="nav-links static-links"><a href="index.html">返回首页</a><a class="nav-download" href="downloads/MacSpaceCleaner-1.2.dmg" download><i data-lucide="download" aria-hidden="true"></i>下载</a></div>
+    </nav>
+  </header>
+  <main class="page-main">
+    <section class="page-hero">
+      <div class="section-inner">
+        <p class="eyebrow">Support</p>
+        <h1>使用帮助</h1>
+        <p>安装、文件校验、清理范围和卸载方法都整理在这里。</p>
+      </div>
+    </section>
+    <div class="section-inner document-layout">
+      <aside class="document-nav" aria-label="本页目录"><strong>本页目录</strong><a href="#requirements">系统要求</a><a href="#install">安装</a><a href="#usage">使用</a><a href="#verify">验证下载</a><a href="#uninstall">卸载</a><a href="#questions">常见问题</a></aside>
+      <article class="document-content">
+        <section id="requirements"><h2>系统要求</h2><ul><li>macOS 14 或更高版本</li><li>支持 Apple Silicon 与 Intel Mac</li><li>Xcode 清理功能仅在已安装 Xcode 时出现</li></ul></section>
+        <section id="install"><h2>安装</h2><ol><li><a class="download-inline" href="downloads/MacSpaceCleaner-1.2.dmg" download>下载 MacSpaceCleaner-1.2.dmg</a>。</li><li>双击 DMG，将“Mac 空间清理”拖入“应用程序”。</li><li>从“应用程序”文件夹打开。首次访问受保护目录时，根据系统提示决定是否授权。</li></ol></section>
+        <section id="usage"><h2>使用</h2><ol><li>等待扫描完成。</li><li>查看“建议清理”和“可选清理”；点击详情按钮可以检查具体内容。</li><li>确认勾选项目和预计释放空间，再点击“一键清理”。</li></ol><p>可选项目默认不勾选。个人数据区域不会参与一键清理。</p></section>
+        <section id="verify"><h2>验证下载</h2><p>当前 1.2 版本的 SHA-256：</p><div class="hash-block">35c1f197a3a32021a02fde787c365c10682fd14765329c14d62fdd81e66f122e</div><p>也可以下载 <a class="download-inline" href="downloads/MacSpaceCleaner-1.2.dmg.sha256" download>SHA-256 校验文件</a>，在终端执行：</p><p><code>shasum -a 256 MacSpaceCleaner-1.2.dmg</code></p></section>
+        <section id="uninstall"><h2>卸载</h2><p>退出 App，在“应用程序”文件夹中将“Mac 空间清理”移到废纸篓，然后清空废纸篓即可。App 不安装后台服务或系统扩展。</p></section>
+        <section id="questions"><h2>常见问题</h2><h3>为什么有些软件没有显示？</h3><p>App 只显示已发现且符合规则的缓存。没有缓存、缓存较小、位于受保护目录或尚未加入识别规则的软件可能不会出现。</p><h3>为什么清理后缓存又出现？</h3><p>缓存本来就是应用为加速运行而生成的临时数据。继续使用相关软件后，部分缓存会自然重建。</p><h3>需要管理员密码吗？</h3><p>普通用户缓存通常不需要。系统保护目录不会被纳入通用一键清理。</p></section>
+      </article>
+    </div>
+  </main>
+  <footer class="site-footer"><div class="section-inner footer-layout"><div class="footer-brand"><img src="assets/app-icon.png" alt="" width="30" height="30"><span>Mac 空间清理</span></div><div class="footer-links"><a href="index.html">首页</a><a href="privacy.html">隐私政策</a></div><p>© <span data-year></span> Mac 空间清理</p></div></footer>
+</body>
+</html>

@@ -1,0 +1,12 @@
+.DS_Store
+
+# Local build outputs and temporary captures
+IconGenerator
+dist/
+captures/
+build/
+dmg-root/
+notary-dmg-root/
+
+# Keep the website's public DMG download, but ignore local preview artifacts
+website/.DS_Store

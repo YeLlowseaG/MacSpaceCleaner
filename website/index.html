@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Mac 空间清理是一款原生 macOS 缓存清理工具，清理前可查看内容，个人数据不会进入一键清理。">
+  <meta name="theme-color" content="#f4f7f6">
+  <title>Mac 空间清理 - 看清缓存，再决定清理</title>
+  <link rel="icon" href="assets/app-icon.png">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js" defer></script>
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <header class="site-header">
+    <nav class="nav-wrap" aria-label="主导航">
+      <a class="brand" href="#top" aria-label="Mac 空间清理首页">
+        <img src="assets/app-icon.png" alt="" width="36" height="36">
+        <span>Mac 空间清理</span>
+      </a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="打开导航">
+        <i data-lucide="menu" aria-hidden="true"></i>
+      </button>
+      <div class="nav-links" id="nav-links">
+        <a href="#product">界面</a>
+        <a href="#coverage">清理范围</a>
+        <a href="#safety">安全</a>
+        <a href="support.html">使用帮助</a>
+        <a class="nav-download" href="downloads/MacSpaceCleaner-1.2.dmg" download>
+          <i data-lucide="download" aria-hidden="true"></i>
+          下载
+        </a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="top">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-inner">
+        <p class="eyebrow">原生 macOS 清理工具</p>
+        <h1 id="hero-title">Mac 空间清理</h1>
+        <p class="hero-lead">看清缓存，再决定清理。识别常见应用缓存、开发工具缓存和旧版 Xcode 模拟器，个人数据始终留给你确认。</p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="downloads/MacSpaceCleaner-1.2.dmg" download>
+            <i data-lucide="download" aria-hidden="true"></i>
+            下载 v1.2
+          </a>
+          <a class="button button-secondary" href="#product">
+            查看界面
+            <i data-lucide="arrow-down" aria-hidden="true"></i>
+          </a>
+        </div>
+        <div class="hero-meta" aria-label="版本信息">
+          <span><i data-lucide="badge-check" aria-hidden="true"></i> Apple 已公证</span>
+          <span><i data-lucide="monitor" aria-hidden="true"></i> macOS 14+</span>
+          <span><i data-lucide="cpu" aria-hidden="true"></i> Apple Silicon 与 Intel</span>
+        </div>
+        <div class="hero-visual" aria-label="产品功能示意">
+          <div class="hero-visual-top">
+            <div class="hero-app-mark"><img src="assets/app-icon.png" alt="" width="42" height="42"></div>
+            <div>
+              <strong>正在保护你的空间</strong>
+              <span>只显示可重新生成的内容</span>
+            </div>
+            <i data-lucide="shield-check" aria-hidden="true"></i>
+          </div>
+          <div class="hero-meter"><span></span></div>
+          <div class="hero-visual-row"><span><i data-lucide="check-circle-2" aria-hidden="true"></i>建议清理</span><b>安全</b></div>
+          <div class="hero-visual-row"><span><i data-lucide="sliders-horizontal" aria-hidden="true"></i>可选缓存</span><b>由你决定</b></div>
+          <div class="hero-visual-row"><span><i data-lucide="folder-search" aria-hidden="true"></i>个人数据</span><b>只读</b></div>
+          <div class="hero-visual-foot"><span>清理前可查看详情</span><i data-lucide="arrow-up-right" aria-hidden="true"></i></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="trust-strip" aria-label="产品原则">
+      <div class="section-inner trust-grid">
+        <div>
+          <i data-lucide="eye" aria-hidden="true"></i>
+          <strong>内容可见</strong>
+          <span>清理前查看路径与文件大小</span>
+        </div>
+        <div>
+          <i data-lucide="shield-check" aria-hidden="true"></i>
+          <strong>明确分级</strong>
+          <span>建议项与可选项分开呈现</span>
+        </div>
+        <div>
+          <i data-lucide="hard-drive" aria-hidden="true"></i>
+          <strong>只在本机</strong>
+          <span>扫描结果不会上传到服务器</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="product-section" id="product" aria-labelledby="product-title">
+      <div class="section-inner">
+        <div class="section-heading">
+          <p class="eyebrow">真实界面</p>
+          <h2 id="product-title">每类空间占用，都有安全边界</h2>
+          <p>建议清理、可选缓存、旧版模拟器和个人数据分区呈现，扫描完成后再由用户决定。</p>
+        </div>
+        <figure class="app-preview">
+          <img src="assets/app-window.png" alt="Mac 空间清理应用界面，展示建议清理、可选清理、旧版模拟器和个人数据分区" width="1560" height="1464">
+          <figcaption>实际界面因电脑中安装的软件和缓存内容而不同。</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="coverage-section" id="coverage" aria-labelledby="coverage-title">
+      <div class="section-inner">
+        <div class="section-heading compact">
+          <p class="eyebrow">识别范围</p>
+          <h2 id="coverage-title">覆盖日常应用与开发环境</h2>
+        </div>
+        <div class="coverage-list">
+          <article>
+            <div class="feature-icon green"><i data-lucide="package-check" aria-hidden="true"></i></div>
+            <div>
+              <h3>建议清理</h3>
+              <p>浏览器组件缓存、更新缓存、日志，以及 npm、pnpm、bun、Homebrew、Playwright 等可重新生成的内容。</p>
+            </div>
+          </article>
+          <article>
+            <div class="feature-icon orange"><i data-lucide="sliders-horizontal" aria-hidden="true"></i></div>
+            <div>
+              <h3>可选清理</h3>
+              <p>其他应用缓存、离线网页、语音模型、动态壁纸，以及微信、WPS 等应用的临时资源。</p>
+            </div>
+          </article>
+          <article>
+            <div class="feature-icon blue"><i data-lucide="smartphone" aria-hidden="true"></i></div>
+            <div>
+              <h3>Xcode 模拟器</h3>
+              <p>识别旧版运行时并保留每个平台的最新版本，也可清理按需重建的 dyld 共享缓存。</p>
+            </div>
+          </article>
+          <article>
+            <div class="feature-icon gray"><i data-lucide="folder-search" aria-hidden="true"></i></div>
+            <div>
+              <h3>个人数据只读</h3>
+              <p>下载、iCloud、微信聊天数据和 WPS 备份仅展示空间占用，不会进入一键清理。</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="safety-section" id="safety" aria-labelledby="safety-title">
+      <div class="section-inner safety-layout">
+        <div>
+          <p class="eyebrow">安全边界</p>
+          <h2 id="safety-title">只处理明确允许的缓存路径</h2>
+          <p class="section-copy">删除前会再次检查白名单、目录类型与符号链接。没有匹配安全规则的路径不会执行清理。</p>
+        </div>
+        <ul class="check-list">
+          <li><i data-lucide="check" aria-hidden="true"></i><span>清理前二次确认</span></li>
+          <li><i data-lucide="check" aria-hidden="true"></i><span>可选项目默认关闭</span></li>
+          <li><i data-lucide="check" aria-hidden="true"></i><span>不读取或上传文件内容</span></li>
+          <li><i data-lucide="check" aria-hidden="true"></i><span>Developer ID 签名与 Apple 公证</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="download-section" id="download" aria-labelledby="download-title">
+      <div class="section-inner download-layout">
+        <div>
+          <p class="eyebrow light">当前版本 1.2</p>
+          <h2 id="download-title">给 Mac 留出呼吸空间</h2>
+          <p>下载 DMG，将 App 拖入“应用程序”即可。文件大小约 1.2 MB。</p>
+        </div>
+        <div class="download-actions">
+          <a class="button button-light" href="downloads/MacSpaceCleaner-1.2.dmg" download>
+            <i data-lucide="download" aria-hidden="true"></i>
+            下载 Mac 版
+          </a>
+          <a class="checksum-link" href="downloads/MacSpaceCleaner-1.2.dmg.sha256" download>SHA-256 校验文件</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="section-inner footer-layout">
+      <div class="footer-brand">
+        <img src="assets/app-icon.png" alt="" width="30" height="30">
+        <span>Mac 空间清理</span>
+      </div>
+      <div class="footer-links">
+        <a href="privacy.html">隐私政策</a>
+        <a href="support.html">使用帮助</a>
+        <a href="downloads/MacSpaceCleaner-1.2.dmg.sha256">文件校验</a>
+      </div>
+      <p>© <span data-year></span> Mac 空间清理</p>
+    </div>
+  </footer>
+</body>
+</html>
