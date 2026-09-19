@@ -19,7 +19,20 @@
   <header class="site-header">
     <nav class="nav-wrap" aria-label="主导航">
       <a class="brand" href="index.html"><img src="assets/app-icon.png" alt="" width="36" height="36"><span>Mac 空间清理</span></a>
-      <div class="nav-links static-links"><a href="index.html">返回首页</a><a class="nav-download" href="downloads/MacSpaceCleaner-1.2.dmg" download><i data-lucide="download" aria-hidden="true"></i>下载</a></div>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="打开导航">
+        <i data-lucide="menu" aria-hidden="true"></i>
+      </button>
+      <div class="nav-links" id="nav-links">
+        <a href="index.html#product">界面</a>
+        <a href="index.html#coverage">清理范围</a>
+        <a href="index.html#safety">安全</a>
+        <a href="support.html" aria-current="page">使用帮助</a>
+        <a href="faq.html">FAQ</a>
+        <a class="nav-download" href="downloads/MacSpaceCleaner-1.2.dmg" download>
+          <i data-lucide="download" aria-hidden="true"></i>
+          下载
+        </a>
+      </div>
     </nav>
   </header>
   <main class="page-main">

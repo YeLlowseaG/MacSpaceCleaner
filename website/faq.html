@@ -30,7 +30,28 @@
   </script>
 </head>
 <body>
-  <header class="site-header"><nav class="nav-wrap" aria-label="主导航"><a class="brand" href="index.html"><img src="assets/app-icon.png" alt="" width="36" height="36"><span>Mac 空间清理</span></a><div class="nav-links static-links"><a href="index.html">返回首页</a><a class="nav-download" href="downloads/MacSpaceCleaner-1.2.dmg" download><i data-lucide="download" aria-hidden="true"></i>下载</a></div></nav></header>
+  <header class="site-header">
+    <nav class="nav-wrap" aria-label="主导航">
+      <a class="brand" href="index.html" aria-label="Mac 空间清理首页">
+        <img src="assets/app-icon.png" alt="" width="36" height="36">
+        <span>Mac 空间清理</span>
+      </a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="打开导航">
+        <i data-lucide="menu" aria-hidden="true"></i>
+      </button>
+      <div class="nav-links" id="nav-links">
+        <a href="index.html#product">界面</a>
+        <a href="index.html#coverage">清理范围</a>
+        <a href="index.html#safety">安全</a>
+        <a href="support.html">使用帮助</a>
+        <a href="faq.html" aria-current="page">FAQ</a>
+        <a class="nav-download" href="downloads/MacSpaceCleaner-1.2.dmg" download>
+          <i data-lucide="download" aria-hidden="true"></i>
+          下载
+        </a>
+      </div>
+    </nav>
+  </header>
   <main class="page-main">
     <section class="page-hero"><div class="section-inner"><p class="eyebrow">FAQ</p><h1>常见问题</h1><p>关于系统要求、清理边界、隐私和安装使用的直接回答。</p></div></section>
     <div class="section-inner document-layout"><aside class="document-nav" aria-label="本页目录"><strong>本页目录</strong><a href="#requirements">系统要求</a><a href="#scope">清理范围</a><a href="#privacy">隐私</a><a href="#xcode">Xcode</a><a href="#install">安装卸载</a></aside>
