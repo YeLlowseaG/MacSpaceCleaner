@@ -626,8 +626,30 @@ i[data-lucide] {
   line-height: 1.6;
 }
 
+.diagnostic-result:not(:empty) {
+  padding: 20px;
+  background: #f4f7fc;
+  border-left: 3px solid var(--brand);
+  border-radius: 8px;
+}
+
 .diagnostic-result strong {
+  display: block;
   color: var(--ink);
+  font-size: 17px;
+}
+
+.diagnostic-result ol {
+  margin: 12px 0 0;
+  padding-left: 22px;
+}
+
+.diagnostic-result li + li {
+  margin-top: 8px;
+}
+
+.diagnostic-result p {
+  margin: 14px 0 0;
 }
 
 .seo-card-grid {
