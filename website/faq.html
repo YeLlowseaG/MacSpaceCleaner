@@ -26,6 +26,7 @@
       {"@type":"Question","name":"Mac 空间清理可以清理 Xcode 模拟器吗？","acceptedAnswer":{"@type":"Answer","text":"如果电脑安装了 Xcode，App 会识别旧版模拟器运行时并保留每个平台的最新版本，也可以清理按需重建的共享缓存。"}},
       {"@type":"Question","name":"Mac 空间清理会上传扫描数据吗？","acceptedAnswer":{"@type":"Answer","text":"不会。扫描在本机完成，App 不会把文件路径、扫描结果或清理记录上传到开发者服务器。"}},
       {"@type":"Question","name":"Mac 空间清理需要管理员密码吗？","acceptedAnswer":{"@type":"Answer","text":"普通用户缓存通常不需要管理员密码。系统保护目录不会被纳入通用一键清理。"}},
+      {"@type":"Question","name":"Mac 空间清理需要完全磁盘访问权限吗？","acceptedAnswer":{"@type":"Answer","text":"不需要。普通缓存无需完全磁盘访问即可扫描和清理。该权限仅供希望检查更多受保护应用数据的用户选择，拒绝后其他可访问缓存仍可正常处理。"}},
       {"@type":"Question","name":"为什么清理后缓存又出现？","acceptedAnswer":{"@type":"Answer","text":"缓存是应用为加快运行而生成的临时数据。继续使用相关软件后，部分缓存会自然重建。"}},
       {"@type":"Question","name":"为什么有些软件没有显示？","acceptedAnswer":{"@type":"Answer","text":"App 只显示已发现且符合规则的缓存。没有缓存、缓存较小、位于受保护目录或尚未加入识别规则的软件可能不会出现。"}}
     ]
@@ -63,7 +64,7 @@
     <div class="section-inner document-layout"><aside class="document-nav" aria-label="本页目录"><strong>本页目录</strong><a href="#scope">清理范围</a><a href="#privacy">隐私与安全</a><a href="#xcode">Xcode</a><a href="#behavior">缓存行为</a></aside>
       <article class="document-content">
         <section id="scope"><h2>清理范围</h2><h3>它能清理什么？</h3><p>它可以识别常见应用缓存、日志、npm、pnpm、bun、Homebrew、Playwright 等开发缓存，以及旧版 Xcode 模拟器和共享缓存。</p><h3>它会删除个人文件吗？</h3><p>不会。下载、iCloud 云盘、微信聊天数据和 WPS 备份只展示空间占用，不进入一键清理；可选项目默认不勾选。</p></section>
-        <section id="privacy"><h2>隐私与安全</h2><h3>扫描数据会上传吗？</h3><p>不会。扫描在本机完成，App 不会把文件路径、扫描结果或清理记录上传到开发者服务器。</p><h3>是否通过 Apple 公证？</h3><p>当前版本使用 Developer ID 签名，并已通过 Apple 公证和 Gatekeeper 验证。</p></section>
+        <section id="privacy"><h2>隐私与安全</h2><h3>扫描数据会上传吗？</h3><p>不会。扫描在本机完成，App 不会把文件路径、扫描结果或清理记录上传到开发者服务器。</p><h3>需要完全磁盘访问权限吗？</h3><p>不需要。普通用户缓存无需完全磁盘访问即可扫描和清理。macOS 可能单独询问“下载”、iCloud 云盘等受保护目录的访问权限；拒绝后只是相关目录无法显示，其他功能仍可使用。完全磁盘访问仅适用于希望检查更多受保护应用数据的用户。</p><h3>还会申请哪些系统权限？</h3><p>App 不需要辅助功能、屏幕录制、摄像头、麦克风、通讯录、照片、定位或自动化控制权限，也不安装后台服务或系统扩展。</p><h3>是否通过 Apple 公证？</h3><p>当前版本使用 Developer ID 签名，并已通过 Apple 公证和 Gatekeeper 验证。</p></section>
         <section id="xcode"><h2>Xcode 模拟器</h2><h3>会不会把最新模拟器删掉？</h3><p>不会。App 会按平台识别版本，自动保留每个平台的最新运行时，只把旧版运行时列为可选清理。</p></section>
         <section id="behavior"><h2>缓存行为</h2><h3>为什么清理后缓存又出现？</h3><p>缓存是应用为加快运行而生成的临时数据。继续使用相关软件后，部分缓存会自然重建。</p><h3>为什么有些软件没有显示？</h3><p>App 只显示已发现且符合规则的缓存。没有缓存、缓存较小、位于受保护目录或尚未加入识别规则的软件可能不会出现。</p><h3>需要管理员密码吗？</h3><p>普通用户缓存通常不需要管理员密码。系统保护目录不会被纳入通用一键清理。</p></section>
       </article>

@@ -50,10 +50,11 @@
       </div>
     </section>
     <div class="section-inner document-layout">
-      <aside class="document-nav" aria-label="本页目录"><strong>本页目录</strong><a href="#requirements">系统要求</a><a href="#install">安装</a><a href="#usage">使用</a><a href="#verify">验证下载</a><a href="#uninstall">卸载</a></aside>
+      <aside class="document-nav" aria-label="本页目录"><strong>本页目录</strong><a href="#requirements">系统要求</a><a href="#install">安装</a><a href="#permissions">权限说明</a><a href="#usage">使用</a><a href="#verify">验证下载</a><a href="#uninstall">卸载</a></aside>
       <article class="document-content">
         <section id="requirements"><h2>系统要求</h2><ul><li>macOS 14 或更高版本</li><li>支持 Apple Silicon 与 Intel Mac</li><li>Xcode 清理功能仅在已安装 Xcode 时出现</li></ul></section>
         <section id="install"><h2>安装</h2><ol><li><a class="download-inline" href="downloads/MacSpaceCleaner-1.2.dmg" download>下载 MacSpaceCleaner-1.2.dmg</a>。</li><li>双击 DMG，将“Mac 空间清理”拖入“应用程序”。</li><li>从“应用程序”文件夹打开。首次访问受保护目录时，根据系统提示决定是否授权。</li></ol></section>
+        <section id="permissions"><h2>权限说明</h2><p>正常扫描和清理普通用户缓存不需要管理员密码，也不需要“完全磁盘访问”。当 App 查看“下载”、iCloud 云盘或其他受 macOS 保护的目录时，系统可能询问是否允许访问。</p><p>拒绝访问不会阻止 App 启动，也不会影响其他可访问缓存的扫描和清理；相关受保护目录只会无法显示或无法完整统计。完全磁盘访问仅适用于希望检查更多受保护应用数据的用户，不是首次使用的必需条件。</p><p>App 不需要辅助功能、屏幕录制、摄像头、麦克风、通讯录、照片、定位或自动化控制权限，也不安装后台服务或系统扩展。</p></section>
         <section id="usage"><h2>使用</h2><ol><li>等待扫描完成。</li><li>查看“建议清理”和“可选清理”；点击详情按钮可以检查具体内容。</li><li>确认勾选项目和预计释放空间，再点击“一键清理”。</li></ol><p>可选项目默认不勾选。个人数据区域不会参与一键清理。</p></section>
         <section id="verify"><h2>验证下载</h2><p>当前 1.2 版本的 SHA-256：</p><div class="hash-block">a0f16a2e473d4c6bd3e2a72d9057d144709e4000bcfca7ca0e63d2273361658f</div><p>也可以下载 <a class="download-inline" href="downloads/MacSpaceCleaner-1.2.dmg.sha256" download>SHA-256 校验文件</a>，在终端执行：</p><p><code>shasum -a 256 MacSpaceCleaner-1.2.dmg</code></p></section>
         <section id="uninstall"><h2>卸载</h2><p>退出 App，在“应用程序”文件夹中将“Mac 空间清理”移到废纸篓，然后清空废纸篓即可。App 不安装后台服务或系统扩展。</p></section>
