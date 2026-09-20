@@ -68,6 +68,13 @@ struct ScanResult {
     let runtimeError: String?
 }
 
+struct CleanupOutcome: Identifiable {
+    let id = UUID()
+    let cleanedItemCount: Int
+    let selectedBytes: Int64
+    let issues: [String]
+}
+
 struct ContentEntry: Identifiable, Hashable {
     let id: String
     let name: String
@@ -204,6 +211,7 @@ final class CleanerModel: ObservableObject {
     @Published var status = AppLanguage.text("准备扫描", "Ready to scan")
     @Published var runtimeError: String?
     @Published var scanRevision = 0
+    @Published var cleanupOutcome: CleanupOutcome?
 
     private let developerDirectory = "/Applications/Xcode.app/Contents/Developer"
 
@@ -233,10 +241,12 @@ final class CleanerModel: ObservableObject {
         }
     }
 
-    func scan() {
+    func scan(afterCleanup outcome: CleanupOutcome? = nil) {
         guard !isScanning && !isCleaning else { return }
         isScanning = true
-        status = AppLanguage.text("正在扫描安全缓存和模拟器…", "Scanning safe caches and simulators…")
+        status = outcome == nil
+            ? AppLanguage.text("正在扫描安全缓存和模拟器…", "Scanning safe caches and simulators…")
+            : AppLanguage.text("清理完成，正在重新扫描…", "Cleanup complete. Scanning again…")
 
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             guard let self else { return }
@@ -251,7 +261,14 @@ final class CleanerModel: ObservableObject {
                 self.freeBytes = result.freeBytes
                 self.totalBytes = max(result.totalBytes, 1)
                 self.runtimeError = result.runtimeError
-                self.status = AppLanguage.text("扫描完成", "Scan complete")
+                if let outcome {
+                    self.status = outcome.issues.isEmpty
+                        ? AppLanguage.text("一键清理完成", "One-click cleanup complete")
+                        : AppLanguage.text("清理完成，部分项目未处理", "Cleanup complete; some items were not processed")
+                    self.cleanupOutcome = outcome
+                } else {
+                    self.status = AppLanguage.text("扫描完成", "Scan complete")
+                }
                 self.isScanning = false
                 self.scanRevision += 1
             }
@@ -263,6 +280,7 @@ final class CleanerModel: ObservableObject {
         let selectedCaches = cacheItems.filter(\.selected)
         let selectedRuntimes = runtimeItems.filter(\.selected)
         let shouldCleanSharedCache = cleanSharedCache && sharedCacheBytes > 0
+        let selectedBytes = self.selectedBytes
 
         isCleaning = true
         status = AppLanguage.text("正在清理，请不要退出应用…", "Cleaning. Please keep the app open…")
@@ -270,6 +288,7 @@ final class CleanerModel: ObservableObject {
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             guard let self else { return }
             var messages: [String] = []
+            var cleanedItemCount = 0
             let fileManager = FileManager.default
             let approvedCachePaths = Set(self.discoverCacheTargets().map(\.path))
 
@@ -281,6 +300,7 @@ final class CleanerModel: ObservableObject {
                             continue
                         }
                         try fileManager.removeItem(atPath: item.path)
+                        cleanedItemCount += 1
                     }
                 } catch {
                     messages.append(AppLanguage.text("无法清理 \(item.name)：\(error.localizedDescription)", "Could not clean \(item.name): \(error.localizedDescription)"))
@@ -295,6 +315,8 @@ final class CleanerModel: ObservableObject {
                 )
                 if result.status != 0 {
                     messages.append(AppLanguage.text("无法删除 \(runtime.name)：\(result.output)", "Could not remove \(runtime.name): \(result.output)"))
+                } else {
+                    cleanedItemCount += 1
                 }
             }
 
@@ -306,13 +328,18 @@ final class CleanerModel: ObservableObject {
                 )
                 if result.status != 0 {
                     messages.append(AppLanguage.text("无法清理 Xcode 共享缓存：\(result.output)", "Could not clean the Xcode shared cache: \(result.output)"))
+                } else {
+                    cleanedItemCount += 1
                 }
             }
 
             DispatchQueue.main.async {
                 self.isCleaning = false
-                self.status = messages.isEmpty ? AppLanguage.text("清理完成，正在重新扫描…", "Cleanup complete. Scanning again…") : messages.joined(separator: "\n")
-                self.scan()
+                self.scan(afterCleanup: CleanupOutcome(
+                    cleanedItemCount: cleanedItemCount,
+                    selectedBytes: selectedBytes,
+                    issues: messages
+                ))
             }
         }
     }
@@ -837,6 +864,15 @@ struct CleanerView: View {
         } message: {
             Text(confirmationMessage)
         }
+        .alert(item: $model.cleanupOutcome) { outcome in
+            Alert(
+                title: Text(outcome.issues.isEmpty
+                    ? AppLanguage.text("一键清理完成", "One-click cleanup complete")
+                    : AppLanguage.text("清理完成，部分项目未处理", "Cleanup complete; some items were not processed")),
+                message: Text(cleanupOutcomeMessage(outcome)),
+                dismissButton: .default(Text(AppLanguage.text("完成", "Done")))
+            )
+        }
         .sheet(item: $inspectedCache) { item in
             CacheDetailView(item: item)
         }
@@ -1150,6 +1186,21 @@ struct CleanerView: View {
         }
         text += AppLanguage.text("不会删除文稿、下载、iCloud、微信聊天附件或项目文件。", "Documents, Downloads, iCloud files, WeChat attachments and project files will not be removed.")
         return text
+    }
+
+    private func cleanupOutcomeMessage(_ outcome: CleanupOutcome) -> String {
+        let cleanedSummary = AppLanguage.text(
+            "已处理 \(outcome.cleanedItemCount) 个项目，本次选择约 \(format(outcome.selectedBytes))。磁盘已重新扫描。",
+            "Processed \(outcome.cleanedItemCount) item\(outcome.cleanedItemCount == 1 ? "" : "s") totaling about \(format(outcome.selectedBytes)). The disk has been scanned again."
+        )
+        guard !outcome.issues.isEmpty else { return cleanedSummary }
+
+        let visibleIssues = outcome.issues.prefix(3).joined(separator: "\n")
+        let remainingCount = outcome.issues.count - min(outcome.issues.count, 3)
+        let remaining = remainingCount > 0
+            ? AppLanguage.text("\n另有 \(remainingCount) 条未显示。", "\n\(remainingCount) more issue\(remainingCount == 1 ? "" : "s") not shown.")
+            : ""
+        return "\(cleanedSummary)\n\n\(visibleIssues)\(remaining)"
     }
 }
 
