@@ -11,6 +11,8 @@ Mac 空间清理（MacSpaceCleaner）是一款原生 macOS 缓存清理工具。
 - 可选项目默认不勾选。
 - 下载、iCloud 云盘、微信聊天数据和 WPS 备份只读展示，不进入一键清理。
 - 安装 Xcode 时，可以识别旧版模拟器并保留每个平台的最新版本。
+- 可以识别 Xcode 构建缓存（DerivedData），删除后下次编译自动重建。
+- 可以识别真机调试支持文件（DeviceSupport），按平台和版本逐个列出。
 - 扫描在本机完成，不上传文件路径、扫描结果或清理记录。
 - 当前版本为 1.3，已使用 Developer ID 签名并通过 Apple 公证。
 
@@ -20,6 +22,7 @@ Mac 空间清理（MacSpaceCleaner）是一款原生 macOS 缓存清理工具。
 - 使用帮助：https://mac-space-cleaner.vercel.app/support.html
 - 常见问题：https://mac-space-cleaner.vercel.app/faq.html
 - Mac 磁盘空间问题指南：https://mac-space-cleaner.vercel.app/mac-storage-cleaner.html
+- Xcode 旧版模拟器清理：https://mac-space-cleaner.vercel.app/xcode-simulator-cleanup.html
 - 隐私政策：https://mac-space-cleaner.vercel.app/privacy.html
 - 下载：https://mac-space-cleaner.vercel.app/downloads/MacSpaceCleaner-1.3.dmg
 
@@ -29,6 +32,7 @@ Mac 空间清理（MacSpaceCleaner）是一款原生 macOS 缓存清理工具。
 - Help: https://mac-space-cleaner.vercel.app/en/support.html
 - FAQ: https://mac-space-cleaner.vercel.app/en/faq.html
 - Mac storage guide: https://mac-space-cleaner.vercel.app/en/mac-storage-cleaner.html
+- Xcode simulator cleanup: https://mac-space-cleaner.vercel.app/en/xcode-simulator-cleanup.html
 - Privacy policy: https://mac-space-cleaner.vercel.app/en/privacy.html
 
 The website provides Simplified Chinese and English pages. The native app follows the Mac's preferred language and performs scans locally.

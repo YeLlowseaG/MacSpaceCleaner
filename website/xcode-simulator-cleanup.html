@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Xcode 模拟器占用空间怎么清理？先看清每个旧版运行时的体积，保留每个平台的最新版本，再删除旧版和可重建的共享缓存。本机扫描，不上传路径。">
+  <meta name="theme-color" content="#f4f7fc">
+  <link rel="canonical" href="https://mac-space-cleaner.vercel.app/xcode-simulator-cleanup.html">
+  <link rel="alternate" hreflang="zh-Hans" href="https://mac-space-cleaner.vercel.app/xcode-simulator-cleanup.html">
+  <link rel="alternate" hreflang="en" href="https://mac-space-cleaner.vercel.app/en/xcode-simulator-cleanup.html">
+  <link rel="alternate" hreflang="x-default" href="https://mac-space-cleaner.vercel.app/en/xcode-simulator-cleanup.html">
+  <meta property="og:title" content="Xcode 旧版模拟器占用空间怎么清理">
+  <meta property="og:description" content="旧版 iOS 和 watchOS 模拟器运行时每个占 4–9 GB，几个版本叠起来就是几十 GB。保留每个平台的最新版本，其余可以删。">
+  <meta property="og:url" content="https://mac-space-cleaner.vercel.app/xcode-simulator-cleanup.html">
+  <title>Xcode 旧版模拟器占用空间怎么清理｜保留最新版本再删除｜Mac 空间清理</title>
+  <link rel="icon" href="assets/app-icon.png">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js" defer></script>
+  <script src="script.js" defer></script>
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"FAQPage",
+    "mainEntity":[
+      {"@type":"Question","name":"删除旧版 Xcode 模拟器运行时会不会影响正在开发的项目？","acceptedAnswer":{"@type":"Answer","text":"只要保留每个平台用于测试的那个版本就不会影响。旧版运行时的作用是运行指定系统版本的模拟器；如果你不再需要针对那个系统版本做兼容测试，删除它不会影响代码和当前使用的模拟器。不确定时可以先只删除最旧的一两个版本。"}},
+      {"@type":"Question","name":"模拟器运行时为什么占这么多空间？","acceptedAnswer":{"@type":"Answer","text":"每个运行时是一整套完整的系统镜像，包含该系统版本的全部框架和资源，单个通常在 4 到 9 GB 之间。每次 Xcode 升级到新的系统版本，如果通过界面下载，旧版不会自动清除，于是逐年累加。"}},
+      {"@type":"Question","name":"~/Library/Developer/CoreSimulator/Caches/dyld 可以删吗？","acceptedAnswer":{"@type":"Answer","text":"可以。这个目录是按需重建的缓存，删除后首次启动模拟器会重新生成，会稍慢一次。它不影响已安装的运行时和已有模拟器设备。"}},
+      {"@type":"Question","name":"删掉之后还能再装回来吗？","acceptedAnswer":{"@type":"Answer","text":"可以。在 Xcode 的 Settings → Components 里可以重新下载任意系统版本的运行时。代价是重新下载，所以建议先确认你确实不需要针对那个系统版本做测试。"}}
+    ]
+  }
+  </script>
+</head>
+<body>
+  <header class="site-header">
+    <nav class="nav-wrap" aria-label="主导航">
+      <a class="brand" href="index.html" aria-label="Mac 空间清理首页"><img src="assets/app-icon.png" alt="" width="36" height="36"><span>Mac 空间清理</span></a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="打开导航"><i data-lucide="menu" aria-hidden="true"></i></button>
+      <div class="nav-links" id="nav-links">
+        <a href="index.html">首页</a>
+        <a href="mac-storage-cleaner.html">空间问题</a>
+        <a href="xcode-simulator-cleanup.html" aria-current="page">Xcode 模拟器</a>
+        <a href="index.html#product">界面</a>
+        <a href="index.html#coverage">清理范围</a>
+        <a href="index.html#safety">安全</a>
+        <a href="support.html">使用帮助</a>
+        <a href="faq.html">FAQ</a>
+        <a class="language-switch" href="en/xcode-simulator-cleanup.html" lang="en" hreflang="en">EN</a>
+        <a class="nav-download" href="downloads/MacSpaceCleaner-1.3.dmg" download><i data-lucide="download" aria-hidden="true"></i>下载</a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="page-main">
+    <section class="page-hero seo-hero">
+      <div class="section-inner">
+        <p class="eyebrow">开发者空间</p>
+        <h1>Xcode 旧版模拟器，往往是你 Mac 上最大的一块可清理空间</h1>
+        <p>每个 iOS 或 watchOS 运行时是一整套完整的系统镜像，单个通常在 4–9 GB。Xcode 升级后旧版不会自动删除，几个版本叠起来就是几十 GB。</p>
+        <div class="hero-actions"><a class="button button-primary" href="downloads/MacSpaceCleaner-1.3.dmg" download><i data-lucide="download" aria-hidden="true"></i>下载 Mac 空间清理</a><a class="button button-secondary" href="#how">看看它怎么判断</a></div>
+      </div>
+    </section>
+
+    <section class="seo-section" aria-labelledby="what-title">
+      <div class="section-inner seo-narrow">
+        <div class="section-heading">
+          <p class="eyebrow">先搞清楚</p>
+          <h2 id="what-title">模拟器运行时到底占了什么</h2>
+          <p>很多人以为「模拟器」只是几个临时文件，所以一直没去清。实际情况不是这样。</p>
+        </div>
+        <div class="seo-card-grid">
+          <article class="seo-card">
+            <i data-lucide="hard-drive" aria-hidden="true"></i>
+            <h3>每个运行时是一整套系统镜像</h3>
+            <p>它包含那个系统版本的全部框架、资源和二进制文件，不是缓存。所以体积是按 GB 算的，不是按 MB。</p>
+          </article>
+          <article class="seo-card">
+            <i data-lucide="plus-circle" aria-hidden="true"></i>
+            <h3>它们只会累积，不会自动清</h3>
+            <p>每次 Xcode 更新到新的系统版本，你下载一个新运行时。旧的那个留在磁盘上，除非你手动处理。</p>
+          </article>
+          <article class="seo-card">
+            <i data-lucide="smartphone" aria-hidden="true"></i>
+            <h3>两个平台各自累积</h3>
+            <p>如果你同时做 iOS 和 watchOS（或 tvOS、visionOS），每个平台都会各存一份历史版本。</p>
+          </article>
+          <article class="seo-card">
+            <i data-lucide="clock" aria-hidden="true"></i>
+            <h3>真正的用途是兼容测试</h3>
+            <p>旧版运行时的唯一作用是：在指定系统版本上测你的 App。如果你不做那种测试，它对你没有任何价值。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="seo-section seo-section-alt" id="how" aria-labelledby="how-title">
+      <div class="section-inner seo-narrow">
+        <div class="section-heading">
+          <p class="eyebrow">判断方法</p>
+          <h2 id="how-title">怎么决定删哪个、留哪个</h2>
+          <p>原则只有一条：<strong>每个平台保留最新版本，其余按需要保留。</strong></p>
+        </div>
+        <div class="seo-card-grid">
+          <article class="seo-card">
+            <i data-lucide="check-circle-2" aria-hidden="true"></i>
+            <h3>必留：每个平台的最新版本</h3>
+            <p>这是你日常开发在用的那个。删了它，模拟器直接跑不起来，得重新下载几个 GB。</p>
+          </article>
+          <article class="seo-card">
+            <i data-lucide="clipboard-list" aria-hidden="true"></i>
+            <h3>看你的最低支持版本</h3>
+            <p>如果你的 App 最低支持 iOS 17，那 iOS 16 及更早的运行时基本没有用途。</p>
+          </article>
+          <article class="seo-card">
+            <i data-lucide="upload-cloud" aria-hidden="true"></i>
+            <h3>看它有没有上架压力</h3>
+            <p>不打算在旧系统上做兼容测试，就不需要旧运行时。上架只需要当前版本能跑。</p>
+          </article>
+          <article class="seo-card">
+            <i data-lucide="rotate-ccw" aria-hidden="true"></i>
+            <h3>删错了也能装回来</h3>
+            <p>Xcode 的 Settings → Components 里可以重新下载任意版本。代价只是重新下载的时间。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="seo-section" aria-labelledby="manual-title">
+      <div class="section-inner seo-narrow">
+        <div class="section-heading">
+          <p class="eyebrow">手动方法</p>
+          <h2 id="manual-title">不用任何工具，也可以在终端里查</h2>
+          <p>如果你只想先看看自己有多少，这两条命令就够了。它们只读取，不删除任何东西。</p>
+        </div>
+        <div class="hash-block" style="margin-bottom:1.5rem">
+          <p style="margin:0 0 .5rem;font-size:.875rem;color:var(--muted,#6b7280)">查看每个运行时占用多少</p>
+          <code style="display:block;overflow-x:auto;white-space:pre">du -sh ~/Library/Developer/CoreSimulator/Profiles/Runtimes/*</code>
+        </div>
+        <div class="hash-block" style="margin-bottom:1.5rem">
+          <p style="margin:0 0 .5rem;font-size:.875rem;color:var(--muted,#6b7280)">查看可重建的共享缓存</p>
+          <code style="display:block;overflow-x:auto;white-space:pre">du -sh ~/Library/Developer/CoreSimulator/Caches/dyld</code>
+        </div>
+        <p style="margin-top:1.25rem">手动删除的方式是<strong>在 Finder 里把对应的运行时文件夹移到废纸篓</strong>，不要使用 Xcode 界面的卸载入口以外的脚本。稳妥做法是：先只删最旧的一个版本，确认 Xcode 和你的项目一切正常，再继续删其他。</p>
+      </div>
+    </section>
+
+    <section class="seo-section seo-section-alt" aria-labelledby="app-title">
+      <div class="section-inner seo-narrow seo-callout">
+        <div>
+          <p class="eyebrow">需要本机扫描？</p>
+          <h2 id="app-title">让 Mac 空间清理替你逐个列出来</h2>
+          <p>它会列出每个旧版运行时的名称、构建号和体积，标出每个平台的最新版本，剩下的由你勾选。同一次扫描还会覆盖 Xcode 构建缓存（DerivedData）和真机调试支持文件。可选项默认不勾选，删除前还会再确认一次路径。</p>
+        </div>
+        <a class="button button-primary" href="downloads/MacSpaceCleaner-1.3.dmg" download>免费下载 Mac 版</a>
+      </div>
+    </section>
+
+    <section class="seo-section" aria-labelledby="faq-title">
+      <div class="section-inner seo-narrow seo-faq">
+        <div class="section-heading"><p class="eyebrow">常见问题</p><h2 id="faq-title">关于 Xcode 模拟器清理</h2></div>
+        <details><summary>删了会不会影响我正在开发的项目？</summary><p>只要保留每个平台的最新版本就不会。旧版运行时的作用是运行指定系统版本的模拟器。如果你不再需要针对那个版本做兼容测试，删除它不影响代码，也不影响当前在用的模拟器。不确定时可以先只删最旧的一两个。</p></details>
+        <details><summary>为什么一个运行时就有好几十 GB？</summary><p>单个通常是 4–9 GB，不是几十 GB。但 iOS 和 watchOS 各自的多个历史版本加起来，在开发机上很容易到几十 GB —— 因为每个平台每年都会发布几个新版本。</p></details>
+        <details><summary>Caches/dyld 是什么，可以删吗？</summary><p>它是模拟器的动态链接缓存，按需重建。删除后首次启动模拟器会重新生成，只会慢一次，不影响已安装的运行时和设备。</p></details>
+        <details><summary>删掉之后还能装回来吗？</summary><p>可以。Xcode 的 Settings → Components 里能重新下载任意系统版本的运行时，代价是重新下载的时间。</p></details>
+        <details><summary>清理会动到我的项目文件和代码吗？</summary><p>不会。运行时和设备数据都在 <code>~/Library/Developer</code> 下，与你的项目目录分开。产品也只在明确允许的缓存和运行时路径内操作，不会触碰项目文件。</p></details>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer"><div class="section-inner footer-layout"><div class="footer-brand"><img src="assets/app-icon.png" alt="" width="30" height="30"><span>Mac 空间清理</span></div><div class="footer-links"><a href="index.html">首页</a><a href="support.html">使用帮助</a><a href="faq.html">FAQ</a><a href="privacy.html">隐私政策</a></div><p>© <span data-year></span> Mac 空间清理</p></div></footer>
+</body>
+</html>
