@@ -197,6 +197,9 @@ i[data-lucide] {
   font-size: 64px;
   line-height: 1.05;
   letter-spacing: 0;
+  /* 中文标题按字符断行，容易出现「占 / 了」这种把一个词拆开的难看断法。
+     balance 让两行长度接近，断点落在标点处。旧浏览器忽略这条，退回原行为。 */
+  text-wrap: balance;
 }
 
 .hero-lead {
