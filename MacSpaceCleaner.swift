@@ -370,7 +370,10 @@ final class CleanerModel: ObservableObject {
 
     private func performScan() -> ScanResult {
         let (free, total) = diskSpace()
-        let cacheTargets = discoverCacheTargets()
+
+        // DeviceSupport 单独发现，因为它要按平台 + 版本逐个建项，
+        // 不能像其它缓存那样整目录一项。合并之后走同一套体积统计和展示逻辑。
+        let cacheTargets = discoverCacheTargets() + discoverDeviceSupportTargets()
         let reviewTargets = discoverReviewTargets()
         let sharedCachePath = "/Library/Developer/CoreSimulator/Caches/dyld"
         let allPaths = cacheTargets.map(\.path) + reviewTargets.map(\.path) + [sharedCachePath]
@@ -422,6 +425,21 @@ final class CleanerModel: ObservableObject {
         let always: Int64 = 1
         let fiveMB: Int64 = 5 * 1024 * 1024
         var targets: [CacheTarget] = [
+            /**
+             DerivedData —— 构建产物。
+
+             ⚠️ 为什么放在【建议清理】而不是可选：
+                它纯粹是编译中间产物，删掉之后下次编译自动重建，
+                不丢任何源码、配置或已发布的东西。
+                代价是下一次编译慢一些。这是开发者最熟悉的那个目录，
+                也是「Xcode 占用空间」这个搜索里最先被问到的。
+
+             ⚠️ 路径是 ~/Library/Developer/Xcode/DerivedData，
+                不是项目目录里的 DerivedData（有人会在项目里自定义位置）。
+                自定义位置的那个不在我们的白名单内，不会被扫到 —— 这是对的，
+                我们只处理默认位置。
+             */
+            CacheTarget(name: AppLanguage.text("Xcode 构建缓存（DerivedData）", "Xcode build cache (DerivedData)"), detail: AppLanguage.text("编译中间产物；下次编译自动重建", "Build intermediates; rebuilt on the next build"), path: "\(home)/Library/Developer/Xcode/DerivedData", recommended: true, minimumBytes: always),
             CacheTarget(name: AppLanguage.text("Codex 运行时", "Codex runtimes"), detail: AppLanguage.text("可按需重新下载", "Downloaded again when needed"), path: "\(home)/.cache/codex-runtimes", recommended: true, minimumBytes: always),
             CacheTarget(name: AppLanguage.text("npm 软件包缓存", "npm package cache"), detail: AppLanguage.text("不影响已安装项目", "Does not affect installed projects"), path: "\(home)/.npm/_cacache", recommended: true, minimumBytes: always),
             CacheTarget(name: AppLanguage.text("npm 临时执行缓存", "npm temporary execution cache"), detail: AppLanguage.text("不影响项目源码", "Does not affect project source"), path: "\(home)/.npm/_npx", recommended: true, minimumBytes: always),
@@ -509,6 +527,56 @@ final class CleanerModel: ObservableObject {
             }
         }
 
+        return targets
+    }
+
+    /**
+     真机调试支持文件（DeviceSupport）。
+
+     ⚠️ 为什么按【每个版本】拆成独立一项，而不是整个目录一项：
+        用户真正要做的决定是「留哪几个版本」——例如「只留最新的，其他删掉」。
+        做成一项的话他只能全删或全不删，那不叫「看清了再决定」。
+        和模拟器运行时的处理方式保持一致（也是每个运行时一项）。
+
+     ⚠️ 为什么可以安全删除：
+        它们是连接真机调试时 Xcode 从设备上抓取的符号文件。
+        删掉后下次连接那台设备会重新抓取，等几分钟，不影响任何已构建的东西。
+        换过设备的人，旧设备的这些文件基本永远不会再用。
+     */
+    private func discoverDeviceSupportTargets() -> [CacheTarget] {
+        let home = FileManager.default.homeDirectoryForCurrentUser.path
+        let platforms: [(folder: String, label: String)] = [
+            ("iOS DeviceSupport", "iOS"),
+            ("watchOS DeviceSupport", "watchOS"),
+            ("tvOS DeviceSupport", "tvOS"),
+            ("visionOS DeviceSupport", "visionOS")
+        ]
+
+        var targets: [CacheTarget] = []
+        for platform in platforms {
+            let base = "\(home)/Library/Developer/Xcode/\(platform.folder)"
+            guard let entries = try? FileManager.default.contentsOfDirectory(atPath: base) else { continue }
+
+            for entry in entries where !entry.hasPrefix(".") {
+                let path = "\(base)/\(entry)"
+                var isDirectory: ObjCBool = false
+                guard FileManager.default.fileExists(atPath: path, isDirectory: &isDirectory),
+                      isDirectory.boolValue else { continue }
+
+                targets.append(CacheTarget(
+                    name: "\(platform.label) \(entry)",
+                    detail: AppLanguage.text(
+                        "真机调试支持文件；下次连接该设备会重新抓取",
+                        "Device support files; fetched again next time that device connects"
+                    ),
+                    path: path,
+                    recommended: false,
+                    // ⚠️ 这里不能用 always —— 它是 discoverCacheTargets 里的局部常量。
+                    //    语义相同：只要目录存在且大于 0 字节就显示。
+                    minimumBytes: 1
+                ))
+            }
+        }
         return targets
     }
 
