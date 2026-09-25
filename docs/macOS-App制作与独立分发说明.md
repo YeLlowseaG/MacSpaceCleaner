@@ -155,7 +155,7 @@ cd "/Volumes/MacT7/projectDocuments/MacSpaceCleaner"
 
 ## 当前项目状态
 
-当前 `MacSpaceCleaner-1.2.dmg` 已完成：
+当前 `MacSpaceCleaner-1.3.dmg` 已完成：
 
 - Apple Silicon 与 Intel 通用构建
 - Developer ID 正式签名

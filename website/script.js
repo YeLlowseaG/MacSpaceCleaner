@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const diagnosticResult = document.querySelector("[data-diagnostic-result]");
   if (diagnostic && diagnosticResult) {
     const isEnglish = document.documentElement.lang.toLowerCase().startsWith("en");
-    const downloadHref = isEnglish ? "../downloads/MacSpaceCleaner-1.2.dmg" : "downloads/MacSpaceCleaner-1.2.dmg";
+    const downloadHref = isEnglish ? "../downloads/MacSpaceCleaner-1.3.dmg" : "downloads/MacSpaceCleaner-1.3.dmg";
     const advice = {
       full: {
         title: "先确认空间被哪一类内容占用",

@@ -4,16 +4,16 @@
 
 **看清缓存，再决定清理。**
 
-Mac 空间清理用于识别常见应用缓存、开发工具缓存和旧版 Xcode 模拟器。建议清理与可选清理分开显示；下载、iCloud 云盘、微信聊天数据和 WPS 备份只读展示，不会进入一键清理。
+Mac 空间清理用于识别常见应用缓存、开发工具缓存，以及 Xcode 的三类大块占用：旧版模拟器运行时、构建缓存（DerivedData）和真机调试支持文件（DeviceSupport）。建议清理与可选清理分开显示；下载、iCloud 云盘、微信聊天数据和 WPS 备份只读展示，不会进入一键清理。
 
 - 官网：<https://mac-space-cleaner.vercel.app/>
-- 下载：<https://mac-space-cleaner.vercel.app/downloads/MacSpaceCleaner-1.2.dmg>
+- 下载：<https://mac-space-cleaner.vercel.app/downloads/MacSpaceCleaner-1.3.dmg>
 - 常见问题：<https://mac-space-cleaner.vercel.app/faq.html>
 - 隐私政策：<https://mac-space-cleaner.vercel.app/privacy.html>
 
 ## 产品信息
 
-- 当前版本：1.2（Build 3）
+- 当前版本：1.3（Build 5）
 - 系统要求：macOS 14 或更高版本
 - 架构：Apple Silicon 与 Intel Universal Binary
 - 分发：Developer ID 签名、Hardened Runtime、Apple 公证与票据装订
@@ -24,6 +24,8 @@ Mac 空间清理用于识别常见应用缓存、开发工具缓存和旧版 Xco
 - 扫描常见应用缓存、日志和更新缓存
 - 识别 npm、pnpm、bun、Homebrew、Playwright 等开发缓存
 - 识别旧版 Xcode 模拟器，并保留每个平台的最新版本
+- 识别 Xcode 构建缓存（DerivedData），删除后下次编译自动重建
+- 识别真机调试支持文件（DeviceSupport），按平台和版本逐个列出
 - 显示模拟器 dyld 共享缓存
 - 清理前查看路径、目录内容、大小和修改时间
 - 可选项目默认不勾选，个人数据不参与一键清理
