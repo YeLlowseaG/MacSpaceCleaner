@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Mac Space Cleaner is a native macOS cache cleaner that shows what will be removed and keeps personal data out of one-click cleanup.">
+  <meta name="description" content="A native macOS cleaner that lists the real size of old Xcode simulator runtimes, build caches, device support files and developer caches, and marks what can be regenerated.">
   <meta name="theme-color" content="#f4f7fc">
   <link rel="canonical" href="https://mac-space-cleaner.vercel.app/en/">
   <link rel="alternate" hreflang="zh-Hans" href="https://mac-space-cleaner.vercel.app/">
@@ -11,14 +11,14 @@
   <link rel="alternate" hreflang="x-default" href="https://mac-space-cleaner.vercel.app/en/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Mac Space Cleaner">
-  <meta property="og:title" content="Mac Space Cleaner | See the cache before you clean">
-  <meta property="og:description" content="A native macOS cache cleaner that separates recommended, optional and personal data so you stay in control.">
+  <meta property="og:title" content="Mac Space Cleaner | See what Xcode is eating before you delete it">
+  <meta property="og:description" content="Old simulator runtimes, build caches and device support files, listed with their real size and marked as regenerable.">
   <meta property="og:url" content="https://mac-space-cleaner.vercel.app/en/">
   <meta property="og:image" content="https://mac-space-cleaner.vercel.app/assets/app-icon.png">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Mac Space Cleaner | See the cache before you clean">
-  <meta name="twitter:description" content="A native macOS cache cleaner that shows what will be removed and keeps personal data out of one-click cleanup.">
-  <title>Mac Space Cleaner - See the cache before you clean</title>
+  <meta name="twitter:title" content="Mac Space Cleaner | See what Xcode is eating before you delete it">
+  <meta name="twitter:description" content="A native macOS cleaner that lists the real size of every item and marks what can be regenerated.">
+  <title>Mac Space Cleaner | See what Xcode and dev caches are eating first</title>
   <link rel="icon" href="../assets/app-icon.png">
   <link rel="stylesheet" href="../styles.css">
   <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js" defer></script>
@@ -29,7 +29,7 @@
     "@type": "SoftwareApplication",
     "name": "Mac Space Cleaner",
     "alternateName": "MacSpaceCleaner",
-    "description": "A native macOS cache cleaner that shows what will be removed and keeps personal data out of one-click cleanup.",
+    "description": "A native macOS cleaner that lists the real size of old Xcode simulator runtimes, build caches, device support files and developer caches, and marks what can be regenerated.",
     "applicationCategory": "UtilitiesApplication",
     "operatingSystem": "macOS 14 or later",
     "softwareVersion": "1.3",
@@ -37,7 +37,7 @@
     "downloadUrl": "https://mac-space-cleaner.vercel.app/downloads/MacSpaceCleaner-1.3.dmg",
     "image": "https://mac-space-cleaner.vercel.app/assets/app-icon.png",
     "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD", "url": "https://mac-space-cleaner.vercel.app/downloads/MacSpaceCleaner-1.3.dmg"},
-    "featureList": ["Local cache scanning", "Old Xcode simulator detection", "Optional cache categories", "Read-only personal data view", "Apple notarization"]
+    "featureList": ["Old Xcode simulator runtime detection", "Xcode build cache (DerivedData) detection", "Device support file detection", "Developer tool cache scanning", "Optional cache categories", "Read-only personal data view", "Apple notarization"]
   }
   </script>
 </head>
@@ -64,12 +64,12 @@
   <main id="top">
     <section class="hero" aria-labelledby="hero-title">
       <div class="hero-inner">
-        <p class="eyebrow">See the cache before you clean</p>
-        <h1 id="hero-title">Mac Space Cleaner</h1>
-        <p class="hero-lead">Find common app caches, developer-tool caches and old Xcode simulators. Personal data always stays under your control.</p>
+        <p class="eyebrow">macOS storage cleanup</p>
+        <h1 id="hero-title">See what Xcode is eating before you delete it</h1>
+        <p class="hero-lead">Old simulator runtimes, build caches and device support files are the three largest reclaimable blocks on a developer's Mac. Everyday app caches are covered too. Every item is listed with its real size and marked as regenerable or not, and you decide what goes.</p>
         <div class="hero-actions">
-          <a class="button button-primary" href="../downloads/MacSpaceCleaner-1.3.dmg" download><i data-lucide="download" aria-hidden="true"></i>Download v1.2</a>
-          <a class="button button-secondary" href="mac-storage-cleaner.html">Mac running out of space?<i data-lucide="arrow-right" aria-hidden="true"></i></a>
+          <a class="button button-primary" href="../downloads/MacSpaceCleaner-1.3.dmg" download><i data-lucide="download" aria-hidden="true"></i>Download v1.3</a>
+          <a class="button button-secondary" href="xcode-simulator-cleanup.html">See what Xcode takes up<i data-lucide="arrow-right" aria-hidden="true"></i></a>
         </div>
         <div class="hero-meta" aria-label="Version details">
           <span><i data-lucide="badge-check" aria-hidden="true"></i>Apple notarized</span>
@@ -91,23 +91,23 @@
       <div class="section-inner">
         <div class="section-heading">
           <p class="eyebrow">The interface</p>
-          <h2 id="product-title">Every storage category has a clear safety boundary</h2>
-          <p>Recommended caches, optional caches, old simulators and personal data are shown separately. You decide what happens after the scan.</p>
+          <h2 id="product-title">What is safe to delete, and what only looks like it</h2>
+          <p>Recommended caches, optional caches, the three Xcode categories and personal data are shown in separate groups. Each group has its own selection boundary, and nothing happens until you decide.</p>
         </div>
         <figure class="app-preview">
-          <img src="../assets/app-window.png" alt="Mac Space Cleaner interface showing recommended cleanup, optional cleanup, old simulators and personal data sections" width="1560" height="1464">
-          <figcaption>The app follows your preferred macOS language. This screenshot is shown in Simplified Chinese; results vary by installed software and cache contents.</figcaption>
+          <img src="../assets/app-window-en.png" alt="Mac Space Cleaner interface: the first recommended item is the Xcode build cache (DerivedData) at 19.7 GB, followed by optional old simulator runtimes, device support files and a read-only personal data section" width="1560" height="1400">
+          <figcaption>Illustrative screenshot; the interface is the real product. Actual values depend on the software and caches installed on your Mac.</figcaption>
         </figure>
       </div>
     </section>
 
     <section class="coverage-section" id="coverage" aria-labelledby="coverage-title">
       <div class="section-inner">
-        <div class="section-heading compact"><p class="eyebrow">What it finds</p><h2 id="coverage-title">Everyday apps and developer tools</h2></div>
+        <div class="section-heading compact"><p class="eyebrow">What it finds</p><h2 id="coverage-title">From Xcode to everyday app caches</h2></div>
         <div class="coverage-list">
-          <article><div class="feature-icon green"><i data-lucide="package-check" aria-hidden="true"></i></div><div><h3>Recommended cleanup</h3><p>Browser component caches, update caches, logs and regenerable content from tools such as npm, pnpm, bun, Homebrew and Playwright.</p></div></article>
-          <article><div class="feature-icon orange"><i data-lucide="sliders-horizontal" aria-hidden="true"></i></div><div><h3>Optional cleanup</h3><p>Other app caches, offline webpages, speech models, dynamic wallpapers and temporary resources from apps such as WeChat and WPS.</p></div></article>
-          <article><div class="feature-icon blue"><i data-lucide="smartphone" aria-hidden="true"></i></div><div><h3>Xcode simulators</h3><p>Finds old runtimes while keeping the newest version for each platform. Regenerable dyld shared caches can also be removed.</p></div></article>
+          <article><div class="feature-icon blue"><i data-lucide="hammer" aria-hidden="true"></i></div><div><h3>Xcode storage</h3><p>Old simulator runtimes are listed one by one per platform and version, with the newest version of each platform marked automatically. The build cache (DerivedData) and device support files can be handled separately. All three are regenerable, so removing them does not touch your source code or configuration. <a href="xcode-simulator-cleanup.html">See how it decides →</a></p></div></article>
+          <article><div class="feature-icon green"><i data-lucide="package-check" aria-hidden="true"></i></div><div><h3>Developer tool caches</h3><p>Package caches, temporary execution caches and download caches left behind by tools such as npm, pnpm, bun, Homebrew and Playwright. All of them are regenerated on demand.</p></div></article>
+          <article><div class="feature-icon orange"><i data-lucide="sliders-horizontal" aria-hidden="true"></i></div><div><h3>App caches and logs</h3><p>Browser component caches, update caches, offline webpages, speech models, dynamic wallpapers and temporary resources from apps such as WeChat and WPS. This group is unchecked by default.</p></div></article>
           <article><div class="feature-icon gray"><i data-lucide="folder-search" aria-hidden="true"></i></div><div><h3>Personal data is view-only</h3><p>Downloads, iCloud Drive, WeChat chat data and WPS backups are shown for reference and never included in one-click cleanup.</p></div></article>
         </div>
       </div>
@@ -127,7 +127,7 @@
 
     <section class="download-section" id="download" aria-labelledby="download-title">
       <div class="section-inner download-layout">
-        <div><p class="eyebrow light">Current version 1.3</p><h2 id="download-title">Give your Mac room to breathe</h2><p>Download the DMG and drag the app into Applications. File size is approximately 1.2 MB.</p></div>
+        <div><p class="eyebrow light">Current version 1.3</p><h2 id="download-title">Give the space back to your next build</h2><p>Download the DMG and drag the app into Applications. File size is approximately 1.2 MB. Apple notarized, and the scan runs entirely on your Mac.</p></div>
         <div class="download-actions"><a class="button button-light" href="../downloads/MacSpaceCleaner-1.3.dmg" download><i data-lucide="download" aria-hidden="true"></i>Download for Mac</a><a class="checksum-link" href="../downloads/MacSpaceCleaner-1.3.dmg.sha256" download>SHA-256 checksum</a></div>
       </div>
     </section>

@@ -808,6 +808,14 @@ i[data-lucide] {
   text-underline-offset: 3px;
 }
 
+.coverage-list p a {
+  color: var(--brand-dark);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  white-space: nowrap;
+}
+
 @media (max-width: 900px) {
   .nav-toggle {
     display: inline-flex;

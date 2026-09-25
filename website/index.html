@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Mac 空间清理是一款原生 macOS 缓存清理工具，清理前可查看内容，个人数据不会进入一键清理。">
+  <meta name="description" content="原生 macOS 空间清理工具。逐个列出旧版 Xcode 模拟器、构建缓存、真机调试文件和开发工具缓存的真实体积，标出哪些可重新生成，删哪个由你决定。">
   <meta name="theme-color" content="#f4f7fc">
   <link rel="canonical" href="https://mac-space-cleaner.vercel.app/">
   <link rel="alternate" hreflang="zh-Hans" href="https://mac-space-cleaner.vercel.app/">
@@ -11,14 +11,14 @@
   <link rel="alternate" hreflang="x-default" href="https://mac-space-cleaner.vercel.app/en/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Mac 空间清理">
-  <meta property="og:title" content="Mac 空间清理｜看清缓存，再决定清理">
-  <meta property="og:description" content="原生 macOS 缓存清理工具。建议项、可选项和个人数据分开呈现，清理前先看清。">
+  <meta property="og:title" content="Mac 空间清理｜Xcode 吃掉的几十 G，先看清再删">
+  <meta property="og:description" content="旧版模拟器运行时、构建缓存、真机调试文件，逐个列出真实体积，标出哪些可重新生成。">
   <meta property="og:url" content="https://mac-space-cleaner.vercel.app/">
   <meta property="og:image" content="https://mac-space-cleaner.vercel.app/assets/app-icon.png">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Mac 空间清理｜看清缓存，再决定清理">
-  <meta name="twitter:description" content="原生 macOS 缓存清理工具，清理前可查看内容，个人数据不会进入一键清理。">
-  <title>Mac 空间清理 - 看清缓存，再决定清理</title>
+  <meta name="twitter:title" content="Mac 空间清理｜Xcode 吃掉的几十 G，先看清再删">
+  <meta name="twitter:description" content="原生 macOS 空间清理工具。逐个列出真实体积，标出哪些可重新生成，删哪个由你决定。">
+  <title>Mac 空间清理｜Xcode 和开发缓存占了多少，先看清再删</title>
   <link rel="icon" href="assets/app-icon.png">
   <link rel="stylesheet" href="styles.css">
   <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js" defer></script>
@@ -29,7 +29,7 @@
     "@type": "SoftwareApplication",
     "name": "Mac 空间清理",
     "alternateName": "MacSpaceCleaner",
-    "description": "原生 macOS 缓存清理工具，清理前可查看内容，个人数据不会进入一键清理。",
+    "description": "原生 macOS 空间清理工具。逐个列出旧版 Xcode 模拟器、构建缓存、真机调试文件和开发工具缓存的真实体积，标出哪些可重新生成。",
     "applicationCategory": "UtilitiesApplication",
     "operatingSystem": "macOS 14 or later",
     "softwareVersion": "1.3",
@@ -37,7 +37,7 @@
     "downloadUrl": "https://mac-space-cleaner.vercel.app/downloads/MacSpaceCleaner-1.3.dmg",
     "image": "https://mac-space-cleaner.vercel.app/assets/app-icon.png",
     "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD", "url": "https://mac-space-cleaner.vercel.app/downloads/MacSpaceCleaner-1.3.dmg"},
-    "featureList": ["缓存目录扫描", "旧版 Xcode 模拟器识别", "可选缓存分级", "个人数据只读展示", "Apple 公证"]
+    "featureList": ["旧版 Xcode 模拟器识别", "Xcode 构建缓存（DerivedData）识别", "真机调试支持文件识别", "开发工具缓存扫描", "可选缓存分级", "个人数据只读展示", "Apple 公证"]
   }
   </script>
 </head>
@@ -72,16 +72,16 @@
   <main id="top">
     <section class="hero" aria-labelledby="hero-title">
       <div class="hero-inner">
-        <p class="eyebrow">看清缓存，再决定清理</p>
-        <h1 id="hero-title">Mac 空间清理</h1>
-        <p class="hero-lead">识别常见应用缓存、开发工具缓存和旧版 Xcode 模拟器，个人数据始终留给你确认。</p>
+        <p class="eyebrow">macOS 空间清理</p>
+        <h1 id="hero-title">Xcode 吃掉的几十 G，先看清再删</h1>
+        <p class="hero-lead">旧版模拟器运行时、构建缓存、真机调试文件，是开发机上最大的三块可清理空间；日常应用缓存也一并覆盖。逐个列出真实体积，标出哪些可以重新生成，删哪个由你决定。</p>
         <div class="hero-actions">
           <a class="button button-primary" href="downloads/MacSpaceCleaner-1.3.dmg" download>
             <i data-lucide="download" aria-hidden="true"></i>
             下载 v1.3
           </a>
-          <a class="button button-secondary" href="mac-storage-cleaner.html">
-            空间不足？先排查
+          <a class="button button-secondary" href="xcode-simulator-cleanup.html">
+            看看 Xcode 占了什么
             <i data-lucide="arrow-right" aria-hidden="true"></i>
           </a>
         </div>
@@ -117,12 +117,12 @@
       <div class="section-inner">
         <div class="section-heading">
           <p class="eyebrow">真实界面</p>
-          <h2 id="product-title">每类空间占用，都有安全边界</h2>
-          <p>建议清理、可选缓存、旧版模拟器和个人数据分区呈现，扫描完成后再由用户决定。</p>
+          <h2 id="product-title">哪些能删、哪些不能删，一眼分清</h2>
+          <p>建议清理、可选缓存、Xcode 三类空间和个人数据分区呈现。每一类都有独立的勾选边界，扫描完成后再由你决定。</p>
         </div>
         <figure class="app-preview">
-          <img src="assets/app-window.png" alt="Mac 空间清理应用界面，展示建议清理、可选清理、旧版模拟器和个人数据分区" width="1560" height="1464">
-          <figcaption>实际界面因电脑中安装的软件和缓存内容而不同。</figcaption>
+          <img src="assets/app-window.png" alt="Mac 空间清理应用界面：建议清理第一项是 Xcode 构建缓存（DerivedData）19.7 GB，下方依次是可选的旧版模拟器运行时、真机调试支持文件和个人数据只读分区" width="1560" height="1400">
+          <figcaption>示意截图，界面为产品真实界面。实际数值取决于你电脑上安装的软件和缓存内容。</figcaption>
         </figure>
       </div>
     </section>
@@ -131,28 +131,28 @@
       <div class="section-inner">
         <div class="section-heading compact">
           <p class="eyebrow">识别范围</p>
-          <h2 id="coverage-title">覆盖日常应用与开发环境</h2>
+          <h2 id="coverage-title">从 Xcode 到日常应用缓存</h2>
         </div>
         <div class="coverage-list">
           <article>
+            <div class="feature-icon blue"><i data-lucide="hammer" aria-hidden="true"></i></div>
+            <div>
+              <h3>Xcode 空间</h3>
+              <p>旧版模拟器运行时按平台和版本逐个列出，自动标出每个平台的最新版；构建缓存（DerivedData）和真机调试支持文件也可以单独处理。这三类都是可重新生成的内容，删除不会影响源码和配置。<a href="xcode-simulator-cleanup.html">看看它怎么判断 →</a></p>
+            </div>
+          </article>
+          <article>
             <div class="feature-icon green"><i data-lucide="package-check" aria-hidden="true"></i></div>
             <div>
-              <h3>建议清理</h3>
-              <p>浏览器组件缓存、更新缓存、日志，以及 npm、pnpm、bun、Homebrew、Playwright 等可重新生成的内容。</p>
+              <h3>开发工具缓存</h3>
+              <p>npm、pnpm、bun、Homebrew、Playwright 等工具留下的包缓存、临时执行缓存和下载缓存，都是可重新生成的中间产物。</p>
             </div>
           </article>
           <article>
             <div class="feature-icon orange"><i data-lucide="sliders-horizontal" aria-hidden="true"></i></div>
             <div>
-              <h3>可选清理</h3>
-              <p>其他应用缓存、离线网页、语音模型、动态壁纸，以及微信、WPS 等应用的临时资源。</p>
-            </div>
-          </article>
-          <article>
-            <div class="feature-icon blue"><i data-lucide="smartphone" aria-hidden="true"></i></div>
-            <div>
-              <h3>Xcode 模拟器</h3>
-              <p>识别旧版运行时并保留每个平台的最新版本，也可清理按需重建的 dyld 共享缓存。</p>
+              <h3>应用缓存与日志</h3>
+              <p>浏览器组件缓存、更新缓存、离线网页、语音模型、动态壁纸，以及微信、WPS 等应用的临时资源。这一类默认不勾选。</p>
             </div>
           </article>
           <article>
@@ -186,8 +186,8 @@
       <div class="section-inner download-layout">
         <div>
           <p class="eyebrow light">当前版本 1.3</p>
-          <h2 id="download-title">给 Mac 留出呼吸空间</h2>
-          <p>下载 DMG，将 App 拖入“应用程序”即可。文件大小约 1.2 MB。</p>
+          <h2 id="download-title">把空间还给下一次编译</h2>
+          <p>下载 DMG，将 App 拖入“应用程序”即可。文件大小约 1.2 MB，Apple 公证，扫描全程在本机完成。</p>
         </div>
         <div class="download-actions">
           <a class="button button-light" href="downloads/MacSpaceCleaner-1.3.dmg" download>
