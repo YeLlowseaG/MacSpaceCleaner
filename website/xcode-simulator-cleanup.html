@@ -38,7 +38,7 @@
       <div class="nav-links" id="nav-links">
         <a href="index.html">首页</a>
         <a href="mac-storage-cleaner.html">空间问题</a>
-        <a href="xcode-simulator-cleanup.html" aria-current="page">Xcode 模拟器</a>
+        <a href="xcode-disk-space.html">Xcode 空间</a>
         <a href="index.html#product">界面</a>
         <a href="index.html#coverage">清理范围</a>
         <a href="index.html#safety">安全</a>
@@ -162,6 +162,24 @@
         <details><summary>Caches/dyld 是什么，可以删吗？</summary><p>它是模拟器的动态链接缓存，按需重建。删除后首次启动模拟器会重新生成，只会慢一次，不影响已安装的运行时和设备。</p></details>
         <details><summary>删掉之后还能装回来吗？</summary><p>可以。Xcode 的 Settings → Components 里能重新下载任意系统版本的运行时，代价是重新下载的时间。</p></details>
         <details><summary>清理会动到我的项目文件和代码吗？</summary><p>不会。运行时和设备数据都在 <code>~/Library/Developer</code> 下，与你的项目目录分开。产品也只在明确允许的缓存和运行时路径内操作，不会触碰项目文件。</p></details>
+      </div>
+    </section>
+
+    <section class="seo-section seo-section-alt" aria-labelledby="related-title">
+      <div class="section-inner seo-narrow">
+        <div class="section-heading compact"><p class="eyebrow">继续看</p><h2 id="related-title">相关的两页</h2></div>
+        <div class="seo-card-grid">
+          <article class="seo-card">
+            <i data-lucide="layers" aria-hidden="true"></i>
+            <h3><a href="xcode-disk-space.html">Xcode 一共占了多少</a></h3>
+            <p>除了模拟器，Xcode 还有另外四块空间。哪块能删、哪块是你的发布记录不能碰。</p>
+          </article>
+          <article class="seo-card">
+            <i data-lucide="hammer" aria-hidden="true"></i>
+            <h3><a href="xcode-deriveddata.html">DerivedData 能不能删</a></h3>
+            <p>通常排在模拟器之后的第二大块，删之前要知道会付出什么代价。</p>
+          </article>
+        </div>
       </div>
     </section>
   </main>

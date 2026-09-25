@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Can you delete DerivedData? Yes — it holds build intermediates and indexes, so no source code is lost. The real cost is a slow next build and a full index rebuild. Here is when not to delete it.">
+  <meta name="theme-color" content="#f4f7fc">
+  <link rel="canonical" href="https://mac-space-cleaner.vercel.app/en/xcode-deriveddata.html">
+  <link rel="alternate" hreflang="zh-Hans" href="https://mac-space-cleaner.vercel.app/xcode-deriveddata.html">
+  <link rel="alternate" hreflang="en" href="https://mac-space-cleaner.vercel.app/en/xcode-deriveddata.html">
+  <link rel="alternate" hreflang="x-default" href="https://mac-space-cleaner.vercel.app/en/xcode-deriveddata.html">
+  <meta property="og:title" content="Can you delete DerivedData? Yes, but it is not free">
+  <meta property="og:description" content="It holds build intermediates and code indexes. No source code is lost, but the next build is slow and indexes rebuild from scratch.">
+  <meta property="og:url" content="https://mac-space-cleaner.vercel.app/en/xcode-deriveddata.html">
+  <meta property="og:image" content="https://mac-space-cleaner.vercel.app/assets/app-icon.png">
+  <title>Can You Delete DerivedData? What It Costs and When Not To | Mac Space Cleaner</title>
+  <link rel="icon" href="../assets/app-icon.png">
+  <link rel="stylesheet" href="../styles.css">
+  <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js" defer></script>
+  <script src="../script.js" defer></script>
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"FAQPage",
+    "mainEntity":[
+      {"@type":"Question","name":"Do I lose anything by deleting DerivedData?","acceptedAnswer":{"@type":"Answer","text":"No source code, configuration, dependency declaration or archived release is lost. It only holds build intermediates and indexes, which are rebuilt on the next build. What you do lose is incremental build history and the index, which shows up as a slow next build and slow first code navigation."}},
+      {"@type":"Question","name":"Why does DerivedData keep growing?","acceptedAnswer":{"@type":"Answer","text":"It only grows. Each project gets a directory named after the project plus a hash, and different Xcode versions, SDKs and simulator architectures can each leave their own intermediates behind. Xcode does not clean up old projects by default."}},
+      {"@type":"Question","name":"Is Clean Build Folder in Xcode enough?","acceptedAnswer":{"@type":"Answer","text":"No. Clean Build Folder (Shift+Cmd+K) clears the build products of the current project and configuration only. It does not delete the index and does not touch other projects' cached data. Reclaiming the space requires dealing with the whole DerivedData directory."}},
+      {"@type":"Question","name":"My project uses a custom DerivedData location — will a cleaner delete the wrong thing?","acceptedAnswer":{"@type":"Answer","text":"No. Custom paths outside the default location are not on the cleanup allowlist and are skipped. You need to handle that custom directory yourself."}}
+    ]
+  }
+  </script>
+</head>
+<body>
+  <header class="site-header">
+    <nav class="nav-wrap" aria-label="Main navigation">
+      <a class="brand" href="index.html" aria-label="Mac Space Cleaner home"><img src="../assets/app-icon.png" alt="" width="36" height="36"><span>Mac Space Cleaner</span></a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="Open navigation"><i data-lucide="menu" aria-hidden="true"></i></button>
+      <div class="nav-links" id="nav-links">
+        <a href="index.html">Home</a>
+        <a href="mac-storage-cleaner.html">Storage guide</a>
+        <a href="xcode-disk-space.html">Xcode storage</a>
+        <a href="index.html#product">Interface</a>
+        <a href="index.html#coverage">Coverage</a>
+        <a href="index.html#safety">Safety</a>
+        <a href="support.html">Help</a>
+        <a href="faq.html">FAQ</a>
+        <a class="language-switch" href="../xcode-deriveddata.html" lang="zh-Hans" hreflang="zh-Hans">中文</a>
+        <a class="nav-download" href="../downloads/MacSpaceCleaner-1.3.dmg" download><i data-lucide="download" aria-hidden="true"></i>Download</a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="page-main">
+    <section class="page-hero seo-hero">
+      <div class="section-inner">
+        <p class="eyebrow">Developer storage</p>
+        <h1>You can delete DerivedData, but the cost is not zero</h1>
+        <p>It contains build intermediates and code indexes. Deleting it <strong>loses no source code, configuration or shipped build</strong>. What it does cost you is a noticeably slower next build and a full index rebuild, which is why code navigation feels broken for a while. Know that before you decide.</p>
+        <div class="hero-actions"><a class="button button-primary" href="#delete">How to delete it</a><a class="button button-secondary" href="#when">When not to</a></div>
+      </div>
+    </section>
+
+    <section class="seo-section" aria-labelledby="what-title">
+      <div class="section-inner seo-narrow">
+        <div class="section-heading">
+          <p class="eyebrow">Understand it first</p>
+          <h2 id="what-title">What is actually inside DerivedData</h2>
+          <p>The default location is <code>~/Library/Developer/Xcode/DerivedData</code>, with one directory per project named after the project plus a hash.</p>
+        </div>
+        <div class="seo-card-grid">
+          <article class="seo-card">
+            <i data-lucide="package" aria-hidden="true"></i>
+            <h3>Build: the compiled intermediates</h3>
+            <p>Object files, module caches, link output and the built <code>.app</code>. This is what lets Xcode recompile only part of your project after a one-line change.</p>
+          </article>
+          <article class="seo-card">
+            <i data-lucide="search" aria-hidden="true"></i>
+            <h3>Index: the code index</h3>
+            <p>It powers “jump to definition”, “find references” and completion. It does not affect compilation, but the first use after deleting it is slow.</p>
+          </article>
+          <article class="seo-card">
+            <i data-lucide="file-text" aria-hidden="true"></i>
+            <h3>Logs and build records</h3>
+            <p>Small in size, but the only trail you have when a build fails for a reason nobody can reproduce.</p>
+          </article>
+          <article class="seo-card">
+            <i data-lucide="copy" aria-hidden="true"></i>
+            <h3>Why one project has several directories</h3>
+            <p>The hash encodes the Xcode version and build path. After a major Xcode upgrade or a project move you get another one, and the old one never disappears on its own.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="seo-section seo-section-alt" id="when" aria-labelledby="when-title">
+      <div class="section-inner seo-narrow">
+        <div class="section-heading">
+          <p class="eyebrow">Weigh the cost</p>
+          <h2 id="when-title">Check these before you delete</h2>
+          <p>Short version: <strong>if you just want the space back, delete it. If you are about to build or debug, wait.</strong></p>
+        </div>
+        <div class="coverage-list">
+          <article>
+            <div class="feature-icon green"><i data-lucide="check-circle-2" aria-hidden="true"></i></div>
+            <div>
+              <h3>What you lose: nothing</h3>
+              <p>Source code, <code>Package.swift</code>, Podfile, <code>.xcconfig</code>, asset files, archived releases and committed code are all unaffected — none of them live in DerivedData.</p>
+            </div>
+          </article>
+          <article>
+            <div class="feature-icon orange"><i data-lucide="clock" aria-hidden="true"></i></div>
+            <div>
+              <h3>What you pay: one full build</h3>
+              <p>Every source file is compiled again. Minutes on a small project, and on a large project with many Swift files or CocoaPods dependencies it can be considerably longer. Incremental builds resume afterwards.</p>
+            </div>
+          </article>
+          <article>
+            <div class="feature-icon orange"><i data-lucide="search-x" aria-hidden="true"></i></div>
+            <div>
+              <h3>What you pay: an index rebuild</h3>
+              <p>Until the index is rebuilt, code navigation and completion are unavailable. Xcode does this in the background when you reopen the project. It is the most noticeable part and the one people forget.</p>
+            </div>
+          </article>
+          <article>
+            <div class="feature-icon gray"><i data-lucide="alert-triangle" aria-hidden="true"></i></div>
+            <div>
+              <h3>When not to do it</h3>
+              <p>Right after a build when you are about to run tests, while profiling with Instruments, while breakpoint debugging, or before a demo. Also <strong>quit Xcode first</strong> so it is not writing while you are deleting.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="seo-section" id="delete" aria-labelledby="delete-title">
+      <div class="section-inner seo-narrow">
+        <div class="section-heading">
+          <p class="eyebrow">Doing it</p>
+          <h2 id="delete-title">Three options with very different results</h2>
+          <p>Decide which outcome you want first, then pick the method.</p>
+        </div>
+        <div class="hash-block" style="margin-bottom:1.5rem">
+          <p style="margin:0 0 .5rem;font-size:.875rem;color:var(--muted,#6b7280)">1. See how large it is</p>
+          <code style="display:block;overflow-x:auto;white-space:pre">du -sh ~/Library/Developer/Xcode/DerivedData</code>
+        </div>
+        <div class="hash-block" style="margin-bottom:1.5rem">
+          <p style="margin:0 0 .5rem;font-size:.875rem;color:var(--muted,#6b7280)">2. Clear only the current project's products, keeping the index</p>
+          <code style="display:block;overflow-x:auto;white-space:pre"># In Xcode: Product → Clean Build Folder (Shift + Cmd + K)</code>
+        </div>
+        <div class="hash-block" style="margin-bottom:1.5rem">
+          <p style="margin:0 0 .5rem;font-size:.875rem;color:var(--muted,#6b7280)">3. Clear the cached data of every project (indexes rebuild)</p>
+          <code style="display:block;overflow-x:auto;white-space:pre">rm -rf ~/Library/Developer/Xcode/DerivedData/*</code>
+        </div>
+        <p style="margin-top:1.25rem">The difference: <strong>Clean Build Folder touches only the current project, keeps the index and frees the least space.</strong> Emptying the whole directory frees the most, but every project rebuilds its index the next time you open it. Note that <code>rm -rf</code> deletes permanently and does not use the Trash, so check the path before running it — the segment before that trailing <code>/*</code> must be <code>DerivedData/</code>.</p>
+      </div>
+    </section>
+
+    <section class="seo-section seo-section-alt" aria-labelledby="custom-title">
+      <div class="section-inner seo-narrow">
+        <div class="section-heading">
+          <p class="eyebrow">A common trap</p>
+          <h2 id="custom-title">If your DerivedData is not in the default location</h2>
+          <p>Some people move it next to the project via <strong>Xcode → Settings → Locations → Derived Data</strong>. When that is the case:</p>
+        </div>
+        <ul class="check-list">
+          <li><i data-lucide="check" aria-hidden="true"></i><span>The default <code>~/Library/Developer/Xcode/DerivedData</code> may be empty, which makes it look like Xcode uses no space</span></li>
+          <li><i data-lucide="check" aria-hidden="true"></i><span>The space is actually in your custom directory, and that is where you have to clean</span></li>
+          <li><i data-lucide="check" aria-hidden="true"></i><span>Cleaners only handle the default location and skip custom paths — deliberately, so they never delete something inside a project directory</span></li>
+        </ul>
+        <p style="margin-top:1.25rem">Confirming the location first is far less work than hunting for a backup afterwards.</p>
+      </div>
+    </section>
+
+    <section class="seo-section" aria-labelledby="app-title">
+      <div class="section-inner seo-narrow seo-callout">
+        <div>
+          <p class="eyebrow">Want a local scan?</p>
+          <h2 id="app-title">See this alongside simulators and device support files</h2>
+          <p>Mac Space Cleaner puts DerivedData, old simulator runtimes and device support files in the same list with their individual sizes. It shows the real path of every item so you can verify it, and confirms again before removal.</p>
+        </div>
+        <a class="button button-primary" href="../downloads/MacSpaceCleaner-1.3.dmg" download>Download for Mac — free</a>
+      </div>
+    </section>
+
+    <section class="seo-section" aria-labelledby="faq-title">
+      <div class="section-inner seo-narrow seo-faq">
+        <div class="section-heading"><p class="eyebrow">FAQ</p><h2 id="faq-title">About DerivedData</h2></div>
+        <details><summary>Will deleting it affect my project?</summary><p>Not the project itself. Source code, dependency declarations, configuration files and archived releases are not in DerivedData. The project builds normally afterwards, just with a full build the first time.</p></details>
+        <details><summary>Do I need to run pod install again?</summary><p>No. Dependency sources and the Pods directory are not inside DerivedData. The next build recompiles those dependencies but does not reinstall them.</p></details>
+        <details><summary>Why did Xcode get slow after I deleted it?</summary><p>It is rebuilding the index in the background after you reopen the project. Until that finishes, jump-to-definition and completion may be slow or inaccurate, then they recover.</p></details>
+        <details><summary>Can I just use Xcode's built-in clean instead?</summary><p>You can, but the result differs. Clean Build Folder clears only the current project and configuration and keeps the index, which is the conservative option. Freeing all the accumulated history requires dealing with the whole DerivedData directory.</p></details>
+        <details><summary>Could a cleaner delete my source directory by mistake?</summary><p>No. The default DerivedData parent is <code>~/Library/Developer</code>, entirely separate from project directories. The app only operates inside an explicit allowlist, and re-checks the path, directory type and symbolic links before deleting.</p></details>
+      </div>
+    </section>
+
+    <section class="seo-section seo-section-alt" aria-labelledby="related-title">
+      <div class="section-inner seo-narrow">
+        <div class="section-heading compact"><p class="eyebrow">Keep reading</p><h2 id="related-title">Two related pages</h2></div>
+        <div class="seo-card-grid">
+          <article class="seo-card">
+            <i data-lucide="layers" aria-hidden="true"></i>
+            <h3><a href="xcode-disk-space.html">How much Xcode really uses</a></h3>
+            <p>The five locations Xcode storage comes from, which are safe, and the one that never should be deleted.</p>
+          </article>
+          <article class="seo-card">
+            <i data-lucide="smartphone" aria-hidden="true"></i>
+            <h3><a href="xcode-simulator-cleanup.html">Deleting old simulators</a></h3>
+            <p>Usually the bigger block, and how to decide which runtimes to keep.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer"><div class="section-inner footer-layout"><div class="footer-brand"><img src="../assets/app-icon.png" alt="" width="30" height="30"><span>Mac Space Cleaner</span></div><div class="footer-links"><a href="index.html">Home</a><a href="support.html">Help</a><a href="faq.html">FAQ</a><a href="privacy.html">Privacy</a></div><p>© <span data-year></span> Mac Space Cleaner</p></div></footer>
+</body>
+</html>

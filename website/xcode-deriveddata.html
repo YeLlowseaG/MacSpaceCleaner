@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="DerivedData 可以删吗？里面是编译中间产物和索引，删掉不丢源码，代价是下一次编译变慢。什么时候不该删、怎么删、自定义位置怎么处理，一次说清。">
+  <meta name="theme-color" content="#f4f7fc">
+  <link rel="canonical" href="https://mac-space-cleaner.vercel.app/xcode-deriveddata.html">
+  <link rel="alternate" hreflang="zh-Hans" href="https://mac-space-cleaner.vercel.app/xcode-deriveddata.html">
+  <link rel="alternate" hreflang="en" href="https://mac-space-cleaner.vercel.app/en/xcode-deriveddata.html">
+  <link rel="alternate" hreflang="x-default" href="https://mac-space-cleaner.vercel.app/en/xcode-deriveddata.html">
+  <meta property="og:title" content="DerivedData 可以删吗？能删，但你要知道会付出什么">
+  <meta property="og:description" content="它是编译中间产物和索引，删掉不丢源码和配置。代价是下一次编译明显变慢，索引全部重建。">
+  <meta property="og:url" content="https://mac-space-cleaner.vercel.app/xcode-deriveddata.html">
+  <meta property="og:image" content="https://mac-space-cleaner.vercel.app/assets/app-icon.png">
+  <title>DerivedData 可以删吗？删掉会怎样、什么时候不该删｜Mac 空间清理</title>
+  <link rel="icon" href="assets/app-icon.png">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js" defer></script>
+  <script src="script.js" defer></script>
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"FAQPage",
+    "mainEntity":[
+      {"@type":"Question","name":"DerivedData 删了会丢东西吗？","acceptedAnswer":{"@type":"Answer","text":"不会丢源码、配置、依赖声明或已归档的发布包。它存的只是编译中间产物和索引，下次编译自动重建。唯一会丢的是增量编译的历史和索引，表现为下一次编译和首次代码跳转变慢。"}},
+      {"@type":"Question","name":"为什么 DerivedData 会越来越大？","acceptedAnswer":{"@type":"Answer","text":"它只增不减。每个项目会建一个以项目名加哈希命名的目录，不同 Xcode 版本、不同 SDK、不同模拟器架构都可能留下各自独立的中间产物。Xcode 默认不会自动清理历史项目。"}},
+      {"@type":"Question","name":"在 Xcode 里点 Clean Build Folder 就够了吗？","acceptedAnswer":{"@type":"Answer","text":"不够。Clean Build Folder（Shift+Cmd+K）只清理当前项目当前配置的构建产物，不会删除索引，也不会动其他项目的历史缓存。要一次性释放空间需要直接处理整个 DerivedData 目录。"}},
+      {"@type":"Question","name":"我的项目把 DerivedData 改到了项目目录里，清理会误删吗？","acceptedAnswer":{"@type":"Answer","text":"不会。默认位置以外的自定义路径不在清理白名单内，会被直接跳过。这类自定义位置需要你自己在项目的 DerivedData 目录里手动处理。"}}
+    ]
+  }
+  </script>
+</head>
+<body>
+  <header class="site-header">
+    <nav class="nav-wrap" aria-label="主导航">
+      <a class="brand" href="index.html" aria-label="Mac 空间清理首页"><img src="assets/app-icon.png" alt="" width="36" height="36"><span>Mac 空间清理</span></a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="打开导航"><i data-lucide="menu" aria-hidden="true"></i></button>
+      <div class="nav-links" id="nav-links">
+        <a href="index.html">首页</a>
+        <a href="mac-storage-cleaner.html">空间问题</a>
+        <a href="xcode-disk-space.html">Xcode 空间</a>
+        <a href="index.html#product">界面</a>
+        <a href="index.html#coverage">清理范围</a>
+        <a href="index.html#safety">安全</a>
+        <a href="support.html">使用帮助</a>
+        <a href="faq.html">FAQ</a>
+        <a class="language-switch" href="en/xcode-deriveddata.html" lang="en" hreflang="en">EN</a>
+        <a class="nav-download" href="downloads/MacSpaceCleaner-1.3.dmg" download><i data-lucide="download" aria-hidden="true"></i>下载</a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="page-main">
+    <section class="page-hero seo-hero">
+      <div class="section-inner">
+        <p class="eyebrow">开发者空间</p>
+        <h1>DerivedData 可以删，但代价不是零</h1>
+        <p>它里面是编译中间产物和代码索引，删掉<strong>不会丢源码、配置和已发布的东西</strong>。真正的代价是：下一次编译明显变慢，代码跳转和自动补全要重新建索引。知道这一点再决定，就不算亏。</p>
+        <div class="hero-actions"><a class="button button-primary" href="#delete">直接看怎么删</a><a class="button button-secondary" href="#when">先看什么时候不该删</a></div>
+      </div>
+    </section>
+
+    <section class="seo-section" aria-labelledby="what-title">
+      <div class="section-inner seo-narrow">
+        <div class="section-heading">
+          <p class="eyebrow">先搞清楚</p>
+          <h2 id="what-title">DerivedData 里到底装了什么</h2>
+          <p>默认位置是 <code>~/Library/Developer/Xcode/DerivedData</code>，每个项目一个以「项目名 + 一串哈希」命名的目录。</p>
+        </div>
+        <div class="seo-card-grid">
+          <article class="seo-card">
+            <i data-lucide="package" aria-hidden="true"></i>
+            <h3>Build：编译中间产物</h3>
+            <p>目标文件、模块缓存、链接结果，以及构建出来的 <code>.app</code>。改一行代码后 Xcode 只需要重编一部分，靠的就是它。</p>
+          </article>
+          <article class="seo-card">
+            <i data-lucide="search" aria-hidden="true"></i>
+            <h3>Index：代码索引</h3>
+            <p>支撑「跳转到定义」「查找引用」「自动补全」的数据。它不参与编译，但删掉之后第一次用这些功能会卡一阵。</p>
+          </article>
+          <article class="seo-card">
+            <i data-lucide="file-text" aria-hidden="true"></i>
+            <h3>Logs 和构建记录</h3>
+            <p>每次构建的日志。体积不大，但排查编译问题时它是唯一线索。</p>
+          </article>
+          <article class="seo-card">
+            <i data-lucide="copy" aria-hidden="true"></i>
+            <h3>为什么一个项目会有好几个目录</h3>
+            <p>哈希里编码了 Xcode 版本和构建路径。换过 Xcode 大版本、或者项目路径变过，就会多出一份，旧的不会自动消失。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="seo-section seo-section-alt" id="when" aria-labelledby="when-title">
+      <div class="section-inner seo-narrow">
+        <div class="section-heading">
+          <p class="eyebrow">判断代价</p>
+          <h2 id="when-title">删之前先对一下这几条</h2>
+          <p>简单说：<strong>你只是想要回空间，就删；你马上就要编译或者调试，就先别删。</strong></p>
+        </div>
+        <div class="coverage-list">
+          <article>
+            <div class="feature-icon green"><i data-lucide="check-circle-2" aria-hidden="true"></i></div>
+            <div>
+              <h3>会丢的：没有</h3>
+              <p>源码、<code>Package.swift</code>、Podfile、<code>.xcconfig</code>、资源文件、已归档的 Archives、已提交的代码 —— 全部不受影响，它们本来就不在 DerivedData 里。</p>
+            </div>
+          </article>
+          <article>
+            <div class="feature-icon orange"><i data-lucide="clock" aria-hidden="true"></i></div>
+            <div>
+              <h3>会付的：一次全量编译</h3>
+              <p>下次编译时所有源码都要重新编一遍。小项目几分钟，大项目（含大量 Swift 文件或 CocoaPods 依赖）可能十几分钟甚至更久。之后恢复正常增量编译。</p>
+            </div>
+          </article>
+          <article>
+            <div class="feature-icon orange"><i data-lucide="search-x" aria-hidden="true"></i></div>
+            <div>
+              <h3>会付的：索引重建</h3>
+              <p>删掉之后，代码跳转和自动补全在索引重建完成前不可用，通常要等 Xcode 在后台跑一遍。这一步经常被忽略，但体验上最明显。</p>
+            </div>
+          </article>
+          <article>
+            <div class="feature-icon gray"><i data-lucide="alert-triangle" aria-hidden="true"></i></div>
+            <div>
+              <h3>不该删的时机</h3>
+              <p>刚 build 完准备跑测试、正在用 Instruments 抓性能、正在断点调试、或者马上要演示。这些场景下你会为省下的空间付出等编译的时间。另外删之前<strong>先退出 Xcode</strong>，避免它边写边删导致状态不一致。</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="seo-section" id="delete" aria-labelledby="delete-title">
+      <div class="section-inner seo-narrow">
+        <div class="section-heading">
+          <p class="eyebrow">动手</p>
+          <h2 id="delete-title">三种删法，效果完全不同</h2>
+          <p>先确认你要的是哪一个目标，再选方法。</p>
+        </div>
+        <div class="hash-block" style="margin-bottom:1.5rem">
+          <p style="margin:0 0 .5rem;font-size:.875rem;color:var(--muted,#6b7280)">① 先看它有多大</p>
+          <code style="display:block;overflow-x:auto;white-space:pre">du -sh ~/Library/Developer/Xcode/DerivedData</code>
+        </div>
+        <div class="hash-block" style="margin-bottom:1.5rem">
+          <p style="margin:0 0 .5rem;font-size:.875rem;color:var(--muted,#6b7280)">② 只清当前项目的构建产物（保留索引）</p>
+          <code style="display:block;overflow-x:auto;white-space:pre"># 在 Xcode 里：Product → Clean Build Folder（Shift + Cmd + K）</code>
+        </div>
+        <div class="hash-block" style="margin-bottom:1.5rem">
+          <p style="margin:0 0 .5rem;font-size:.875rem;color:var(--muted,#6b7280)">③ 清掉所有项目的历史缓存（会重建索引）</p>
+          <code style="display:block;overflow-x:auto;white-space:pre">rm -rf ~/Library/Developer/Xcode/DerivedData/*</code>
+        </div>
+        <p style="margin-top:1.25rem">三种方法的区别：<strong>Clean Build Folder 只动当前项目、保留索引、释放空间最少</strong>；直接清空整个目录释放最多，但所有项目下次打开都要重建索引。<code>rm -rf</code> 是永久删除，不进废纸篓，执行前请确认路径写对了 —— 路径末尾那串 <code>/*</code> 前面必须是 <code>DerivedData/</code>。</p>
+      </div>
+    </section>
+
+    <section class="seo-section seo-section-alt" aria-labelledby="custom-title">
+      <div class="section-inner seo-narrow">
+        <div class="section-heading">
+          <p class="eyebrow">一个常见的坑</p>
+          <h2 id="custom-title">如果你的 DerivedData 不在默认位置</h2>
+          <p>有些人为了把编译产物和项目放一起，在 <strong>Xcode → Settings → Locations → Derived Data</strong> 里改了位置。这样一来：</p>
+        </div>
+        <ul class="check-list">
+          <li><i data-lucide="check" aria-hidden="true"></i><span>默认目录 <code>~/Library/Developer/Xcode/DerivedData</code> 可能是空的，你会以为「Xcode 不占空间」</span></li>
+          <li><i data-lucide="check" aria-hidden="true"></i><span>真正占空间的是你自定义的那个目录，得去那里清理</span></li>
+          <li><i data-lucide="check" aria-hidden="true"></i><span>清理工具只处理默认位置，自定义路径会被跳过 —— 这是有意的，避免误删项目目录里的东西</span></li>
+        </ul>
+        <p style="margin-top:1.25rem">先确认位置再动手，比删错再去找备份省事得多。</p>
+      </div>
+    </section>
+
+    <section class="seo-section" aria-labelledby="app-title">
+      <div class="section-inner seo-narrow seo-callout">
+        <div>
+          <p class="eyebrow">需要本机扫描？</p>
+          <h2 id="app-title">连模拟器、真机调试文件一起看清</h2>
+          <p>Mac 空间清理会把 DerivedData 和旧版模拟器运行时、真机调试支持文件放在同一份清单里，标出各自体积。它会列出真实路径供你核对，删除前再确认一次。</p>
+        </div>
+        <a class="button button-primary" href="downloads/MacSpaceCleaner-1.3.dmg" download>免费下载 Mac 版</a>
+      </div>
+    </section>
+
+    <section class="seo-section" aria-labelledby="faq-title">
+      <div class="section-inner seo-narrow seo-faq">
+        <div class="section-heading"><p class="eyebrow">常见问题</p><h2 id="faq-title">关于 DerivedData</h2></div>
+        <details><summary>删了会不会影响我的项目？</summary><p>不影响项目本身。源码、依赖声明、配置文件和已归档的发布包都不在 DerivedData 里。删除后项目能正常编译，只是第一次要全量编译。</p></details>
+        <details><summary>删掉之后需要重新 pod install 吗？</summary><p>不需要。依赖的源码和 Pods 目录不在 DerivedData 里。重编时会重新编译这些依赖，但不需要重新安装。</p></details>
+        <details><summary>为什么删了之后 Xcode 变卡了？</summary><p>它在重建索引。打开 Xcode 后会自动在后台做，期间「跳转到定义」和自动补全可能不准或变慢。等状态栏的进度跑完就恢复了。</p></details>
+        <details><summary>可以用 Xcode 自带的清理代替吗？</summary><p>可以，但效果不同。Clean Build Folder 只清当前项目当前配置的产物并保留索引，比较保守；要一次性把历史缓存全部释放，需要直接处理整个 DerivedData 目录。</p></details>
+        <details><summary>清理工具会不会连我的源码目录一起删？</summary><p>不会。DerivedData 默认位置的父目录是 <code>~/Library/Developer</code>，与项目目录完全不同。产品只操作明确允许的路径，并且在删除前再次校验路径、目录类型和符号链接。</p></details>
+      </div>
+    </section>
+
+    <section class="seo-section seo-section-alt" aria-labelledby="related-title">
+      <div class="section-inner seo-narrow">
+        <div class="section-heading compact"><p class="eyebrow">继续看</p><h2 id="related-title">相关的两页</h2></div>
+        <div class="seo-card-grid">
+          <article class="seo-card">
+            <i data-lucide="layers" aria-hidden="true"></i>
+            <h3><a href="xcode-disk-space.html">Xcode 一共占了多少</a></h3>
+            <p>把 Xcode 的空间拆成五块，逐块判断能不能删，包括那块绝对不能删的。</p>
+          </article>
+          <article class="seo-card">
+            <i data-lucide="smartphone" aria-hidden="true"></i>
+            <h3><a href="xcode-simulator-cleanup.html">旧版模拟器怎么删</a></h3>
+            <p>通常比 DerivedData 更占空间的那一块，怎么决定留哪个、删哪个。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer"><div class="section-inner footer-layout"><div class="footer-brand"><img src="assets/app-icon.png" alt="" width="30" height="30"><span>Mac 空间清理</span></div><div class="footer-links"><a href="index.html">首页</a><a href="support.html">使用帮助</a><a href="faq.html">FAQ</a><a href="privacy.html">隐私政策</a></div><p>© <span data-year></span> Mac 空间清理</p></div></footer>
+</body>
+</html>

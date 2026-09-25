@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="How much disk space does Xcode use? Break it into five locations: simulator runtimes, DerivedData, device support files, Archives and shared caches — and see which can be deleted and which never should be.">
+  <meta name="theme-color" content="#f4f7fc">
+  <link rel="canonical" href="https://mac-space-cleaner.vercel.app/en/xcode-disk-space.html">
+  <link rel="alternate" hreflang="zh-Hans" href="https://mac-space-cleaner.vercel.app/xcode-disk-space.html">
+  <link rel="alternate" hreflang="en" href="https://mac-space-cleaner.vercel.app/en/xcode-disk-space.html">
+  <link rel="alternate" hreflang="x-default" href="https://mac-space-cleaner.vercel.app/en/xcode-disk-space.html">
+  <meta property="og:title" content="How much space does Xcode use? Five locations, and which are safe to delete">
+  <meta property="og:description" content="Simulator runtimes, DerivedData, device support files, Archives and shared caches. Which is the biggest, which is safe, and which holds your release history.">
+  <meta property="og:url" content="https://mac-space-cleaner.vercel.app/en/xcode-disk-space.html">
+  <meta property="og:image" content="https://mac-space-cleaner.vercel.app/assets/app-icon.png">
+  <title>How Much Disk Space Does Xcode Use? Five Locations Explained | Mac Space Cleaner</title>
+  <link rel="icon" href="../assets/app-icon.png">
+  <link rel="stylesheet" href="../styles.css">
+  <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js" defer></script>
+  <script src="../script.js" defer></script>
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"FAQPage",
+    "mainEntity":[
+      {"@type":"Question","name":"How much disk space does Xcode usually take?","acceptedAnswer":{"@type":"Answer","text":"It depends on how many simulator runtimes you have installed and how much build history you have. A fresh Xcode is around 10 to 15 GB. Once you have several iOS and watchOS runtimes and a few months of builds, the whole ~/Library/Developer directory is commonly tens of gigabytes, and most of it is regenerable."}},
+      {"@type":"Question","name":"Which part of Xcode should never be deleted?","acceptedAnswer":{"@type":"Answer","text":"~/Library/Developer/Xcode/Archives. It holds the archive of every build you have shipped, including dSYM symbol files. Once it is gone, crash logs from those versions can no longer be symbolicated and the same build cannot be re-uploaded. It is your release history, not a cache."}},
+      {"@type":"Question","name":"Will deleting these break Xcode?","acceptedAnswer":{"@type":"Answer","text":"The regenerable parts will not. Simulator runtimes can be downloaded again, DerivedData and the shared cache rebuild themselves on the next build or simulator launch, and device support files are fetched again the next time that device connects. The cost is time, not data."}},
+      {"@type":"Question","name":"Is there one command to see how much each part uses?","acceptedAnswer":{"@type":"Answer","text":"Yes. Run du -sh ~/Library/Developer/Xcode/* ~/Library/Developer/CoreSimulator/* 2>/dev/null | sort -h in Terminal. It lists each subdirectory by size from smallest to largest and only reads, never deletes."}}
+    ]
+  }
+  </script>
+</head>
+<body>
+  <header class="site-header">
+    <nav class="nav-wrap" aria-label="Main navigation">
+      <a class="brand" href="index.html" aria-label="Mac Space Cleaner home"><img src="../assets/app-icon.png" alt="" width="36" height="36"><span>Mac Space Cleaner</span></a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="Open navigation"><i data-lucide="menu" aria-hidden="true"></i></button>
+      <div class="nav-links" id="nav-links">
+        <a href="index.html">Home</a>
+        <a href="mac-storage-cleaner.html">Storage guide</a>
+        <a href="xcode-disk-space.html" aria-current="page">Xcode storage</a>
+        <a href="index.html#product">Interface</a>
+        <a href="index.html#coverage">Coverage</a>
+        <a href="index.html#safety">Safety</a>
+        <a href="support.html">Help</a>
+        <a href="faq.html">FAQ</a>
+        <a class="language-switch" href="../xcode-disk-space.html" lang="zh-Hans" hreflang="zh-Hans">中文</a>
+        <a class="nav-download" href="../downloads/MacSpaceCleaner-1.3.dmg" download><i data-lucide="download" aria-hidden="true"></i>Download</a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="page-main">
+    <section class="page-hero seo-hero">
+      <div class="section-inner">
+        <p class="eyebrow">Developer storage</p>
+        <h1>How much Xcode takes is really five different numbers</h1>
+        <p>“Xcode is using too much space” is not one problem. It is five locations with completely different properties: four of them can be regenerated, and <strong>one is your release history, which you cannot get back</strong>. Measure them separately before you delete anything.</p>
+        <div class="hero-actions"><a class="button button-primary" href="#measure">How to measure it</a><a class="button button-secondary" href="#table">Jump to the verdict</a></div>
+      </div>
+    </section>
+
+    <section class="seo-section" aria-labelledby="five-title">
+      <div class="section-inner seo-narrow">
+        <div class="section-heading">
+          <p class="eyebrow">Break it down</p>
+          <h2 id="five-title">The five locations Xcode storage comes from</h2>
+          <p>The first four live under <code>~/Library/Developer</code>, completely separate from your project directories. The fifth is Xcode itself.</p>
+        </div>
+        <div class="seo-card-grid">
+          <article class="seo-card">
+            <i data-lucide="smartphone" aria-hidden="true"></i>
+            <h3>1. Simulator runtimes</h3>
+            <p>At <code>CoreSimulator/Profiles/Runtimes</code>. Each one is a full system image, typically 4–9 GB. Old versions are never removed automatically, which makes this the largest block.</p>
+          </article>
+          <article class="seo-card">
+            <i data-lucide="hammer" aria-hidden="true"></i>
+            <h3>2. Build cache (DerivedData)</h3>
+            <p>At <code>Xcode/DerivedData</code>. Build intermediates and indexes. The more projects you have and the longer you build, the bigger it gets — and it only grows.</p>
+          </article>
+          <article class="seo-card">
+            <i data-lucide="cable" aria-hidden="true"></i>
+            <h3>3. Device support files</h3>
+            <p>At <code>Xcode/iOS DeviceSupport</code> (plus watchOS, tvOS and visionOS). One set per physical device and OS version you have connected. People who change phones accumulate these fastest.</p>
+          </article>
+          <article class="seo-card">
+            <i data-lucide="archive" aria-hidden="true"></i>
+            <h3>4. Archives ⚠️ never delete</h3>
+            <p>At <code>Xcode/Archives</code>. The archive of every build you shipped, including dSYM symbols. This is a record, not a cache.</p>
+          </article>
+          <article class="seo-card">
+            <i data-lucide="layers" aria-hidden="true"></i>
+            <h3>5. Simulator devices and shared cache</h3>
+            <p><code>CoreSimulator/Devices</code> holds the simulators you created; <code>CoreSimulator/Caches/dyld</code> is a regenerable linker cache.</p>
+          </article>
+          <article class="seo-card">
+            <i data-lucide="app-window" aria-hidden="true"></i>
+            <h3>Plus: Xcode itself</h3>
+            <p>In <code>/Applications</code>, usually in the low tens of gigabytes. It is the tool you use every day and is not part of any cleanup.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="seo-section seo-section-alt" id="table" aria-labelledby="table-title">
+      <div class="section-inner seo-narrow">
+        <div class="section-heading">
+          <p class="eyebrow">One by one</p>
+          <h2 id="table-title">Which can be deleted, and what it costs</h2>
+          <p>There is only one criterion: <strong>can it be regenerated, and how long does that take?</strong></p>
+        </div>
+        <div class="coverage-list">
+          <article>
+            <div class="feature-icon blue"><i data-lucide="smartphone" aria-hidden="true"></i></div>
+            <div>
+              <h3>Simulator runtimes — safe</h3>
+              <p>Keep the newest version of each platform, keep others only if you need them. Deleted runtimes can be downloaded again from Xcode Settings → Components, at the cost of a few gigabytes of download. This is the single biggest win.<a href="xcode-simulator-cleanup.html">How to decide which →</a></p>
+            </div>
+          </article>
+          <article>
+            <div class="feature-icon green"><i data-lucide="hammer" aria-hidden="true"></i></div>
+            <div>
+              <h3>DerivedData — safe</h3>
+              <p>Deleting it loses no source code, configuration or shipped build. The cost is a noticeably slower next build while indexes and intermediates are rebuilt. Do not do it the moment after a build if you are about to run tests.<a href="xcode-deriveddata.html">DerivedData explained →</a></p>
+            </div>
+          </article>
+          <article>
+            <div class="feature-icon orange"><i data-lucide="cable" aria-hidden="true"></i></div>
+            <div>
+              <h3>Device support files — safe</h3>
+              <p>These are symbol files Xcode pulled from a device when you debugged on it. Deleting them means the next connection to that device re-fetches them, which takes a few minutes. If you are actively debugging that specific device with Instruments or crash logs, you will wait for the re-fetch.</p>
+            </div>
+          </article>
+          <article>
+            <div class="feature-icon gray"><i data-lucide="shield-alert" aria-hidden="true"></i></div>
+            <div>
+              <h3>Archives — do not delete</h3>
+              <p>This holds the build you submitted and its dSYM symbols. Delete it and crash logs from those versions can no longer be symbolicated, and the same build cannot be re-uploaded. It is not regenerable, and <strong>no cleaner should count it as reclaimable space</strong>.</p>
+            </div>
+          </article>
+          <article>
+            <div class="feature-icon blue"><i data-lucide="layers" aria-hidden="true"></i></div>
+            <div>
+              <h3>Simulator devices and the dyld cache — safe</h3>
+              <p>Devices are ones you created, so deleting them resets simulator state. The dyld shared cache rebuilds on demand and only makes the first simulator launch slower. Neither affects installed runtimes.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="seo-section" id="measure" aria-labelledby="measure-title">
+      <div class="section-inner seo-narrow">
+        <div class="section-heading">
+          <p class="eyebrow">Measure first</p>
+          <h2 id="measure-title">One command, all five numbers</h2>
+          <p>Run this in Terminal. It only reads, deletes nothing, and sorts the output from smallest to largest so the biggest offender is last.</p>
+        </div>
+        <div class="hash-block" style="margin-bottom:1.5rem">
+          <p style="margin:0 0 .5rem;font-size:.875rem;color:var(--muted,#6b7280)">Size of each location</p>
+          <code style="display:block;overflow-x:auto;white-space:pre">du -sh ~/Library/Developer/Xcode/* ~/Library/Developer/CoreSimulator/* 2>/dev/null | sort -h</code>
+        </div>
+        <p>Watch three names in particular: <code>DerivedData</code>, <code>iOS DeviceSupport</code> and <code>Profiles/Runtimes</code>. On a tight development machine these three are usually the bulk of it.</p>
+        <p style="margin-top:1.25rem">Then <strong>deal with the largest one first, confirm Xcode and your projects still behave, and only then move to the second.</strong> Deleting everything at once saves a few minutes, but if a project depends on a particular old runtime you will have a hard time working out which one.</p>
+      </div>
+    </section>
+
+    <section class="seo-section seo-section-alt" aria-labelledby="order-title">
+      <div class="section-inner seo-narrow">
+        <div class="section-heading">
+          <p class="eyebrow">Order of operations</p>
+          <h2 id="order-title">If you only clean once, do it in this order</h2>
+        </div>
+        <ul class="check-list">
+          <li><i data-lucide="check" aria-hidden="true"></i><span><strong>First: old simulator runtimes</strong> — biggest win, lowest risk; keep the newest per platform</span></li>
+          <li><i data-lucide="check" aria-hidden="true"></i><span><strong>Second: DerivedData</strong> — usually gigabytes to tens of gigabytes; accept one slow build</span></li>
+          <li><i data-lucide="check" aria-hidden="true"></i><span><strong>Third: device support files</strong> — delete only the versions for devices you no longer own</span></li>
+          <li><i data-lucide="check" aria-hidden="true"></i><span><strong>Fourth: the dyld shared cache</strong> — smallest win, always rebuilds</span></li>
+          <li><i data-lucide="x" aria-hidden="true"></i><span><strong>Never: Archives</strong> — the space you save is not worth your release history</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="seo-section" aria-labelledby="app-title">
+      <div class="section-inner seo-narrow seo-callout">
+        <div>
+          <p class="eyebrow">Want a local scan?</p>
+          <h2 id="app-title">Let Mac Space Cleaner list these for you</h2>
+          <p>It lists old simulator runtimes, DerivedData and device support files separately, with their sizes and whether they can be regenerated, and it keeps the newest simulator runtime for each platform automatically. Optional items are unchecked by default and every path is confirmed before removal.</p>
+        </div>
+        <a class="button button-primary" href="../downloads/MacSpaceCleaner-1.3.dmg" download>Download for Mac — free</a>
+      </div>
+    </section>
+
+    <section class="seo-section" aria-labelledby="faq-title">
+      <div class="section-inner seo-narrow seo-faq">
+        <div class="section-heading"><p class="eyebrow">FAQ</p><h2 id="faq-title">About Xcode disk usage</h2></div>
+        <details><summary>How much does Xcode usually take?</summary><p>It depends on how many simulator runtimes you have and how much build history. Xcode itself is around 10–15 GB. Once you have several iOS and watchOS runtimes and a few months of builds, the whole <code>~/Library/Developer</code> directory is commonly tens of gigabytes, and most of it is regenerable.</p></details>
+        <details><summary>Which part should never be deleted?</summary><p><code>~/Library/Developer/Xcode/Archives</code>. It holds the archive of every build you shipped, including dSYM symbols. Once gone, crash logs from those versions cannot be symbolicated and the same build cannot be re-uploaded. It is a release record, not a cache.</p></details>
+        <details><summary>Will deleting these break Xcode?</summary><p>The regenerable parts will not. Runtimes can be downloaded again, DerivedData and the shared cache rebuild automatically, and device support files are re-fetched the next time that device connects. The cost is time, not data.</p></details>
+        <details><summary>Why does my DerivedData keep growing?</summary><p>It only grows. Every configuration change, every SDK version and every simulator architecture can leave its own intermediates behind, and Xcode does not clean up by default. After a couple of major Xcode upgrades it is often the largest single item.</p></details>
+        <details><summary>Does cleaning touch my project files or source code?</summary><p>No. All five locations live under <code>~/Library/Developer</code> and <code>/Applications</code>, separate from your project directories. The app only operates inside an explicit allowlist of paths and never touches project files.</p></details>
+      </div>
+    </section>
+
+    <section class="seo-section seo-section-alt" aria-labelledby="related-title">
+      <div class="section-inner seo-narrow">
+        <div class="section-heading compact"><p class="eyebrow">Keep reading</p><h2 id="related-title">Two related pages</h2></div>
+        <div class="seo-card-grid">
+          <article class="seo-card">
+            <i data-lucide="smartphone" aria-hidden="true"></i>
+            <h3><a href="xcode-simulator-cleanup.html">Deleting old simulators</a></h3>
+            <p>How to decide which runtimes to keep, and why the old ones never go away on their own.</p>
+          </article>
+          <article class="seo-card">
+            <i data-lucide="hammer" aria-hidden="true"></i>
+            <h3><a href="xcode-deriveddata.html">Can you delete DerivedData?</a></h3>
+            <p>What is in it, what it costs you, and when you should not touch it.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer"><div class="section-inner footer-layout"><div class="footer-brand"><img src="../assets/app-icon.png" alt="" width="30" height="30"><span>Mac Space Cleaner</span></div><div class="footer-links"><a href="index.html">Home</a><a href="support.html">Help</a><a href="faq.html">FAQ</a><a href="privacy.html">Privacy</a></div><p>© <span data-year></span> Mac Space Cleaner</p></div></footer>
+</body>
+</html>

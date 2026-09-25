@@ -39,7 +39,7 @@
       <div class="nav-links" id="nav-links">
         <a href="index.html">Home</a>
         <a href="mac-storage-cleaner.html">Storage guide</a>
-        <a href="xcode-simulator-cleanup.html" aria-current="page">Xcode simulators</a>
+        <a href="xcode-disk-space.html">Xcode storage</a>
         <a href="index.html#product">Interface</a>
         <a href="index.html#coverage">Coverage</a>
         <a href="index.html#safety">Safety</a>
@@ -163,6 +163,24 @@
         <details><summary>What is Caches/dyld and can I delete it?</summary><p>It is the simulator's dynamic linker cache, rebuilt on demand. After deleting it, the first simulator launch regenerates it and is slower once. Installed runtimes and devices are unaffected.</p></details>
         <details><summary>Can I reinstall a runtime afterwards?</summary><p>Yes. Xcode Settings → Components lets you download any OS runtime again. The cost is the download time.</p></details>
         <details><summary>Does cleaning touch my project files or source code?</summary><p>No. Runtimes and device data live under <code>~/Library/Developer</code>, separate from your project directories. The app only operates inside an explicit allowlist of cache and runtime paths, and never touches project files.</p></details>
+      </div>
+    </section>
+
+    <section class="seo-section seo-section-alt" aria-labelledby="related-title">
+      <div class="section-inner seo-narrow">
+        <div class="section-heading compact"><p class="eyebrow">Keep reading</p><h2 id="related-title">Two related pages</h2></div>
+        <div class="seo-card-grid">
+          <article class="seo-card">
+            <i data-lucide="layers" aria-hidden="true"></i>
+            <h3><a href="xcode-disk-space.html">How much Xcode really uses</a></h3>
+            <p>Simulators are only one of five locations. Which are safe, and which is your release history.</p>
+          </article>
+          <article class="seo-card">
+            <i data-lucide="hammer" aria-hidden="true"></i>
+            <h3><a href="xcode-deriveddata.html">Can you delete DerivedData?</a></h3>
+            <p>Usually the second biggest block, and what it costs you to remove it.</p>
+          </article>
+        </div>
       </div>
     </section>
   </main>

@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Mac 系统数据占了 100 多 G？它不是垃圾，也不是一个文件夹，而是「存储」里的一个分类。教你按可能性逐项定位真实来源，并分清哪些能删、哪些绝对不能动。">
+  <meta name="theme-color" content="#f4f7fc">
+  <link rel="canonical" href="https://mac-space-cleaner.vercel.app/mac-system-data.html">
+  <link rel="alternate" hreflang="zh-Hans" href="https://mac-space-cleaner.vercel.app/mac-system-data.html">
+  <link rel="alternate" hreflang="en" href="https://mac-space-cleaner.vercel.app/en/mac-system-data.html">
+  <link rel="alternate" hreflang="x-default" href="https://mac-space-cleaner.vercel.app/en/mac-system-data.html">
+  <meta property="og:title" content="Mac 系统数据占了 100 多 G？它是分类，不是文件夹">
+  <meta property="og:description" content="逐项定位系统数据的真实来源：iPhone 备份、虚拟机和 Docker、Xcode、本地快照、邮件缓存。分清哪些能删。">
+  <meta property="og:url" content="https://mac-space-cleaner.vercel.app/mac-system-data.html">
+  <meta property="og:image" content="https://mac-space-cleaner.vercel.app/assets/app-icon.png">
+  <title>Mac 系统数据占了 100 多 G 怎么清除？先定位真实来源｜Mac 空间清理</title>
+  <link rel="icon" href="assets/app-icon.png">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js" defer></script>
+  <script src="script.js" defer></script>
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"FAQPage",
+    "mainEntity":[
+      {"@type":"Question","name":"Mac 的「系统数据」到底是什么？","acceptedAnswer":{"@type":"Answer","text":"它是「关于本机 → 存储」里的一个分类，不是磁盘上的一个文件夹。macOS 把不属于应用程序、文档、照片、音乐等分类的内容都归到这里，所以它包含的东西非常杂：备份、虚拟机磁盘、开发缓存、日志、本地快照、邮件附件都可能被算进来。"}},
+      {"@type":"Question","name":"可以直接删除「系统数据」吗？","acceptedAnswer":{"@type":"Answer","text":"不能。系统里没有这个文件夹可供删除。必须先找出真正占空间的那一项，再针对那一项处理。常见的最大来源是 iPhone 备份、虚拟机或 Docker 的磁盘镜像，以及 Xcode 目录。"}},
+      {"@type":"Question","name":"删掉本地快照会丢东西吗？","acceptedAnswer":{"@type":"Answer","text":"本地快照是 Time Machine 在没有外接备份盘时留在本机的临时还原点，不是你的备份。删除它不会丢失当前文件，但你也不再能回滚到那个时间点。macOS 在空间紧张时通常也会自动清理较早的快照。"}},
+      {"@type":"Question","name":"清理工具会把我的照片和聊天记录删掉吗？","acceptedAnswer":{"@type":"Answer","text":"不该。照片图库、iCloud 内容、微信聊天数据和文档属于个人数据，不在可清理范围内。清理工具应该只处理缓存、日志和可重新生成的开发产物。如果某个工具声称能「一键清除系统数据」，先确认它到底删的是哪些路径。"}}
+    ]
+  }
+  </script>
+</head>
+<body>
+  <header class="site-header">
+    <nav class="nav-wrap" aria-label="主导航">
+      <a class="brand" href="index.html" aria-label="Mac 空间清理首页"><img src="assets/app-icon.png" alt="" width="36" height="36"><span>Mac 空间清理</span></a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="打开导航"><i data-lucide="menu" aria-hidden="true"></i></button>
+      <div class="nav-links" id="nav-links">
+        <a href="index.html">首页</a>
+        <a href="mac-storage-cleaner.html">空间问题</a>
+        <a href="xcode-disk-space.html">Xcode 空间</a>
+        <a href="index.html#product">界面</a>
+        <a href="index.html#coverage">清理范围</a>
+        <a href="index.html#safety">安全</a>
+        <a href="support.html">使用帮助</a>
+        <a href="faq.html">FAQ</a>
+        <a class="language-switch" href="en/mac-system-data.html" lang="en" hreflang="en">EN</a>
+        <a class="nav-download" href="downloads/MacSpaceCleaner-1.3.dmg" download><i data-lucide="download" aria-hidden="true"></i>下载</a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="page-main">
+    <section class="page-hero seo-hero">
+      <div class="section-inner">
+        <p class="eyebrow">macOS 存储</p>
+        <h1>系统数据 100 多 G，但它不是一个文件夹</h1>
+        <p>你在「关于本机 → 存储」里看到一大块「系统数据」，然后在访达里翻遍了也找不到它 —— 因为<strong>它根本不是磁盘上的某个目录，而是一个分类</strong>。搞清楚这一点，才谈得上清理。</p>
+        <div class="hero-actions"><a class="button button-primary" href="#sources">先看最可能是哪几项</a><a class="button button-secondary" href="#measure">直接开始量</a></div>
+      </div>
+    </section>
+
+    <section class="seo-section" aria-labelledby="what-title">
+      <div class="section-inner seo-narrow">
+        <div class="section-heading">
+          <p class="eyebrow">先搞清楚</p>
+          <h2 id="what-title">「系统数据」是一个分类，不是一块空间</h2>
+          <p>macOS 把磁盘上的内容分成几类：应用程序、文稿、照片、音乐、邮件、系统数据……前几类都有明确归属，<strong>剩下所有不属于它们的，全被扫进「系统数据」</strong>。</p>
+        </div>
+        <div class="seo-card-grid">
+          <article class="seo-card">
+            <i data-lucide="folder-tree" aria-hidden="true"></i>
+            <h3>它由很多东西拼成</h3>
+            <p>设备备份、虚拟机磁盘、开发缓存、日志、邮件附件、本地快照、索引数据库 —— 它们唯一的共同点是「没被归到别的分类」。</p>
+          </article>
+          <article class="seo-card">
+            <i data-lucide="search-x" aria-hidden="true"></i>
+            <h3>所以没有「清除系统数据」按钮</h3>
+            <p>不存在一个叫「系统数据」的文件夹可以删。任何声称能一键清掉它的工具，实际上是在删其中的某些具体路径。</p>
+          </article>
+          <article class="seo-card">
+            <i data-lucide="trending-up" aria-hidden="true"></i>
+            <h3>它经常被「用出来」</h3>
+            <p>备份一次 iPhone、拉几个 Docker 镜像、编译几个大项目，几个月后它就能无声无息地涨到几十甚至上百 GB。</p>
+          </article>
+          <article class="seo-card">
+            <i data-lucide="info" aria-hidden="true"></i>
+            <h3>数值本身也不精确</h3>
+            <p>这个分类的数字是估算的，系统会先把文件归到已知分类，剩下的才累计到这里。所以它偶尔会跳动，不必纠结到小数点。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="seo-section seo-section-alt" id="sources" aria-labelledby="sources-title">
+      <div class="section-inner seo-narrow">
+        <div class="section-heading">
+          <p class="eyebrow">按可能性排序</p>
+          <h2 id="sources-title">最可能是这几项，从第一名开始查</h2>
+          <p>下面大致按「实际占得多、又常被忽略」排序。你不需要全查，从前两项开始量通常就能找到答案。</p>
+        </div>
+        <div class="coverage-list">
+          <article>
+            <div class="feature-icon blue"><i data-lucide="smartphone" aria-hidden="true"></i></div>
+            <div>
+              <h3>① iPhone / iPad 备份</h3>
+              <p>路径 <code>~/Library/Application Support/MobileSync/Backup</code>。每次把 iPhone 插上 Mac 同步或备份，就会留一份完整设备备份，<strong>一份经常十几到几十 GB，而且每台设备多份</strong>。这是最容易超过 100 GB 的单项。</p>
+              <p style="margin-top:.5rem">处理方式：在访达里按住 Option 打开「前往 → 资源库」进入该目录；或者更安全地在 <strong>系统设置 → 通用 → 储存空间</strong> 里管理设备备份。删除后那台设备下次备份会重新完整备份一次。</p>
+            </div>
+          </article>
+          <article>
+            <div class="feature-icon orange"><i data-lucide="container" aria-hidden="true"></i></div>
+            <div>
+              <h3>② 虚拟机与 Docker 的磁盘镜像</h3>
+              <p>Docker Desktop、OrbStack、Parallels、UTM 都在本机放一个会不断增长的磁盘镜像。它们的共同特点是：<strong>镜像只增不减，即使你在容器里删了东西。</strong></p>
+              <p style="margin-top:.5rem">处理方式：Docker 先执行 <code>docker system prune -a</code> 清掉无用镜像和构建缓存，再到 Docker Desktop 的设置里收缩磁盘镜像大小。路径随版本变化，通常在 <code>~/Library/Containers/com.docker.docker/Data/vms</code> 下，动手前先确认再删。</p>
+            </div>
+          </article>
+          <article>
+            <div class="feature-icon green"><i data-lucide="hammer" aria-hidden="true"></i></div>
+            <div>
+              <h3>③ Xcode 与开发缓存</h3>
+              <p>整个 <code>~/Library/Developer</code> 都可能被算进系统数据：旧版模拟器运行时、构建缓存、真机调试支持文件。注意 <code>Xcode/Archives</code> 是你的发布存档，不能删。<a href="xcode-disk-space.html">Xcode 五块空间详解 →</a></p>
+            </div>
+          </article>
+          <article>
+            <div class="feature-icon gray"><i data-lucide="history" aria-hidden="true"></i></div>
+            <div>
+              <h3>④ 本地快照（APFS snapshots）</h3>
+              <p>没接外置硬盘时，Time Machine 会把还原点暂存在本机。你删掉的大文件可能还被快照「钉」着，所以删了东西空间却没回来。用 <code>tmutil listlocalsnapshots /</code> 查看。</p>
+            </div>
+          </article>
+          <article>
+            <div class="feature-icon blue"><i data-lucide="mail" aria-hidden="true"></i></div>
+            <div>
+              <h3>⑤ 邮件附件与流媒体缓存</h3>
+              <p>邮件客户端会把附件下载到本机；Apple Music、播客、TV App 和照片图库的缓存也会被算进来。这些通常各自几 GB，很少是主因，但加起来不可忽略。</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="seo-section" id="measure" aria-labelledby="measure-title">
+      <div class="section-inner seo-narrow">
+        <div class="section-heading">
+          <p class="eyebrow">自己动手量</p>
+          <h2 id="measure-title">三条命令，把来源定位出来</h2>
+          <p>全部只读取，不删除任何东西。关键是第一条：<strong>把资源库下每个子目录按体积排序</strong>，最大的一眼就能看到。</p>
+        </div>
+        <div class="hash-block" style="margin-bottom:1.5rem">
+          <p style="margin:0 0 .5rem;font-size:.875rem;color:var(--muted,#6b7280)">① 资源库下谁最大（最大的排在最后）</p>
+          <code style="display:block;overflow-x:auto;white-space:pre">du -sh ~/Library/* 2>/dev/null | sort -h | tail -15</code>
+        </div>
+        <div class="hash-block" style="margin-bottom:1.5rem">
+          <p style="margin:0 0 .5rem;font-size:.875rem;color:var(--muted,#6b7280)">② 看看有没有本地快照占着空间</p>
+          <code style="display:block;overflow-x:auto;white-space:pre">tmutil listlocalsnapshots /</code>
+        </div>
+        <div class="hash-block" style="margin-bottom:1.5rem">
+          <p style="margin:0 0 .5rem;font-size:.875rem;color:var(--muted,#6b7280)">③ 单独确认设备备份有多大</p>
+          <code style="display:block;overflow-x:auto;white-space:pre">du -sh ~/Library/Application\ Support/MobileSync/Backup</code>
+        </div>
+        <p style="margin-top:1.25rem">如果第一条命令的结果里出现了某个几十 GB 的目录，那基本就是它了。如果每条都不大，但「存储」里系统数据依然很高，那更可能是本地快照或者虚拟机磁盘镜像 —— 这两类<strong>不会被 <code>du</code> 正常统计</strong>，需要分别用第二、第三条思路去查。</p>
+      </div>
+    </section>
+
+    <section class="seo-section seo-section-alt" aria-labelledby="safe-title">
+      <div class="section-inner seo-narrow">
+        <div class="section-heading">
+          <p class="eyebrow">安全边界</p>
+          <h2 id="safe-title">哪些能删、哪些别碰</h2>
+        </div>
+        <ul class="check-list">
+          <li><i data-lucide="check" aria-hidden="true"></i><span><strong>可以删</strong>：旧版模拟器运行时、构建缓存、真机调试支持文件、各类应用缓存与日志、无用的设备备份</span></li>
+          <li><i data-lucide="check" aria-hidden="true"></i><span><strong>可以删</strong>：Docker 无用镜像与构建缓存（用 <code>docker system prune -a</code>，而不是直接删镜像文件）</span></li>
+          <li><i data-lucide="check" aria-hidden="true"></i><span><strong>可以删</strong>：较早的本地快照（用 <code>sudo tmutil deletelocalsnapshots</code>，删完当前文件不受影响）</span></li>
+          <li><i data-lucide="x" aria-hidden="true"></i><span><strong>别乱删</strong>：<code>~/Library/Developer/Xcode/Archives</code> —— 你的发布存档和符号文件</span></li>
+          <li><i data-lucide="x" aria-hidden="true"></i><span><strong>别乱删</strong>：照片图库、iCloud 里的文件、微信聊天数据、Keychain、任何带「Library」但你不认识的目录</span></li>
+        </ul>
+        <p style="margin-top:1.25rem">最后一条原则：<strong>在删掉一个你不认识的目录之前，先确认它是可重新生成的。</strong>名字像缓存不等于真的是缓存。</p>
+      </div>
+    </section>
+
+    <section class="seo-section" aria-labelledby="app-title">
+      <div class="section-inner seo-narrow seo-callout">
+        <div>
+          <p class="eyebrow">关于这个工具</p>
+          <h2 id="app-title">它覆盖其中一部分，不是全部</h2>
+          <p>Mac 空间清理会处理应用缓存、开发工具缓存和 Xcode 的三块空间，并把下载、iCloud、微信聊天数据、WPS 备份只读展示，不进去一键清理。<strong>它不处理 iPhone 备份、Docker 镜像、本地快照和照片图库</strong> —— 那几项请用上面各自的原生方式处理。把范围说清楚，比假装什么都能清更有用。</p>
+        </div>
+        <a class="button button-primary" href="downloads/MacSpaceCleaner-1.3.dmg" download>免费下载 Mac 版</a>
+      </div>
+    </section>
+
+    <section class="seo-section" aria-labelledby="faq-title">
+      <div class="section-inner seo-narrow seo-faq">
+        <div class="section-heading"><p class="eyebrow">常见问题</p><h2 id="faq-title">关于系统数据</h2></div>
+        <details><summary>为什么我在访达里找不到「系统数据」？</summary><p>因为它不是一个文件夹，而是「关于本机 → 存储」里的一个统计分类。macOS 把不属于应用程序、文稿、照片、音乐、邮件等分类的内容都归入其中，所以它由很多互不相关的路径拼成。</p></details>
+        <details><summary>我删了很多文件，但可用空间没变，为什么？</summary><p>很可能是本地快照把空间钉住了。用 <code>tmutil listlocalsnapshots /</code> 查看是否存在较早的快照。这类情况在没接外置备份盘、又开过 Time Machine 的机器上很常见。</p></details>
+        <details><summary>系统数据会不会自己变小？</summary><p>部分会。macOS 在空间紧张时会自动清理较早的本地快照和部分缓存。但设备备份、虚拟机磁盘镜像、Xcode 累积的运行时不在此列，它们不会自己消失。</p></details>
+        <details><summary>用清理工具「一键清除系统数据」安全吗？</summary><p>要看它实际删哪些路径。这个分类里混着你的设备备份、聊天记录和照片图库，一个不区分内容的「一键清除」风险很高。稳妥的做法是先定位到具体来源，再针对那一项处理。</p></details>
+        <details><summary>网页能不能直接扫描我的 Mac？</summary><p>不能。浏览器网页无法读取你本机磁盘的目录结构。本页提供的命令需要你自己在终端运行，真正需要本机深度扫描和批量处理的部分，要由你下载并运行的原生 App 完成。</p></details>
+      </div>
+    </section>
+
+    <section class="seo-section seo-section-alt" aria-labelledby="related-title">
+      <div class="section-inner seo-narrow">
+        <div class="section-heading compact"><p class="eyebrow">继续看</p><h2 id="related-title">相关的两页</h2></div>
+        <div class="seo-card-grid">
+          <article class="seo-card">
+            <i data-lucide="hard-drive" aria-hidden="true"></i>
+            <h3><a href="mac-storage-cleaner.html">Mac 空间不足的完整自查顺序</a></h3>
+            <p>从最容易释放的地方开始，一步步排查空间被谁占用。</p>
+          </article>
+          <article class="seo-card">
+            <i data-lucide="hammer" aria-hidden="true"></i>
+            <h3><a href="xcode-disk-space.html">Xcode 一共占了多少</a></h3>
+            <p>如果系统数据的大头是开发缓存，这一页把它拆成五块逐块判断。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer"><div class="section-inner footer-layout"><div class="footer-brand"><img src="assets/app-icon.png" alt="" width="30" height="30"><span>Mac 空间清理</span></div><div class="footer-links"><a href="index.html">首页</a><a href="support.html">使用帮助</a><a href="faq.html">FAQ</a><a href="privacy.html">隐私政策</a></div><p>© <span data-year></span> Mac 空间清理</p></div></footer>
+</body>
+</html>

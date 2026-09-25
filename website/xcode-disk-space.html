@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Xcode 到底占了多少磁盘？把它的空间拆成模拟器运行时、DerivedData、真机调试支持文件、归档和共享缓存五块，逐块说明哪些能删、删了要付什么代价，以及哪些绝对不能删。">
+  <meta name="theme-color" content="#f4f7fc">
+  <link rel="canonical" href="https://mac-space-cleaner.vercel.app/xcode-disk-space.html">
+  <link rel="alternate" hreflang="zh-Hans" href="https://mac-space-cleaner.vercel.app/xcode-disk-space.html">
+  <link rel="alternate" hreflang="en" href="https://mac-space-cleaner.vercel.app/en/xcode-disk-space.html">
+  <link rel="alternate" hreflang="x-default" href="https://mac-space-cleaner.vercel.app/en/xcode-disk-space.html">
+  <meta property="og:title" content="Xcode 占了多少磁盘？拆成五块，逐块判断能不能删">
+  <meta property="og:description" content="模拟器运行时、DerivedData、真机调试支持文件、归档、共享缓存。哪块最占、哪块不能删、删了要付什么代价。">
+  <meta property="og:url" content="https://mac-space-cleaner.vercel.app/xcode-disk-space.html">
+  <meta property="og:image" content="https://mac-space-cleaner.vercel.app/assets/app-icon.png">
+  <title>Xcode 占了多少磁盘？五块空间逐块判断能不能删｜Mac 空间清理</title>
+  <link rel="icon" href="assets/app-icon.png">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js" defer></script>
+  <script src="script.js" defer></script>
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"FAQPage",
+    "mainEntity":[
+      {"@type":"Question","name":"Xcode 一般会占用多少磁盘空间？","acceptedAnswer":{"@type":"Answer","text":"取决于装了多少个模拟器运行时和有多少编译历史。刚装好的 Xcode 本身大约十几 GB；一旦装了几个 iOS 和 watchOS 运行时、并且项目编译过一段时间，整个 ~/Library/Developer 目录到几十 GB 很常见，其中大部分是可重新生成的。"}},
+      {"@type":"Question","name":"Xcode 的哪一部分绝对不能删？","acceptedAnswer":{"@type":"Answer","text":"~/Library/Developer/Xcode/Archives。它是你每次 Archive 打包留下的存档，包含二进制和 dSYM 符号文件。删掉之后，历史版本的崩溃日志无法再符号化，也无法重新上传同一个构建。它属于你的发布记录，不是缓存。"}},
+      {"@type":"Question","name":"删掉这些之后 Xcode 会出问题吗？","acceptedAnswer":{"@type":"Answer","text":"可重新生成的部分不会。模拟器运行时可以重新下载，DerivedData 和共享缓存会在下次编译或启动模拟器时自动重建，真机调试支持文件会在下次连接设备时重新抓取。代价是重建需要时间，不是数据丢失。"}},
+      {"@type":"Question","name":"有没有一条命令能看出 Xcode 各部分占了多少？","acceptedAnswer":{"@type":"Answer","text":"可以。在终端运行 du -sh ~/Library/Developer/Xcode/* ~/Library/Developer/CoreSimulator/* 2>/dev/null | sort -h，它会按从小到大列出每个子目录的体积，只读取不删除。"}}
+    ]
+  }
+  </script>
+</head>
+<body>
+  <header class="site-header">
+    <nav class="nav-wrap" aria-label="主导航">
+      <a class="brand" href="index.html" aria-label="Mac 空间清理首页"><img src="assets/app-icon.png" alt="" width="36" height="36"><span>Mac 空间清理</span></a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="打开导航"><i data-lucide="menu" aria-hidden="true"></i></button>
+      <div class="nav-links" id="nav-links">
+        <a href="index.html">首页</a>
+        <a href="mac-storage-cleaner.html">空间问题</a>
+        <a href="xcode-disk-space.html" aria-current="page">Xcode 空间</a>
+        <a href="index.html#product">界面</a>
+        <a href="index.html#coverage">清理范围</a>
+        <a href="index.html#safety">安全</a>
+        <a href="support.html">使用帮助</a>
+        <a href="faq.html">FAQ</a>
+        <a class="language-switch" href="en/xcode-disk-space.html" lang="en" hreflang="en">EN</a>
+        <a class="nav-download" href="downloads/MacSpaceCleaner-1.3.dmg" download><i data-lucide="download" aria-hidden="true"></i>下载</a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="page-main">
+    <section class="page-hero seo-hero">
+      <div class="section-inner">
+        <p class="eyebrow">开发者空间</p>
+        <h1>Xcode 占了多少，其实取决于五块东西</h1>
+        <p>开发机上「Xcode 占用」不是一坨黑盒。它由五个位置组成，每一块的性质完全不同：有四块是可重新生成的，<strong>有一块是你的发布记录，删了再也补不回来</strong>。先分开量，再决定删哪个。</p>
+        <div class="hero-actions"><a class="button button-primary" href="#measure">先看怎么量</a><a class="button button-secondary" href="#table">直接看能不能删</a></div>
+      </div>
+    </section>
+
+    <section class="seo-section" aria-labelledby="five-title">
+      <div class="section-inner seo-narrow">
+        <div class="section-heading">
+          <p class="eyebrow">拆开看</p>
+          <h2 id="five-title">Xcode 的空间由这五块组成</h2>
+          <p>前四块都在 <code>~/Library/Developer</code> 下，和你的项目源码完全分开。第五块是 Xcode 本体。</p>
+        </div>
+        <div class="seo-card-grid">
+          <article class="seo-card">
+            <i data-lucide="smartphone" aria-hidden="true"></i>
+            <h3>1. 模拟器运行时</h3>
+            <p>路径 <code>CoreSimulator/Profiles/Runtimes</code>。每个是一整套系统镜像，单个通常 4–9 GB。历史版本不会自动删除，是这块最占空间的部分。</p>
+          </article>
+          <article class="seo-card">
+            <i data-lucide="hammer" aria-hidden="true"></i>
+            <h3>2. 构建缓存 DerivedData</h3>
+            <p>路径 <code>Xcode/DerivedData</code>。编译中间产物和索引。项目越多、编译越久，它越大，而且它只增不减。</p>
+          </article>
+          <article class="seo-card">
+            <i data-lucide="cable" aria-hidden="true"></i>
+            <h3>3. 真机调试支持文件</h3>
+            <p>路径 <code>Xcode/iOS DeviceSupport</code>（还有 watchOS、tvOS、visionOS）。每台插过的真机、每个系统版本各一份，换过手机的人最容易堆起来。</p>
+          </article>
+          <article class="seo-card">
+            <i data-lucide="archive" aria-hidden="true"></i>
+            <h3>4. 归档 Archives ⚠️ 不要删</h3>
+            <p>路径 <code>Xcode/Archives</code>。每次 Archive 打包的存档，含 dSYM 符号文件。这是你的发布记录，不是缓存。</p>
+          </article>
+          <article class="seo-card">
+            <i data-lucide="layers" aria-hidden="true"></i>
+            <h3>5. 模拟器设备与共享缓存</h3>
+            <p><code>CoreSimulator/Devices</code> 是你建的那些模拟器设备，<code>CoreSimulator/Caches/dyld</code> 是可重建的动态链接缓存。</p>
+          </article>
+          <article class="seo-card">
+            <i data-lucide="app-window" aria-hidden="true"></i>
+            <h3>外加：Xcode 本体</h3>
+            <p>在 <code>/Applications</code> 下，通常十几 GB。这是你每天要用的工具，不在任何清理范围内。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="seo-section seo-section-alt" id="table" aria-labelledby="table-title">
+      <div class="section-inner seo-narrow">
+        <div class="section-heading">
+          <p class="eyebrow">逐块判断</p>
+          <h2 id="table-title">每一块能不能删、代价是什么</h2>
+          <p>判断标准只有一条：<strong>删掉之后能不能重新生成，以及重新生成要花多久。</strong></p>
+        </div>
+        <div class="coverage-list">
+          <article>
+            <div class="feature-icon blue"><i data-lucide="smartphone" aria-hidden="true"></i></div>
+            <div>
+              <h3>模拟器运行时 — 可以删</h3>
+              <p>留每个平台的最新版，其余按需要。删掉后可以在 Xcode 的 Settings → Components 重新下载，代价是重新下几个 GB。这是单项释放空间最多的一块。<a href="xcode-simulator-cleanup.html">详细判断方法 →</a></p>
+            </div>
+          </article>
+          <article>
+            <div class="feature-icon green"><i data-lucide="hammer" aria-hidden="true"></i></div>
+            <div>
+              <h3>DerivedData — 可以删</h3>
+              <p>删掉不丢源码、配置和已发布的东西，代价是下一次编译明显变慢，因为要重建索引和中间产物。刚 build 完要立刻跑测试的时候不要删。<a href="xcode-deriveddata.html">DerivedData 详解 →</a></p>
+            </div>
+          </article>
+          <article>
+            <div class="feature-icon orange"><i data-lucide="cable" aria-hidden="true"></i></div>
+            <div>
+              <h3>真机调试支持文件 — 可以删</h3>
+              <p>它是连接真机调试时从设备上抓的符号文件。删掉后下次连接那台设备会重新抓取，等几分钟。注意：如果你在用 Instruments 或 Crash 日志调试那台特定的设备，删了要重新等。</p>
+            </div>
+          </article>
+          <article>
+            <div class="feature-icon gray"><i data-lucide="shield-alert" aria-hidden="true"></i></div>
+            <div>
+              <h3>归档 Archives — 不要删</h3>
+              <p>它保存的是你每次提交上架的构建和 dSYM 符号文件。删掉之后，历史版本的崩溃日志无法再符号化，也无法把同一个构建重新上传。它不属于可重建内容，<strong>任何清理工具都不该把它算进「可释放空间」</strong>。</p>
+            </div>
+          </article>
+          <article>
+            <div class="feature-icon blue"><i data-lucide="layers" aria-hidden="true"></i></div>
+            <div>
+              <h3>模拟器设备与 dyld 缓存 — 可以删</h3>
+              <p>设备是你自己建的，删掉等于重置模拟器状态；dyld 共享缓存按需重建，删后首次启动模拟器会慢一次。两者都不影响已安装的运行时。</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="seo-section" id="measure" aria-labelledby="measure-title">
+      <div class="section-inner seo-narrow">
+        <div class="section-heading">
+          <p class="eyebrow">先量再删</p>
+          <h2 id="measure-title">一条命令，把五块分别量出来</h2>
+          <p>在终端里跑下面这条。它只读取，不删除任何东西，输出会按体积从小到大排列，最占空间的那块在最后。</p>
+        </div>
+        <div class="hash-block" style="margin-bottom:1.5rem">
+          <p style="margin:0 0 .5rem;font-size:.875rem;color:var(--muted,#6b7280)">分别查看每一块的体积</p>
+          <code style="display:block;overflow-x:auto;white-space:pre">du -sh ~/Library/Developer/Xcode/* ~/Library/Developer/CoreSimulator/* 2>/dev/null | sort -h</code>
+        </div>
+        <p>重点看三个名字：<code>DerivedData</code>、<code>iOS DeviceSupport</code>、<code>Profiles/Runtimes</code>。如果你的开发机磁盘很紧，这三个加起来通常就是最大头。</p>
+        <p style="margin-top:1.25rem">量完之后，<strong>先只处理体积最大的那一块，删完确认 Xcode 和你的项目一切正常，再动第二块。</strong>一次全删虽然省事，但万一某个项目依赖了某个旧运行时，你会很难定位是哪一个。</p>
+      </div>
+    </section>
+
+    <section class="seo-section seo-section-alt" aria-labelledby="order-title">
+      <div class="section-inner seo-narrow">
+        <div class="section-heading">
+          <p class="eyebrow">动手顺序</p>
+          <h2 id="order-title">如果只删一次，按这个顺序</h2>
+        </div>
+        <ul class="check-list">
+          <li><i data-lucide="check" aria-hidden="true"></i><span><strong>第一刀：旧版模拟器运行时</strong> —— 释放最多，风险最低，按平台保留最新版即可</span></li>
+          <li><i data-lucide="check" aria-hidden="true"></i><span><strong>第二刀：DerivedData</strong> —— 通常几个 GB 到几十 GB，删完接受一次慢编译</span></li>
+          <li><i data-lucide="check" aria-hidden="true"></i><span><strong>第三刀：真机调试支持文件</strong> —— 只删你不再持有的设备对应的版本</span></li>
+          <li><i data-lucide="check" aria-hidden="true"></i><span><strong>第四刀：dyld 共享缓存</strong> —— 收益最小，随时可重建</span></li>
+          <li><i data-lucide="x" aria-hidden="true"></i><span><strong>不要碰：Archives</strong> —— 省下的空间换不回你的发布记录</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="seo-section" aria-labelledby="app-title">
+      <div class="section-inner seo-narrow seo-callout">
+        <div>
+          <p class="eyebrow">需要本机扫描？</p>
+          <h2 id="app-title">让 Mac 空间清理把这几块列清楚</h2>
+          <p>它会把旧版模拟器运行时、DerivedData、真机调试支持文件分别列出来，标出体积和哪些可以重新生成，自动保留每个平台的最新模拟器版本。可选项默认不勾选，删除前再确认一次路径。</p>
+        </div>
+        <a class="button button-primary" href="downloads/MacSpaceCleaner-1.3.dmg" download>免费下载 Mac 版</a>
+      </div>
+    </section>
+
+    <section class="seo-section" aria-labelledby="faq-title">
+      <div class="section-inner seo-narrow seo-faq">
+        <div class="section-heading"><p class="eyebrow">常见问题</p><h2 id="faq-title">关于 Xcode 的磁盘占用</h2></div>
+        <details><summary>Xcode 一般会占多少？</summary><p>取决于装了多少个模拟器运行时、以及有多少编译历史。刚装好的 Xcode 本体大约十几 GB；一旦装了几个 iOS 和 watchOS 运行时、项目又编译过一段时间，整个 <code>~/Library/Developer</code> 到几十 GB 很常见，其中大部分是可重新生成的。</p></details>
+        <details><summary>哪一块绝对不能删？</summary><p><code>~/Library/Developer/Xcode/Archives</code>。它是你每次 Archive 打包留下的存档，包含二进制和 dSYM 符号文件。删掉之后历史版本的崩溃日志无法再符号化，也无法重新上传同一个构建。它属于发布记录，不是缓存。</p></details>
+        <details><summary>删了之后 Xcode 会不会坏？</summary><p>可重新生成的部分不会。运行时可以重新下载，DerivedData 和共享缓存会自动重建，真机调试支持文件会在下次连接设备时重新抓取。代价是时间，不是数据。</p></details>
+        <details><summary>为什么我的 DerivedData 越用越大？</summary><p>它只增不减。每个项目的每次配置变更、每个 SDK 版本、每台模拟器架构都可能留下独立的中间产物，Xcode 默认不会清理。所以同一台机器上换过几次 Xcode 大版本之后，它经常是最大的一块。</p></details>
+        <details><summary>清理会不会动到我的项目文件和代码？</summary><p>不会。这五块全部在 <code>~/Library/Developer</code> 和 <code>/Applications</code> 下，与你的项目目录分开。产品也只在明确允许的路径内操作，不触碰项目文件。</p></details>
+      </div>
+    </section>
+
+    <section class="seo-section seo-section-alt" aria-labelledby="related-title">
+      <div class="section-inner seo-narrow">
+        <div class="section-heading compact"><p class="eyebrow">继续看</p><h2 id="related-title">相关的两页</h2></div>
+        <div class="seo-card-grid">
+          <article class="seo-card">
+            <i data-lucide="smartphone" aria-hidden="true"></i>
+            <h3><a href="xcode-simulator-cleanup.html">旧版模拟器怎么删</a></h3>
+            <p>怎么决定留哪个、删哪个，以及为什么旧版本会一直堆着不走。</p>
+          </article>
+          <article class="seo-card">
+            <i data-lucide="hammer" aria-hidden="true"></i>
+            <h3><a href="xcode-deriveddata.html">DerivedData 能不能删</a></h3>
+            <p>里面到底是什么、删了会有什么代价、什么情况下不该删。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer"><div class="section-inner footer-layout"><div class="footer-brand"><img src="assets/app-icon.png" alt="" width="30" height="30"><span>Mac 空间清理</span></div><div class="footer-links"><a href="index.html">首页</a><a href="support.html">使用帮助</a><a href="faq.html">FAQ</a><a href="privacy.html">隐私政策</a></div><p>© <span data-year></span> Mac 空间清理</p></div></footer>
+</body>
+</html>

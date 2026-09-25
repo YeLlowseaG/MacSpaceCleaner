@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Mac System Data showing 100 GB or more? It is a storage category, not a folder. Find the real source step by step — device backups, Docker and VM images, Xcode, local snapshots, Mail cache.">
+  <meta name="theme-color" content="#f4f7fc">
+  <link rel="canonical" href="https://mac-space-cleaner.vercel.app/en/mac-system-data.html">
+  <link rel="alternate" hreflang="zh-Hans" href="https://mac-space-cleaner.vercel.app/mac-system-data.html">
+  <link rel="alternate" hreflang="en" href="https://mac-space-cleaner.vercel.app/en/mac-system-data.html">
+  <link rel="alternate" hreflang="x-default" href="https://mac-space-cleaner.vercel.app/en/mac-system-data.html">
+  <meta property="og:title" content="Mac System Data is 100 GB? It is a category, not a folder">
+  <meta property="og:description" content="Locate the real source of System Data: iPhone backups, Docker and VM images, Xcode, local snapshots, Mail cache. And what is safe to remove.">
+  <meta property="og:url" content="https://mac-space-cleaner.vercel.app/en/mac-system-data.html">
+  <meta property="og:image" content="https://mac-space-cleaner.vercel.app/assets/app-icon.png">
+  <title>Mac System Data Using 100 GB? Find the Real Source | Mac Space Cleaner</title>
+  <link rel="icon" href="../assets/app-icon.png">
+  <link rel="stylesheet" href="../styles.css">
+  <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js" defer></script>
+  <script src="../script.js" defer></script>
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"FAQPage",
+    "mainEntity":[
+      {"@type":"Question","name":"What exactly is System Data on a Mac?","acceptedAnswer":{"@type":"Answer","text":"It is a category in About This Mac → Storage, not a folder on disk. macOS files anything that does not belong to Applications, Documents, Photos, Music or Mail under System Data, so it mixes things with nothing in common: device backups, virtual machine images, developer caches, logs, local snapshots and mail attachments."}},
+      {"@type":"Question","name":"Can I just delete System Data?","acceptedAnswer":{"@type":"Answer","text":"No. There is no folder of that name to delete. You have to identify which specific item is taking the space and deal with that. The most common large sources are iPhone backups, Docker or VM disk images and the Xcode directory."}},
+      {"@type":"Question","name":"Do I lose anything by deleting local snapshots?","acceptedAnswer":{"@type":"Answer","text":"Local snapshots are temporary restore points Time Machine keeps on the Mac when no external backup drive is attached; they are not your backup. Deleting them does not lose current files, but you can no longer roll back to that point in time. macOS usually thins older snapshots automatically when space runs low."}},
+      {"@type":"Question","name":"Will a cleaner delete my photos or chat history?","acceptedAnswer":{"@type":"Answer","text":"It should not. Photo libraries, iCloud content, chat data and documents are personal data and are outside any legitimate cleanup scope. A cleaner should only touch caches, logs and regenerable developer output. If a tool claims one-click System Data removal, check which paths it actually deletes."}}
+    ]
+  }
+  </script>
+</head>
+<body>
+  <header class="site-header">
+    <nav class="nav-wrap" aria-label="Main navigation">
+      <a class="brand" href="index.html" aria-label="Mac Space Cleaner home"><img src="../assets/app-icon.png" alt="" width="36" height="36"><span>Mac Space Cleaner</span></a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="Open navigation"><i data-lucide="menu" aria-hidden="true"></i></button>
+      <div class="nav-links" id="nav-links">
+        <a href="index.html">Home</a>
+        <a href="mac-storage-cleaner.html">Storage guide</a>
+        <a href="xcode-disk-space.html">Xcode storage</a>
+        <a href="index.html#product">Interface</a>
+        <a href="index.html#coverage">Coverage</a>
+        <a href="index.html#safety">Safety</a>
+        <a href="support.html">Help</a>
+        <a href="faq.html">FAQ</a>
+        <a class="language-switch" href="../mac-system-data.html" lang="zh-Hans" hreflang="zh-Hans">中文</a>
+        <a class="nav-download" href="../downloads/MacSpaceCleaner-1.3.dmg" download><i data-lucide="download" aria-hidden="true"></i>Download</a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="page-main">
+    <section class="page-hero seo-hero">
+      <div class="section-inner">
+        <p class="eyebrow">macOS storage</p>
+        <h1>System Data is 100 GB, and it is not a folder</h1>
+        <p>You see a huge “System Data” block in About This Mac → Storage, then search Finder and cannot find it anywhere — because <strong>it is a category, not a directory</strong>. Understanding that is the difference between a real cleanup and deleting the wrong thing.</p>
+        <div class="hero-actions"><a class="button button-primary" href="#sources">Start with the likely sources</a><a class="button button-secondary" href="#measure">Measure it yourself</a></div>
+      </div>
+    </section>
+
+    <section class="seo-section" aria-labelledby="what-title">
+      <div class="section-inner seo-narrow">
+        <div class="section-heading">
+          <p class="eyebrow">Understand it first</p>
+          <h2 id="what-title">System Data is a category, not a block of disk</h2>
+          <p>macOS sorts your disk into categories: Applications, Documents, Photos, Music, Mail, System Data. The first few have clear owners, and <strong>anything left over is swept into System Data</strong>.</p>
+        </div>
+        <div class="seo-card-grid">
+          <article class="seo-card">
+            <i data-lucide="folder-tree" aria-hidden="true"></i>
+            <h3>It is a mixture, not a thing</h3>
+            <p>Device backups, VM disk images, developer caches, logs, mail attachments, local snapshots, index databases. Their only shared property is not belonging anywhere else.</p>
+          </article>
+          <article class="seo-card">
+            <i data-lucide="search-x" aria-hidden="true"></i>
+            <h3>So there is no “clear it” button</h3>
+            <p>No folder named System Data exists. Any tool claiming one-click removal of it is really deleting some specific paths inside, which is why the path list matters.</p>
+          </article>
+          <article class="seo-card">
+            <i data-lucide="trending-up" aria-hidden="true"></i>
+            <h3>It grows from normal use</h3>
+            <p>Back up an iPhone once, pull a few Docker images, build a few large projects, and over a few months it quietly reaches tens or even hundreds of gigabytes.</p>
+          </article>
+          <article class="seo-card">
+            <i data-lucide="info" aria-hidden="true"></i>
+            <h3>The number is an estimate</h3>
+            <p>The system assigns files to known categories first and everything remaining accumulates here. It can jump around, so do not read too much into small changes.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="seo-section seo-section-alt" id="sources" aria-labelledby="sources-title">
+      <div class="section-inner seo-narrow">
+        <div class="section-heading">
+          <p class="eyebrow">Ordered by likelihood</p>
+          <h2 id="sources-title">The usual suspects, biggest first</h2>
+          <p>Roughly ordered by how much space they take and how often they are overlooked. You rarely need to check all of them — the first two usually explain it.</p>
+        </div>
+        <div class="coverage-list">
+          <article>
+            <div class="feature-icon blue"><i data-lucide="smartphone" aria-hidden="true"></i></div>
+            <div>
+              <h3>① iPhone and iPad backups</h3>
+              <p>At <code>~/Library/Application Support/MobileSync/Backup</code>. Every time you sync or back up an iPhone on this Mac, a full device backup is kept — <strong>often tens of gigabytes each, and several per device</strong>. This is the single most likely item to pass 100 GB.</p>
+              <p style="margin-top:.5rem">How to handle it: in Finder, open Go → Library while holding Option to reach the directory, or manage device backups more safely in <strong>System Settings → General → Storage</strong>. After deleting, the next backup of that device is a full one again.</p>
+            </div>
+          </article>
+          <article>
+            <div class="feature-icon orange"><i data-lucide="container" aria-hidden="true"></i></div>
+            <div>
+              <h3>② VM and Docker disk images</h3>
+              <p>Docker Desktop, OrbStack, Parallels and UTM each keep a disk image that keeps growing. They share one property: <strong>the image only grows, even after you delete things inside the container.</strong></p>
+              <p style="margin-top:.5rem">How to handle it: run <code>docker system prune -a</code> first to drop unused images and build cache, then shrink the disk image from Docker Desktop settings. The path varies by version — usually under <code>~/Library/Containers/com.docker.docker/Data/vms</code>. Verify before deleting anything there.</p>
+            </div>
+          </article>
+          <article>
+            <div class="feature-icon green"><i data-lucide="hammer" aria-hidden="true"></i></div>
+            <div>
+              <h3>③ Xcode and developer caches</h3>
+              <p>The whole <code>~/Library/Developer</code> tree can land in this category: old simulator runtimes, build caches, device support files. Note that <code>Xcode/Archives</code> is your release history and must not be deleted.<a href="xcode-disk-space.html">The five Xcode locations →</a></p>
+            </div>
+          </article>
+          <article>
+            <div class="feature-icon gray"><i data-lucide="history" aria-hidden="true"></i></div>
+            <div>
+              <h3>④ Local snapshots (APFS)</h3>
+              <p>Without an external backup drive, Time Machine stages restore points on the Mac itself. Large files you deleted may still be pinned by a snapshot, which is why space sometimes does not come back. Check with <code>tmutil listlocalsnapshots /</code>.</p>
+            </div>
+          </article>
+          <article>
+            <div class="feature-icon blue"><i data-lucide="mail" aria-hidden="true"></i></div>
+            <div>
+              <h3>⑤ Mail attachments and streaming caches</h3>
+              <p>Mail clients download attachments locally, and Apple Music, Podcasts, the TV app and your photo library keep caches too. Usually a few gigabytes each and rarely the main cause, but they add up.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="seo-section" id="measure" aria-labelledby="measure-title">
+      <div class="section-inner seo-narrow">
+        <div class="section-heading">
+          <p class="eyebrow">Do it yourself</p>
+          <h2 id="measure-title">Three commands that locate the source</h2>
+          <p>All of them only read, none delete. The first is the important one: <strong>sort every subdirectory of your Library by size</strong> and the biggest offender is right there.</p>
+        </div>
+        <div class="hash-block" style="margin-bottom:1.5rem">
+          <p style="margin:0 0 .5rem;font-size:.875rem;color:var(--muted,#6b7280)">1. The largest items in your Library (biggest last)</p>
+          <code style="display:block;overflow-x:auto;white-space:pre">du -sh ~/Library/* 2>/dev/null | sort -h | tail -15</code>
+        </div>
+        <div class="hash-block" style="margin-bottom:1.5rem">
+          <p style="margin:0 0 .5rem;font-size:.875rem;color:var(--muted,#6b7280)">2. Check whether local snapshots are holding space</p>
+          <code style="display:block;overflow-x:auto;white-space:pre">tmutil listlocalsnapshots /</code>
+        </div>
+        <div class="hash-block" style="margin-bottom:1.5rem">
+          <p style="margin:0 0 .5rem;font-size:.875rem;color:var(--muted,#6b7280)">3. Size of your device backups specifically</p>
+          <code style="display:block;overflow-x:auto;white-space:pre">du -sh ~/Library/Application\ Support/MobileSync/Backup</code>
+        </div>
+        <p style="margin-top:1.25rem">If the first command shows a directory of tens of gigabytes, that is almost certainly it. If nothing looks large yet System Data is still huge, the answer is more likely local snapshots or a VM disk image — <strong>neither of which <code>du</code> accounts for properly</strong>, so use the second and third approaches instead.</p>
+      </div>
+    </section>
+
+    <section class="seo-section seo-section-alt" aria-labelledby="safe-title">
+      <div class="section-inner seo-narrow">
+        <div class="section-heading">
+          <p class="eyebrow">Safety boundary</p>
+          <h2 id="safe-title">What is safe to remove and what is not</h2>
+        </div>
+        <ul class="check-list">
+          <li><i data-lucide="check" aria-hidden="true"></i><span><strong>Safe</strong>: old simulator runtimes, build caches, device support files, app caches and logs, device backups you no longer need</span></li>
+          <li><i data-lucide="check" aria-hidden="true"></i><span><strong>Safe</strong>: unused Docker images and build cache via <code>docker system prune -a</code>, rather than deleting image files directly</span></li>
+          <li><i data-lucide="check" aria-hidden="true"></i><span><strong>Safe</strong>: older local snapshots via <code>sudo tmutil deletelocalsnapshots</code>; current files are unaffected</span></li>
+          <li><i data-lucide="x" aria-hidden="true"></i><span><strong>Leave alone</strong>: <code>~/Library/Developer/Xcode/Archives</code> — your release archives and symbols</span></li>
+          <li><i data-lucide="x" aria-hidden="true"></i><span><strong>Leave alone</strong>: your photo library, files in iCloud, chat data, Keychain, and any Library subdirectory you do not recognise</span></li>
+        </ul>
+        <p style="margin-top:1.25rem">One rule covers the rest: <strong>before deleting a directory you do not recognise, confirm it is regenerable.</strong> A name that sounds like a cache is not proof that it is one.</p>
+      </div>
+    </section>
+
+    <section class="seo-section" aria-labelledby="app-title">
+      <div class="section-inner seo-narrow seo-callout">
+        <div>
+          <p class="eyebrow">About this tool</p>
+          <h2 id="app-title">It covers part of this, not all of it</h2>
+          <p>Mac Space Cleaner handles app caches, developer tool caches and the three Xcode locations, and shows Downloads, iCloud Drive, WeChat chat data and WPS backups as read-only. <strong>It does not handle iPhone backups, Docker images, local snapshots or your photo library</strong> — use the native methods above for those. Being clear about scope is more useful than pretending to clean everything.</p>
+        </div>
+        <a class="button button-primary" href="../downloads/MacSpaceCleaner-1.3.dmg" download>Download for Mac — free</a>
+      </div>
+    </section>
+
+    <section class="seo-section" aria-labelledby="faq-title">
+      <div class="section-inner seo-narrow seo-faq">
+        <div class="section-heading"><p class="eyebrow">FAQ</p><h2 id="faq-title">About System Data</h2></div>
+        <details><summary>Why can I not find System Data in Finder?</summary><p>Because it is not a folder. It is a statistical category in About This Mac → Storage. macOS groups everything that is not Applications, Documents, Photos, Music or Mail into it, so it is assembled from many unrelated paths.</p></details>
+        <details><summary>I deleted a lot of files but free space did not change. Why?</summary><p>A local snapshot is probably pinning the space. Run <code>tmutil listlocalsnapshots /</code> to check. This is common on Macs with no external backup drive that have had Time Machine enabled at some point.</p></details>
+        <details><summary>Does System Data shrink by itself?</summary><p>Partly. macOS thins older local snapshots and some caches when space runs low. Device backups, VM disk images and accumulated Xcode runtimes are not in that group and will not disappear on their own.</p></details>
+        <details><summary>Is a one-click “clear System Data” tool safe?</summary><p>It depends entirely on which paths it deletes. This category contains your device backups, chat data and photo library, so a tool that does not distinguish contents is risky. Locating the specific source first is the safer route.</p></details>
+        <details><summary>Can a web page scan my Mac?</summary><p>No. A browser cannot read your local disk structure. The commands on this page have to be run by you in Terminal, and anything that needs a real local scan must be done by a native app you download and run.</p></details>
+      </div>
+    </section>
+
+    <section class="seo-section seo-section-alt" aria-labelledby="related-title">
+      <div class="section-inner seo-narrow">
+        <div class="section-heading compact"><p class="eyebrow">Keep reading</p><h2 id="related-title">Two related pages</h2></div>
+        <div class="seo-card-grid">
+          <article class="seo-card">
+            <i data-lucide="hard-drive" aria-hidden="true"></i>
+            <h3><a href="mac-storage-cleaner.html">The full Mac storage checklist</a></h3>
+            <p>Start where the space is easiest to reclaim and work through what is using your disk.</p>
+          </article>
+          <article class="seo-card">
+            <i data-lucide="hammer" aria-hidden="true"></i>
+            <h3><a href="xcode-disk-space.html">How much Xcode really uses</a></h3>
+            <p>If developer caches are the bulk of it, this breaks them into five locations.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer"><div class="section-inner footer-layout"><div class="footer-brand"><img src="../assets/app-icon.png" alt="" width="30" height="30"><span>Mac Space Cleaner</span></div><div class="footer-links"><a href="index.html">Home</a><a href="support.html">Help</a><a href="faq.html">FAQ</a><a href="privacy.html">Privacy</a></div><p>© <span data-year></span> Mac Space Cleaner</p></div></footer>
+</body>
+</html>
